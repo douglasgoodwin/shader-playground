@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whitney Collection</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Whitney</span>
+    </nav>
+    <div id="controls">
+      <button data-piece="lapis" class="active"><span class="key">1</span> Lapis</button>
+      <button data-piece="permutations"><span class="key">2</span> Permutations</button>
+      <button data-piece="matrix"><span class="key">3</span> Matrix</button>
+      <button data-piece="arabesque"><span class="key">4</span> Arabesque</button>
+      <button data-piece="columna"><span class="key">5</span> Columna</button>
+      <button data-piece="spiral"><span class="key">6</span> Spiral</button>
+      <button data-piece="musicbox"><span class="key">7</span> Music Box</button>
+      <button data-piece="trails"><span class="key">8</span> Trails</button>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Speed</span>
+        <input type="range" id="speed" min="0.1" max="2" step="0.1" value="0.5">
+      </label>
+      <label>
+        <span>Density</span>
+        <input type="range" id="density" min="0.5" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Harmonics</span>
+        <input type="range" id="harmonics" min="0.5" max="3" step="0.1" value="1">
+      </label>
+    </div>
+    <script type="module" src="/src/whitney.js"></script>
+  </body>
+</html>
