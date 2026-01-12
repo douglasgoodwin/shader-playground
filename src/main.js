@@ -1,5 +1,6 @@
 import './style.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
+import { CanvasRecorder } from './recorder.js'
 import { FeedbackBuffer } from './feedback.js'
 import vertexShader from './shaders/vertex.glsl'
 import rippleShader from './shaders/ripple.glsl'
@@ -9,13 +10,11 @@ import voronoiShader from './shaders/voronoi.glsl'
 import truchetShader from './shaders/truchet.glsl'
 import hexgridShader from './shaders/hexgrid.glsl'
 import tilesShader from './shaders/tiles.glsl'
-import cylinderShader from './shaders/cylinder.glsl'
-import raymarchShader from './shaders/raymarch.glsl'
-import mandelbulbShader from './shaders/mandelbulb.glsl'
 import hyperbolicShader from './shaders/hyperbolic.glsl'
 import viscousShader from './shaders/viscous.glsl'
 import kaleidoscopeShader from './shaders/kaleidoscope.glsl'
-import penroseShader from './shaders/penrose.glsl'
+import kochShader from './shaders/koch.glsl'
+import thueMorseShader from './shaders/thuemorse.glsl'
 import reactionSimShader from './shaders/reaction-sim.glsl'
 import reactionDisplayShader from './shaders/reaction-display.glsl'
 
@@ -39,13 +38,11 @@ const shaders = {
     truchet: truchetShader,
     hexgrid: hexgridShader,
     tiles: tilesShader,
-    cylinder: cylinderShader,
-    raymarch: raymarchShader,
-    mandelbulb: mandelbulbShader,
     hyperbolic: hyperbolicShader,
     viscous: viscousShader,
     kaleidoscope: kaleidoscopeShader,
-    penrose: penroseShader,
+    koch: kochShader,
+    thuemorse: thueMorseShader,
 }
 
 const programs = {}
@@ -121,7 +118,7 @@ let rippleIndex = 0
 // Slider parameters
 const params = {
     speed: 1,
-    intensity: 1,
+    intensity: 0.7,
     scale: 1,
 }
 
@@ -206,17 +203,29 @@ document.querySelectorAll('#controls button').forEach(btn => {
 
 const effectKeys = {
     '1': 'ripple', '2': 'plasma', '3': 'warp', '4': 'voronoi',
-    '5': 'truchet', '6': 'hexgrid', '7': 'tiles', '8': 'cylinder',
-    '9': 'raymarch', '0': 'mandelbulb', 'q': 'hyperbolic',
-    'w': 'viscous', 'e': 'kaleidoscope', 'r': 'reaction',
-    't': 'penrose'
+    '5': 'truchet', '6': 'hexgrid', '7': 'tiles', '8': 'hyperbolic',
+    '9': 'viscous', '0': 'kaleidoscope', 'q': 'koch',
+    'w': 'thuemorse', 'e': 'reaction'
 }
 
 document.addEventListener('keydown', (e) => {
     if (effectKeys[e.key]) {
         switchEffect(effectKeys[e.key])
     }
+    if (e.key === 'r' || e.key === 'R') {
+        recorder.toggle()
+    }
 })
+
+// Recording
+const recordBtn = document.querySelector('#record-btn')
+const recorder = new CanvasRecorder(canvas, {
+    onStateChange: (recording) => {
+        recordBtn.classList.toggle('recording', recording)
+    }
+})
+
+recordBtn.addEventListener('click', () => recorder.toggle())
 
 window.addEventListener('resize', resize)
 resize()

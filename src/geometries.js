@@ -1,15 +1,12 @@
-import './whitney.css'
+import './geometries.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { CanvasRecorder } from './recorder.js'
 import vertexShader from './shaders/vertex.glsl'
-import lapisShader from './shaders/whitney/lapis.glsl'
-import permutationsShader from './shaders/whitney/permutations.glsl'
-import matrixShader from './shaders/whitney/matrix.glsl'
-import arabesqueShader from './shaders/whitney/arabesque.glsl'
-import columnaShader from './shaders/whitney/columna.glsl'
-import spiralShader from './shaders/whitney/spiral.glsl'
-import musicboxShader from './shaders/whitney/musicbox.glsl'
-import trailsShader from './shaders/whitney/trails.glsl'
+import gyroidShader from './shaders/geometries/gyroid.glsl'
+import penroseShader from './shaders/geometries/penrose.glsl'
+import mandelbulbShader from './shaders/geometries/mandelbulb.glsl'
+import cylinderShader from './shaders/geometries/cylinder.glsl'
+import raymarchShader from './shaders/geometries/raymarch.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -21,14 +18,11 @@ if (!gl) {
 
 // Create shader programs
 const shaders = {
-    lapis: lapisShader,
-    permutations: permutationsShader,
-    matrix: matrixShader,
-    arabesque: arabesqueShader,
-    columna: columnaShader,
-    spiral: spiralShader,
-    musicbox: musicboxShader,
-    trails: trailsShader,
+    gyroid: gyroidShader,
+    penrose: penroseShader,
+    mandelbulb: mandelbulbShader,
+    cylinder: cylinderShader,
+    raymarch: raymarchShader,
 }
 
 const programs = {}
@@ -43,13 +37,16 @@ for (const [name, fragmentShader] of Object.entries(shaders)) {
             time: gl.getUniformLocation(program, 'u_time'),
             mouse: gl.getUniformLocation(program, 'u_mouse'),
             speed: gl.getUniformLocation(program, 'u_speed'),
+            // Support both naming conventions
             density: gl.getUniformLocation(program, 'u_density'),
             harmonics: gl.getUniformLocation(program, 'u_harmonics'),
+            intensity: gl.getUniformLocation(program, 'u_intensity'),
+            scale: gl.getUniformLocation(program, 'u_scale'),
         }
     }
 }
 
-let currentPiece = 'lapis'
+let currentPiece = 'gyroid'
 let currentProgram = programs[currentPiece]
 gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
@@ -80,13 +77,11 @@ function switchPiece(name) {
     gl.useProgram(currentProgram)
     createFullscreenQuad(gl, currentProgram)
 
-    // Update resolution uniform for new program
     const u = uniforms[currentPiece]
     if (u && u.resolution) {
         gl.uniform2f(u.resolution, canvas.width, canvas.height)
     }
 
-    // Update button states
     document.querySelectorAll('#controls button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.piece === name)
     })
@@ -116,14 +111,11 @@ document.querySelectorAll('#controls button').forEach(btn => {
 })
 
 const pieceKeys = {
-    '1': 'lapis',
-    '2': 'permutations',
-    '3': 'matrix',
-    '4': 'arabesque',
-    '5': 'columna',
-    '6': 'spiral',
-    '7': 'musicbox',
-    '8': 'trails',
+    '1': 'gyroid',
+    '2': 'penrose',
+    '3': 'mandelbulb',
+    '4': 'cylinder',
+    '5': 'raymarch',
 }
 
 document.addEventListener('keydown', (e) => {
@@ -155,8 +147,12 @@ function render(time) {
     gl.uniform1f(u.time, t)
     gl.uniform2f(u.mouse, mouse.x, mouse.y)
     gl.uniform1f(u.speed, params.speed)
-    gl.uniform1f(u.density, params.density)
-    gl.uniform1f(u.harmonics, params.harmonics)
+
+    // Send both naming conventions - shaders use whichever they need
+    if (u.density) gl.uniform1f(u.density, params.density)
+    if (u.harmonics) gl.uniform1f(u.harmonics, params.harmonics)
+    if (u.intensity) gl.uniform1f(u.intensity, params.density)  // map density -> intensity
+    if (u.scale) gl.uniform1f(u.scale, params.harmonics)        // map harmonics -> scale
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)

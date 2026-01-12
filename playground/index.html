@@ -11,6 +11,7 @@
     <nav id="nav">
       <a href="/" class="back">Home</a>
     </nav>
+    <button id="record-btn" title="Record video (R)"></button>
     <div id="controls">
       <button data-effect="ripple" class="active"><span class="key">1</span> Ripple</button>
       <button data-effect="plasma"><span class="key">2</span> Plasma</button>
@@ -19,14 +20,12 @@
       <button data-effect="truchet"><span class="key">5</span> Truchet</button>
       <button data-effect="hexgrid"><span class="key">6</span> Hexgrid</button>
       <button data-effect="tiles"><span class="key">7</span> Tiles</button>
-      <button data-effect="cylinder"><span class="key">8</span> Cylinder</button>
-      <button data-effect="raymarch"><span class="key">9</span> Raymarch</button>
-      <button data-effect="mandelbulb"><span class="key">0</span> Mandelbulb</button>
-      <button data-effect="hyperbolic"><span class="key">Q</span> Hyperbolic</button>
-      <button data-effect="viscous"><span class="key">W</span> Viscous</button>
-      <button data-effect="kaleidoscope"><span class="key">E</span> Kaleido</button>
-      <button data-effect="reaction"><span class="key">R</span> Reaction</button>
-      <button data-effect="penrose"><span class="key">T</span> Penrose</button>
+      <button data-effect="hyperbolic"><span class="key">8</span> Hyperbolic</button>
+      <button data-effect="viscous"><span class="key">9</span> Viscous</button>
+      <button data-effect="kaleidoscope"><span class="key">0</span> Kaleido</button>
+      <button data-effect="koch"><span class="key">Q</span> Koch</button>
+      <button data-effect="thuemorse"><span class="key">W</span> Thue-Morse</button>
+      <button data-effect="reaction"><span class="key">E</span> Reaction</button>
     </div>
     <div id="sliders">
       <label>
@@ -35,7 +34,7 @@
       </label>
       <label>
         <span>Intensity</span>
-        <input type="range" id="intensity" min="0.1" max="3" step="0.1" value="1">
+        <input type="range" id="intensity" min="0.1" max="3" step="0.1" value="0.7">
       </label>
       <label>
         <span>Scale</span>
