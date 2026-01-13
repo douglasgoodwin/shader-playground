@@ -9,8 +9,8 @@ import voronoiShader from './shaders/voronoi.glsl'
 import hexgridShader from './shaders/hexgrid.glsl'
 import tilesShader from './shaders/tiles.glsl'
 import kaleidoscopeShader from './shaders/kaleidoscope.glsl'
-import kochShader from './shaders/koch.glsl'
-import thueMorseShader from './shaders/thuemorse.glsl'
+import noiseShader from './shaders/noise.glsl'
+import driveShader from './shaders/drive.glsl'
 import fireflyShader from './shaders/firefly.glsl'
 
 const canvas = document.querySelector('#canvas')
@@ -33,8 +33,8 @@ const shaders = {
     hexgrid: hexgridShader,
     tiles: tilesShader,
     kaleidoscope: kaleidoscopeShader,
-    koch: kochShader,
-    thuemorse: thueMorseShader,
+    noise: noiseShader,
+    drive: driveShader,
     firefly: fireflyShader,
 }
 
@@ -141,8 +141,8 @@ document.querySelectorAll('#controls button').forEach(btn => {
 
 const effectKeys = {
     '1': 'ripple', '2': 'plasma', '3': 'warp', '4': 'voronoi',
-    '5': 'hexgrid', '6': 'tiles', '7': 'kaleidoscope', '8': 'koch',
-    '9': 'thuemorse', '0': 'firefly'
+    '5': 'hexgrid', '6': 'tiles', '7': 'kaleidoscope', '8': 'noise',
+    '9': 'drive', '0': 'firefly'
 }
 
 document.addEventListener('keydown', (e) => {

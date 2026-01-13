@@ -7,6 +7,9 @@ import penroseShader from './shaders/geometries/penrose.glsl'
 import mandelbulbShader from './shaders/geometries/mandelbulb.glsl'
 import cylinderShader from './shaders/geometries/cylinder.glsl'
 import raymarchShader from './shaders/geometries/raymarch.glsl'
+import oscillateShader from './shaders/geometries/oscillate.glsl'
+import ropesShader from './shaders/geometries/ropes.glsl'
+import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -23,6 +26,9 @@ const shaders = {
     mandelbulb: mandelbulbShader,
     cylinder: cylinderShader,
     raymarch: raymarchShader,
+    oscillate: oscillateShader,
+    ropes: ropesShader,
+    trivoronoi: trivoronoiShader,
 }
 
 const programs = {}
@@ -116,6 +122,9 @@ const pieceKeys = {
     '3': 'mandelbulb',
     '4': 'cylinder',
     '5': 'raymarch',
+    '6': 'oscillate',
+    '7': 'ropes',
+    '8': 'trivoronoi',
 }
 
 document.addEventListener('keydown', (e) => {
