@@ -9,9 +9,9 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#define MAX_STEPS 64
+#define MAX_STEPS 150
 #define MAX_DIST 10.0
-#define SURF_DIST 0.001
+#define SURF_DIST 0.0005
 
 mat2 rot2D(float a) {
     float s = sin(a), c = cos(a);
@@ -79,7 +79,7 @@ vec3 calcNormal(vec3 p) {
     ));
 }
 
-// Raymarching
+// Raymarching - smaller steps for fractal detail
 vec2 rayMarch(vec3 ro, vec3 rd) {
     float d = 0.0;
     float iterations = 0.0;
@@ -91,7 +91,7 @@ vec2 rayMarch(vec3 ro, vec3 rd) {
             break;
         }
         if (d > MAX_DIST) break;
-        d += ds.x;
+        d += ds.x * 0.5;  // Half steps for fractal accuracy
         iterations = ds.y;
     }
     return vec2(d, iterations);

@@ -10,6 +10,7 @@ import columnaShader from './shaders/whitney/columna.glsl'
 import spiralShader from './shaders/whitney/spiral.glsl'
 import musicboxShader from './shaders/whitney/musicbox.glsl'
 import trailsShader from './shaders/whitney/trails.glsl'
+import fractalShader from './shaders/whitney/fractal.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -29,6 +30,7 @@ const shaders = {
     spiral: spiralShader,
     musicbox: musicboxShader,
     trails: trailsShader,
+    fractal: fractalShader,
 }
 
 const programs = {}
@@ -124,6 +126,7 @@ const pieceKeys = {
     '6': 'spiral',
     '7': 'musicbox',
     '8': 'trails',
+    '9': 'fractal',
 }
 
 document.addEventListener('keydown', (e) => {

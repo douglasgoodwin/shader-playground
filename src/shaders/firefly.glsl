@@ -31,7 +31,7 @@ vec2 hash21(float p) {
 float blob(vec2 p, vec2 c, float rCore, float rHalo) {
     float d = length(p - c);
     float core = smoothstep(rCore, 0.0, d);
-    float halo = smoothstep(rHalo, rCore, d) * 0.25;
+    float halo = smoothstep(rHalo, rCore, d) * 0.025;
     return core + halo;
 }
 

@@ -11,9 +11,9 @@ uniform float u_density;
 uniform float u_harmonics;
 
 #define PI 3.14159265359
-#define MAX_STEPS 80
+#define MAX_STEPS 200
 #define MAX_DIST 10.0
-#define SURF_DIST 0.002
+#define SURF_DIST 0.001
 
 // Rotation matrices
 mat3 rotateX(float a) {
@@ -89,14 +89,14 @@ vec3 getNormal(vec3 p) {
     ));
 }
 
-// Raymarching
+// Raymarching - small step size for high-frequency gyroid detail
 float raymarch(vec3 ro, vec3 rd) {
     float d = 0.0;
 
     for (int i = 0; i < MAX_STEPS; i++) {
         vec3 p = ro + rd * d;
         float ds = scene(p);
-        d += ds * 0.5;
+        d += ds * 0.1;  // Small steps for thin gyroid channels
         if (abs(ds) < SURF_DIST || d > MAX_DIST) break;
     }
 

@@ -82,13 +82,13 @@ vec3 calcNormal(vec3 p) {
     ));
 }
 
-// Raymarching
+// Raymarching - half steps for smooth blended shapes
 float rayMarch(vec3 ro, vec3 rd) {
     float d = 0.0;
     for (int i = 0; i < MAX_STEPS; i++) {
         vec3 p = ro + rd * d;
         float ds = map(p);
-        d += ds;
+        d += ds * 0.5;  // Smooth min can reduce gradient
         if (d > MAX_DIST || ds < SURF_DIST) break;
     }
     return d;
