@@ -196,3 +196,182 @@ body {
   0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
   50% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
 }
+
+/* ASCII Image Page Styles */
+#controls .drop-zone {
+  padding: 40px 60px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#controls .drop-zone:hover,
+#controls .drop-zone.dragover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(50, 50, 80, 0.6);
+  color: white;
+}
+
+#controls .drop-zone input {
+  display: none;
+}
+
+#controls .url-input {
+  display: flex;
+  gap: 8px;
+}
+
+#controls .url-input input {
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  width: 280px;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+
+#controls .url-input input:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+#controls .url-input input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+#controls .url-input button {
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(50, 50, 80, 0.6);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#controls .url-input button:hover {
+  background: rgba(80, 80, 120, 0.8);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#controls.loaded {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+
+#controls.loaded:hover {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  z-index: 200;
+  backdrop-filter: blur(10px);
+}
+
+#loading.hidden {
+  display: none;
+}
+
+/* ASCII page specific controls layout */
+body:has(#drop-zone) #controls {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mode selector for ASCII page */
+#mode-selector {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 100;
+}
+
+#mode-selector button {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#mode-selector button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#mode-selector button.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: white;
+}
+
+#mode-selector button .key {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+#image-controls {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  z-index: 100;
+  transition: opacity 0.3s;
+}
+
+#image-controls.loaded {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#image-controls.loaded:hover {
+  opacity: 1;
+  pointer-events: auto;
+}

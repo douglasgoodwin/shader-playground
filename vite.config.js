@@ -11,6 +11,7 @@ export default defineConfig({
         playground: resolve(__dirname, 'playground/index.html'),
         whitney: resolve(__dirname, 'whitney/index.html'),
         geometries: resolve(__dirname, 'geometries/index.html'),
+        ascii: resolve(__dirname, 'ascii/index.html'),
       },
     },
   },

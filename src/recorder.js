@@ -1,68 +1,148 @@
-// Canvas video recorder using MediaRecorder API
-// Records WebM video (VP9 codec for better quality, VP8 fallback)
+// Canvas video recorder using WebCodecs API + mp4-muxer
+// Records H.264 MP4 video with hardware acceleration
+
+import { Muxer, ArrayBufferTarget } from 'mp4-muxer'
 
 export class CanvasRecorder {
     constructor(canvas, options = {}) {
         this.canvas = canvas
-        this.mediaRecorder = null
-        this.chunks = []
         this.recording = false
-        this.options = {
-            mimeType: this.getSupportedMimeType(),
-            videoBitsPerSecond: options.bitrate || 8000000, // 8 Mbps default
-        }
+        this.muxer = null
+        this.videoEncoder = null
+        this.frameInterval = null
+        this.startTime = 0
+        this.frameCount = 0
+        this.fps = options.fps || 60
+        this.bitrate = options.bitrate || 8_000_000 // 8 Mbps
         this.onStateChange = options.onStateChange || (() => {})
-    }
 
-    getSupportedMimeType() {
-        const types = [
-            'video/webm;codecs=vp9',
-            'video/webm;codecs=vp8',
-            'video/webm',
-            'video/mp4',
-        ]
-        for (const type of types) {
-            if (MediaRecorder.isTypeSupported(type)) {
-                return type
-            }
+        // Check WebCodecs support
+        this.supported = typeof VideoEncoder !== 'undefined'
+        if (!this.supported) {
+            console.warn('WebCodecs API not supported - recording disabled')
         }
-        return 'video/webm'
     }
 
-    start() {
-        if (this.recording) return
+    async start() {
+        if (this.recording || !this.supported) return
 
-        this.chunks = []
-        const stream = this.canvas.captureStream(60) // 60 fps
+        const width = this.canvas.width
+        const height = this.canvas.height
+
+        // Ensure dimensions are even (required for H.264)
+        const encodedWidth = width % 2 === 0 ? width : width - 1
+        const encodedHeight = height % 2 === 0 ? height : height - 1
+
+        // Create muxer with ArrayBuffer target
+        this.target = new ArrayBufferTarget()
+        this.muxer = new Muxer({
+            target: this.target,
+            video: {
+                codec: 'avc',
+                width: encodedWidth,
+                height: encodedHeight,
+            },
+            fastStart: 'in-memory',
+        })
+
+        // Create video encoder
+        this.videoEncoder = new VideoEncoder({
+            output: (chunk, meta) => {
+                this.muxer.addVideoChunk(chunk, meta)
+            },
+            error: (e) => {
+                console.error('VideoEncoder error:', e)
+                this.stop()
+            },
+        })
+
+        // Configure encoder - try hardware acceleration first
+        const config = {
+            codec: 'avc1.640028', // H.264 High Profile Level 4.0
+            width: encodedWidth,
+            height: encodedHeight,
+            bitrate: this.bitrate,
+            framerate: this.fps,
+            hardwareAcceleration: 'prefer-hardware',
+        }
 
         try {
-            this.mediaRecorder = new MediaRecorder(stream, this.options)
+            const support = await VideoEncoder.isConfigSupported(config)
+            if (!support.supported) {
+                // Fall back to software encoding
+                config.hardwareAcceleration = 'prefer-software'
+            }
+            this.videoEncoder.configure(config)
         } catch (e) {
-            // Fallback without codec specification
-            this.mediaRecorder = new MediaRecorder(stream)
+            console.error('Failed to configure encoder:', e)
+            return
         }
 
-        this.mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) {
-                this.chunks.push(e.data)
+        this.recording = true
+        this.startTime = performance.now()
+        this.frameCount = 0
+        this.encodedWidth = encodedWidth
+        this.encodedHeight = encodedHeight
+        this.onStateChange(true)
+
+        // Capture frames at specified FPS
+        const frameTime = 1000 / this.fps
+        this.frameInterval = setInterval(() => this.captureFrame(), frameTime)
+    }
+
+    captureFrame() {
+        if (!this.recording || !this.videoEncoder) return
+
+        try {
+            // Create a bitmap from the canvas
+            createImageBitmap(this.canvas, {
+                resizeWidth: this.encodedWidth,
+                resizeHeight: this.encodedHeight,
+            }).then((bitmap) => {
+                const timestamp = (this.frameCount * 1_000_000) / this.fps // microseconds
+                const frame = new VideoFrame(bitmap, {
+                    timestamp,
+                    duration: 1_000_000 / this.fps,
+                })
+
+                // Request keyframe every 2 seconds
+                const keyFrame = this.frameCount % (this.fps * 2) === 0
+                this.videoEncoder.encode(frame, { keyFrame })
+                frame.close()
+                bitmap.close()
+                this.frameCount++
+            }).catch((e) => {
+                console.error('Frame capture error:', e)
+            })
+        } catch (e) {
+            console.error('Frame capture error:', e)
+        }
+    }
+
+    async stop() {
+        if (!this.recording) return
+
+        this.recording = false
+        this.onStateChange(false)
+
+        if (this.frameInterval) {
+            clearInterval(this.frameInterval)
+            this.frameInterval = null
+        }
+
+        if (this.videoEncoder) {
+            try {
+                await this.videoEncoder.flush()
+                this.videoEncoder.close()
+            } catch (e) {
+                console.error('Encoder flush error:', e)
             }
         }
 
-        this.mediaRecorder.onstop = () => {
+        if (this.muxer) {
+            this.muxer.finalize()
             this.saveRecording()
         }
-
-        this.mediaRecorder.start(100) // Collect data every 100ms
-        this.recording = true
-        this.onStateChange(true)
-    }
-
-    stop() {
-        if (!this.recording || !this.mediaRecorder) return
-
-        this.mediaRecorder.stop()
-        this.recording = false
-        this.onStateChange(false)
     }
 
     toggle() {
@@ -74,13 +154,13 @@ export class CanvasRecorder {
     }
 
     saveRecording() {
-        const blob = new Blob(this.chunks, { type: this.options.mimeType })
+        const buffer = this.target.buffer
+        const blob = new Blob([buffer], { type: 'video/mp4' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
         const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '')
-        const ext = this.options.mimeType.includes('mp4') ? 'mp4' : 'webm'
-        a.download = `shader-${timestamp}.${ext}`
+        a.download = `shader-${timestamp}.mp4`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -89,5 +169,9 @@ export class CanvasRecorder {
 
     isRecording() {
         return this.recording
+    }
+
+    isSupported() {
+        return this.supported
     }
 }
