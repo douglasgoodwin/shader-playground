@@ -12,6 +12,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/playground/** - Interactive shader effects with parameter controls
 - **/geometries/** - Raymarched 3D geometry explorations
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
+- **/ascii/** - ASCII art rendering using 6D shape vectors
 
 ## Playground Effects
 
@@ -69,6 +70,39 @@ These shaders use sphere tracing to render implicit surfaces. Key parameters:
 | Music Box | Jim Bumgardner's interpretation |
 | Trails | Music Box with motion blur |
 | Fractal | Iterative UV fractal with cosine palette |
+
+## ASCII Renderer
+
+4 modes exploring ASCII art rendering using Alex Harri's 6D shape vector approach:
+
+| Mode | Description |
+|------|-------------|
+| Waves | Animated wave pattern with split-screen comparison |
+| Image | Convert any image to ASCII (drag/drop or URL) |
+| Platonic | Raymarched Platonic solids in ASCII |
+| Cube | Rotating cube with per-face characters |
+
+### How It Works
+
+Instead of mapping brightness to character density (`. : - = + * # @`), this approach uses **6D shape vectors** that describe WHERE the density is within each character cell:
+
+1. Divide each cell into 6 regions (2x3 staggered grid)
+2. Sample brightness at each region
+3. Find the character whose shape vector is closest (Euclidean distance in 6D space)
+4. Render using a font texture atlas for crisp, readable characters
+
+This allows ASCII characters to follow contours and edges, not just represent overall darkness.
+
+### Resources
+
+- [Alex Harri - Rethinking Text Rendering](https://alexharri.com/blog/ascii-rendering) - The technique implemented here
+
+## Recording
+
+All shader pages support MP4 video recording:
+- Click the red record button (top-right)
+- Or press **R** to toggle recording
+- Uses WebCodecs API for hardware-accelerated H.264 encoding
 
 ## Running Locally
 
