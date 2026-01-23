@@ -375,3 +375,32 @@ body:has(#drop-zone) #controls {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Checkbox styling for sliders */
+#sliders input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: white;
+  cursor: pointer;
+}
+
+/* Webcam status message */
+#webcam-status {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  z-index: 200;
+  backdrop-filter: blur(10px);
+}
+
+#webcam-status.hidden {
+  display: none;
+}

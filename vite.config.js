@@ -12,6 +12,7 @@ export default defineConfig({
         whitney: resolve(__dirname, 'whitney/index.html'),
         geometries: resolve(__dirname, 'geometries/index.html'),
         ascii: resolve(__dirname, 'ascii/index.html'),
+        stipple: resolve(__dirname, 'stipple/index.html'),
       },
     },
   },

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stipple - Hodgin Style</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+
+    <div id="mode-selector">
+      <button data-mode="webcam" class="active"><span class="key">1</span> Webcam</button>
+      <button data-mode="image"><span class="key">2</span> Image</button>
+    </div>
+
+    <div id="image-controls" class="mode-controls">
+      <div class="drop-zone" id="drop-zone">
+        <p>Drop an image here or click to select</p>
+        <input type="file" id="file-input" accept="image/*" />
+      </div>
+      <div class="url-input">
+        <input type="text" id="url-input" placeholder="Or paste image URL..." />
+        <button id="load-url">Load</button>
+      </div>
+    </div>
+
+    <div id="webcam-status" class="hidden">
+      <p>Requesting webcam access...</p>
+    </div>
+
+    <div id="sliders">
+      <label>
+        <span>Density</span>
+        <input type="range" id="density" min="0.3" max="3" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Dot Size</span>
+        <input type="range" id="dotScale" min="0.3" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Contrast</span>
+        <input type="range" id="contrast" min="0.5" max="3" step="0.1" value="1.5">
+      </label>
+      <label>
+        <span>Lines</span>
+        <input type="checkbox" id="showLines">
+      </label>
+      <label>
+        <span>Invert</span>
+        <input type="checkbox" id="invert">
+      </label>
+    </div>
+
+    <div id="loading" class="hidden">Loading...</div>
+
+    <script type="module" src="/src/stipple.js"></script>
+  </body>
+</html>

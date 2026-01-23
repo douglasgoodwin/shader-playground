@@ -13,6 +13,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/geometries/** - Raymarched 3D geometry explorations
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
 - **/ascii/** - ASCII art rendering using 6D shape vectors
+- **/stipple/** - Hodgin-style stippling for webcam/images
 
 ## Playground Effects
 
@@ -96,6 +97,47 @@ This allows ASCII characters to follow contours and edges, not just represent ov
 ### Resources
 
 - [Alex Harri - Rethinking Text Rendering](https://alexharri.com/blog/ascii-rendering) - The technique implemented here
+
+## Stipple Renderer
+
+Real-time stippling effect inspired by Robert Hodgin's (flight404) magnetic particle algorithm from ~2009.
+
+| Mode | Description |
+|------|-------------|
+| Webcam | Live stippling of webcam feed |
+| Image | Stipple any image (drag/drop or URL) |
+
+### Hodgin's Original Algorithm
+
+Hodgin's approach used physics simulation:
+1. Populate space with magnetic particles that repel each other
+2. Each particle checks the underlying image brightness
+3. **Dark areas**: particles shrink, magnetic charge weakens, allowing tighter packing
+4. **Light areas**: particles grow larger, stronger charge pushes them apart
+5. Particles settle organically into a stippled pattern
+6. Optional: draw thin lines between nearby particles
+
+### Shader Approximation
+
+Since real-time particle simulation isn't feasible in a fragment shader, this implementation approximates the effect:
+
+1. **Multi-scale grids** - Three overlapping grids at different densities. Finer grids only activate in darker areas, mimicking how smaller particles pack tightly
+2. **Luminance-based sizing** - Dot radius scales with local brightness (larger dots = more ink in dark areas)
+3. **Pseudo-random jitter** - Hash-based offsets break grid regularity for organic feel
+4. **Grey background** - Middle-value canvas allows dots to paint both light and dark
+5. **Optional line connections** - Thin lines between nearby dots in dark regions
+
+### Controls
+
+- **Density** - Grid resolution (more/fewer dots)
+- **Dot Size** - Overall scale multiplier
+- **Contrast** - Boost luminance range of source
+- **Lines** - Toggle connecting lines between nearby dots
+- **Invert** - White dots on dark background
+
+### Resources
+
+- [Robert Hodgin's Stippling](http://roberthodgin.com/project/stippling) - Original inspiration
 
 ## Recording
 
