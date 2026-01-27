@@ -36,11 +36,11 @@ const uniforms = {
 
 // Slider parameters (including checkboxes)
 const sliders = new SliderManager({
-    density:   { selector: '#density',   default: 1.0, uniform: 'u_dotDensity' },
-    dotScale:  { selector: '#dotScale',  default: 1.0, uniform: 'u_dotScale' },
-    contrast:  { selector: '#contrast',  default: 1.5, uniform: 'u_contrast' },
-    showLines: { selector: '#showLines', default: false, type: 'checkbox', uniform: 'u_showLines' },
-    invert:    { selector: '#invert',    default: false, type: 'checkbox', uniform: 'u_invert' },
+    density:   { selector: '#density',   default: 1.0, uniform: 'dotDensity' },
+    dotScale:  { selector: '#dotScale',  default: 1.0 },
+    contrast:  { selector: '#contrast',  default: 1.5 },
+    showLines: { selector: '#showLines', default: false, type: 'checkbox' },
+    invert:    { selector: '#invert',    default: false, type: 'checkbox' },
 })
 
 // Recording
