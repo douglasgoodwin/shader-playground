@@ -1,6 +1,6 @@
 import './style.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
-import { CanvasRecorder } from './recorder.js'
+import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import asciiImageShader from './shaders/ascii-image.glsl'
 import asciiPlatonicShader from './shaders/ascii.glsl'
@@ -104,16 +104,19 @@ let currentProgram = programs[currentMode]
 gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
 
-// Parameters
-const params = {
-    contrast: 2.5,
-    charSize: 12,
-    speed: 1,
-    scale: 1,
-}
+// Mouse tracking
+const mouse = new MouseTracker(canvas)
 
-// Mouse state
-let mouse = { x: 0, y: 0 }
+// Slider parameters
+const sliders = new SliderManager({
+    contrast: { selector: '#contrast', default: 2.5 },
+    charSize: { selector: '#charSize', default: 12 },
+    speed:    { selector: '#speed',    default: 1 },
+    scale:    { selector: '#scale',    default: 1 },
+})
+
+// Recording
+const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
 // Image texture (for image mode)
 let imageTexture = null
@@ -127,10 +130,6 @@ const dropZone = document.querySelector('#drop-zone')
 const fileInput = document.querySelector('#file-input')
 const urlInput = document.querySelector('#url-input')
 const loadUrlBtn = document.querySelector('#load-url')
-const contrastSlider = document.querySelector('#contrast')
-const charSizeSlider = document.querySelector('#charSize')
-const speedSlider = document.querySelector('#speed')
-const scaleSlider = document.querySelector('#scale')
 const speedLabel = document.querySelector('#speed-label')
 const scaleLabel = document.querySelector('#scale-label')
 const loadingEl = document.querySelector('#loading')
@@ -188,29 +187,6 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'r' || e.key === 'R') {
         recorder.toggle()
     }
-})
-
-// Slider handlers
-contrastSlider.addEventListener('input', (e) => {
-    params.contrast = parseFloat(e.target.value)
-})
-
-charSizeSlider.addEventListener('input', (e) => {
-    params.charSize = parseFloat(e.target.value)
-})
-
-speedSlider.addEventListener('input', (e) => {
-    params.speed = parseFloat(e.target.value)
-})
-
-scaleSlider.addEventListener('input', (e) => {
-    params.scale = parseFloat(e.target.value)
-})
-
-// Mouse tracking
-canvas.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX
-    mouse.y = canvas.height - e.clientY
 })
 
 // Create texture from image
@@ -337,16 +313,6 @@ function resize() {
 window.addEventListener('resize', resize)
 resize()
 
-// Recording
-const recordBtn = document.querySelector('#record-btn')
-const recorder = new CanvasRecorder(canvas, {
-    onStateChange: (recording) => {
-        recordBtn.classList.toggle('recording', recording)
-    }
-})
-
-recordBtn.addEventListener('click', () => recorder.toggle())
-
 // Initialize mode UI
 switchMode('waves')
 
@@ -366,8 +332,8 @@ function render(time) {
             gl.uniform1i(u.fontAtlas, 1)
             gl.uniform1f(u.numChars, fontAtlas.numChars)
             gl.uniform2f(u.imageSize, imageSize.width, imageSize.height)
-            gl.uniform1f(u.contrast, params.contrast)
-            gl.uniform1f(u.charSize, params.charSize)
+            gl.uniform1f(u.contrast, sliders.get('contrast'))
+            gl.uniform1f(u.charSize, sliders.get('charSize'))
             gl.drawArrays(gl.TRIANGLES, 0, 6)
         }
     } else if (currentMode === 'waves') {
@@ -378,9 +344,9 @@ function render(time) {
         gl.uniform1f(u.numChars, fontAtlas.numChars)
         gl.uniform1f(u.atlasSize, ATLAS_CHAR_SIZE)
         gl.uniform1f(u.time, t)
-        gl.uniform1f(u.speed, params.speed)
-        gl.uniform1f(u.contrast, params.contrast)
-        gl.uniform1f(u.charSize, params.charSize)
+        gl.uniform1f(u.speed, sliders.get('speed'))
+        gl.uniform1f(u.contrast, sliders.get('contrast'))
+        gl.uniform1f(u.charSize, sliders.get('charSize'))
         gl.drawArrays(gl.TRIANGLES, 0, 6)
     } else {
         // 3D modes (platonic, cube) with font atlas
@@ -389,10 +355,10 @@ function render(time) {
         gl.uniform1i(u.fontAtlas, 0)
         gl.uniform1f(u.numChars, fontAtlas.numChars)
         gl.uniform1f(u.time, t)
-        gl.uniform2f(u.mouse, mouse.x, mouse.y)
-        gl.uniform1f(u.speed, params.speed)
-        gl.uniform1f(u.intensity, params.contrast) // Reuse contrast as intensity
-        gl.uniform1f(u.scale, params.scale)
+        mouse.applyUniform(gl, u.mouse)
+        gl.uniform1f(u.speed, sliders.get('speed'))
+        gl.uniform1f(u.intensity, sliders.get('contrast')) // Reuse contrast as intensity
+        gl.uniform1f(u.scale, sliders.get('scale'))
         gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 

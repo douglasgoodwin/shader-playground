@@ -1,10 +1,11 @@
 import './home.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
+import { setupRecording } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import colorfieldShader from './shaders/colorfield.glsl'
 
 const canvas = document.querySelector('#canvas')
-const gl = canvas.getContext('webgl')
+const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
 
 if (!gl) {
     document.body.style.background = '#0a0c14'
@@ -17,6 +18,8 @@ if (!gl) {
 
         const resolutionLoc = gl.getUniformLocation(program, 'u_resolution')
         const timeLoc = gl.getUniformLocation(program, 'u_time')
+
+        setupRecording(canvas)
 
         function resize() {
             canvas.width = window.innerWidth

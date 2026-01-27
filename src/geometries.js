@@ -1,6 +1,6 @@
 import './geometries.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
-import { CanvasRecorder } from './recorder.js'
+import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import gyroidShader from './shaders/geometries/gyroid.glsl'
 import penroseShader from './shaders/geometries/penrose.glsl'
@@ -57,23 +57,18 @@ let currentProgram = programs[currentPiece]
 gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
 
-// State
-let mouse = { x: 0, y: 0 }
+// Mouse tracking
+const mouse = new MouseTracker(canvas)
 
 // Slider parameters
-const params = {
-    speed: 0.5,
-    density: 1,
-    harmonics: 1,
-}
+const sliders = new SliderManager({
+    speed:     { selector: '#speed',     default: 0.5 },
+    density:   { selector: '#density',   default: 1 },
+    harmonics: { selector: '#harmonics', default: 1 },
+})
 
-const speedSlider = document.querySelector('#speed')
-const densitySlider = document.querySelector('#density')
-const harmonicsSlider = document.querySelector('#harmonics')
-
-speedSlider.addEventListener('input', (e) => params.speed = parseFloat(e.target.value))
-densitySlider.addEventListener('input', (e) => params.density = parseFloat(e.target.value))
-harmonicsSlider.addEventListener('input', (e) => params.harmonics = parseFloat(e.target.value))
+// Recording
+const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
 function switchPiece(name) {
     if (!programs[name]) return
@@ -104,11 +99,6 @@ function resize() {
     }
 }
 
-canvas.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX
-    mouse.y = canvas.height - e.clientY
-})
-
 document.querySelectorAll('#controls button').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation()
@@ -136,16 +126,6 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-// Recording
-const recordBtn = document.querySelector('#record-btn')
-const recorder = new CanvasRecorder(canvas, {
-    onStateChange: (recording) => {
-        recordBtn.classList.toggle('recording', recording)
-    }
-})
-
-recordBtn.addEventListener('click', () => recorder.toggle())
-
 window.addEventListener('resize', resize)
 resize()
 
@@ -154,14 +134,14 @@ function render(time) {
     const u = uniforms[currentPiece]
 
     gl.uniform1f(u.time, t)
-    gl.uniform2f(u.mouse, mouse.x, mouse.y)
-    gl.uniform1f(u.speed, params.speed)
+    mouse.applyUniform(gl, u.mouse)
+    sliders.applyUniforms(gl, u)
 
     // Send both naming conventions - shaders use whichever they need
-    if (u.density) gl.uniform1f(u.density, params.density)
-    if (u.harmonics) gl.uniform1f(u.harmonics, params.harmonics)
-    if (u.intensity) gl.uniform1f(u.intensity, params.density)  // map density -> intensity
-    if (u.scale) gl.uniform1f(u.scale, params.harmonics)        // map harmonics -> scale
+    const density = sliders.get('density')
+    const harmonics = sliders.get('harmonics')
+    if (u.intensity) gl.uniform1f(u.intensity, density)   // map density -> intensity
+    if (u.scale) gl.uniform1f(u.scale, harmonics)         // map harmonics -> scale
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)

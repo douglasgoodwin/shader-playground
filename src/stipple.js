@@ -1,6 +1,6 @@
 import './style.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
-import { CanvasRecorder } from './recorder.js'
+import { SliderManager, setupRecording } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import stippleShader from './shaders/stipple.glsl'
 
@@ -34,14 +34,17 @@ const uniforms = {
     invert: gl.getUniformLocation(program, 'u_invert'),
 }
 
-// Parameters
-const params = {
-    density: 1.0,
-    dotScale: 1.0,
-    contrast: 1.5,
-    showLines: false,
-    invert: false,
-}
+// Slider parameters (including checkboxes)
+const sliders = new SliderManager({
+    density:   { selector: '#density',   default: 1.0, uniform: 'u_dotDensity' },
+    dotScale:  { selector: '#dotScale',  default: 1.0, uniform: 'u_dotScale' },
+    contrast:  { selector: '#contrast',  default: 1.5, uniform: 'u_contrast' },
+    showLines: { selector: '#showLines', default: false, type: 'checkbox', uniform: 'u_showLines' },
+    invert:    { selector: '#invert',    default: false, type: 'checkbox', uniform: 'u_invert' },
+})
+
+// Recording
+const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
 // Video/image texture
 let videoTexture = null
@@ -59,11 +62,6 @@ const dropZone = document.querySelector('#drop-zone')
 const fileInput = document.querySelector('#file-input')
 const urlInput = document.querySelector('#url-input')
 const loadUrlBtn = document.querySelector('#load-url')
-const densitySlider = document.querySelector('#density')
-const dotScaleSlider = document.querySelector('#dotScale')
-const contrastSlider = document.querySelector('#contrast')
-const showLinesCheckbox = document.querySelector('#showLines')
-const invertCheckbox = document.querySelector('#invert')
 const loadingEl = document.querySelector('#loading')
 
 // Create video texture
@@ -240,23 +238,17 @@ urlInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') loadImageFromURL(urlInput.value)
 })
 
-densitySlider.addEventListener('input', (e) => params.density = parseFloat(e.target.value))
-dotScaleSlider.addEventListener('input', (e) => params.dotScale = parseFloat(e.target.value))
-contrastSlider.addEventListener('input', (e) => params.contrast = parseFloat(e.target.value))
-showLinesCheckbox.addEventListener('change', (e) => params.showLines = e.target.checked)
-invertCheckbox.addEventListener('change', (e) => params.invert = e.target.checked)
-
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') switchMode('webcam')
     if (e.key === '2') switchMode('image')
     if (e.key === 'l' || e.key === 'L') {
-        params.showLines = !params.showLines
-        showLinesCheckbox.checked = params.showLines
+        const newValue = !sliders.get('showLines')
+        sliders.set('showLines', newValue)
     }
     if (e.key === 'i' || e.key === 'I') {
-        params.invert = !params.invert
-        invertCheckbox.checked = params.invert
+        const newValue = !sliders.get('invert')
+        sliders.set('invert', newValue)
     }
     if (e.key === 'r' || e.key === 'R') {
         recorder.toggle()
@@ -273,16 +265,6 @@ function resize() {
 
 window.addEventListener('resize', resize)
 resize()
-
-// Recording
-const recordBtn = document.querySelector('#record-btn')
-const recorder = new CanvasRecorder(canvas, {
-    onStateChange: (recording) => {
-        recordBtn.classList.toggle('recording', recording)
-    }
-})
-
-recordBtn.addEventListener('click', () => recorder.toggle())
 
 // Initialize
 switchMode('webcam')
@@ -304,11 +286,7 @@ function render(time) {
 
         gl.uniform1f(uniforms.time, t)
         gl.uniform2f(uniforms.videoSize, videoSize.width, videoSize.height)
-        gl.uniform1f(uniforms.dotDensity, params.density)
-        gl.uniform1f(uniforms.dotScale, params.dotScale)
-        gl.uniform1f(uniforms.contrast, params.contrast)
-        gl.uniform1f(uniforms.showLines, params.showLines ? 1.0 : 0.0)
-        gl.uniform1f(uniforms.invert, params.invert ? 1.0 : 0.0)
+        sliders.applyUniforms(gl, uniforms)
 
         gl.drawArrays(gl.TRIANGLES, 0, 6)
     }

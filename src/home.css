@@ -63,3 +63,52 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+#record-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#record-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+#record-btn::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background: #e53935;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+#record-btn.recording {
+  border-color: #e53935;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+#record-btn.recording::after {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: #e53935;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
+}

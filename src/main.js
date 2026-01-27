@@ -1,6 +1,6 @@
 import './style.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
-import { CanvasRecorder } from './recorder.js'
+import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import rippleShader from './shaders/ripple.glsl'
 import plasmaShader from './shaders/plasma.glsl'
@@ -63,27 +63,24 @@ let currentProgram = programs[currentEffect]
 gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
 
-// Shared state
-let mouse = { x: 0, y: 0 }
+// Mouse tracking
+const mouse = new MouseTracker(canvas)
+
+// Ripple state
 const MAX_RIPPLES = 10
 let ripples = new Float32Array(MAX_RIPPLES * 3)
 let rippleColors = new Float32Array(MAX_RIPPLES * 3)
 let rippleIndex = 0
 
 // Slider parameters
-const params = {
-    speed: 1,
-    intensity: 0.7,
-    scale: 1,
-}
+const sliders = new SliderManager({
+    speed:     { selector: '#speed',     default: 1 },
+    intensity: { selector: '#intensity', default: 0.7 },
+    scale:     { selector: '#scale',     default: 1 },
+})
 
-const speedSlider = document.querySelector('#speed')
-const intensitySlider = document.querySelector('#intensity')
-const scaleSlider = document.querySelector('#scale')
-
-speedSlider.addEventListener('input', (e) => params.speed = parseFloat(e.target.value))
-intensitySlider.addEventListener('input', (e) => params.intensity = parseFloat(e.target.value))
-scaleSlider.addEventListener('input', (e) => params.scale = parseFloat(e.target.value))
+// Recording
+const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
 function switchEffect(name) {
     if (!programs[name]) return
@@ -113,11 +110,6 @@ function resize() {
         gl.uniform2f(u.resolution, canvas.width, canvas.height)
     }
 }
-
-canvas.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX
-    mouse.y = canvas.height - e.clientY
-})
 
 canvas.addEventListener('click', (e) => {
     const x = e.clientX
@@ -154,16 +146,6 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-// Recording
-const recordBtn = document.querySelector('#record-btn')
-const recorder = new CanvasRecorder(canvas, {
-    onStateChange: (recording) => {
-        recordBtn.classList.toggle('recording', recording)
-    }
-})
-
-recordBtn.addEventListener('click', () => recorder.toggle())
-
 window.addEventListener('resize', resize)
 resize()
 
@@ -171,12 +153,10 @@ function render(time) {
     const t = time * 0.001
     const u = uniforms[currentEffect]
     gl.uniform1f(u.time, t)
-    gl.uniform2f(u.mouse, mouse.x, mouse.y)
+    mouse.applyUniform(gl, u.mouse)
     gl.uniform3fv(u.ripples, ripples)
     gl.uniform3fv(u.rippleColors, rippleColors)
-    gl.uniform1f(u.speed, params.speed)
-    gl.uniform1f(u.intensity, params.intensity)
-    gl.uniform1f(u.scale, params.scale)
+    sliders.applyUniforms(gl, u)
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)
 }
