@@ -5,12 +5,12 @@ This tutorial shows you how to add interactive controls to any shader in the pla
 ## The Data Flow
 
 ```
-HTML Slider → JavaScript params object → WebGL uniform → GLSL shader
+HTML Slider → SliderManager → WebGL uniform → GLSL shader
 ```
 
-There are **4 files** you'll touch:
+There are **3 files** you'll touch:
 1. `playground/index.html` — add the slider UI
-2. `src/main.js` — wire up the JavaScript
+2. `src/main.js` — add one line to SliderManager config
 3. `src/shaders/plasma.glsl` — use the uniform in your shader
 
 ---
@@ -88,34 +88,20 @@ Open `playground/index.html` and add a new slider in the `#sliders` div:
 
 ## Step 3: Wire Up the JavaScript
 
-Open `src/main.js` and make three changes:
+Open `src/main.js` and make two small changes:
 
-### 3a. Add to the params object (around line 74):
-
-```javascript
-const params = {
-    speed: 1,
-    intensity: 0.7,
-    scale: 1,
-    twist: 0,    // ← ADD THIS
-}
-```
-
-### 3b. Get the slider element and add event listener (around line 80):
+### 3a. Add to the SliderManager config (around line 76):
 
 ```javascript
-const speedSlider = document.querySelector('#speed')
-const intensitySlider = document.querySelector('#intensity')
-const scaleSlider = document.querySelector('#scale')
-const twistSlider = document.querySelector('#twist')    // ← ADD THIS
-
-speedSlider.addEventListener('input', (e) => params.speed = parseFloat(e.target.value))
-intensitySlider.addEventListener('input', (e) => params.intensity = parseFloat(e.target.value))
-scaleSlider.addEventListener('input', (e) => params.scale = parseFloat(e.target.value))
-twistSlider.addEventListener('input', (e) => params.twist = parseFloat(e.target.value))  // ← ADD THIS
+const sliders = new SliderManager({
+    speed:     { selector: '#speed',     default: 1 },
+    intensity: { selector: '#intensity', default: 0.7 },
+    scale:     { selector: '#scale',     default: 1 },
+    twist:     { selector: '#twist',     default: 0 },    // ← ADD THIS
+})
 ```
 
-### 3c. Get the uniform location (around line 48, inside the for loop):
+### 3b. Add the uniform location (around line 48, inside the for loop):
 
 ```javascript
 uniforms[name] = {
@@ -131,30 +117,100 @@ uniforms[name] = {
 }
 ```
 
-### 3d. Pass to shader in render loop (around line 177):
-
-```javascript
-function render(time) {
-    const t = time * 0.001
-    const u = uniforms[currentEffect]
-    gl.uniform1f(u.time, t)
-    gl.uniform2f(u.mouse, mouse.x, mouse.y)
-    gl.uniform3fv(u.ripples, ripples)
-    gl.uniform3fv(u.rippleColors, rippleColors)
-    gl.uniform1f(u.speed, params.speed)
-    gl.uniform1f(u.intensity, params.intensity)
-    gl.uniform1f(u.scale, params.scale)
-    gl.uniform1f(u.twist, params.twist)    // ← ADD THIS
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
-    requestAnimationFrame(render)
-}
-```
+That's it! The `sliders.applyUniforms(gl, u)` call in the render loop automatically sends all slider values to the shader.
 
 ---
 
 ## Step 4: Test It
 
 Run `npm run dev` and go to the Playground. You should see your new Twist slider. Move it and watch the plasma distort.
+
+---
+
+## SliderManager Reference
+
+### Basic Usage
+
+```javascript
+import { SliderManager } from './controls.js'
+
+const sliders = new SliderManager({
+    paramName: { selector: '#slider-id', default: 1.0 },
+})
+```
+
+### Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `selector` | string | CSS selector for the input element (required) |
+| `default` | number/boolean | Default value (required) |
+| `type` | string | `'range'` (default) or `'checkbox'` |
+| `uniform` | string | Override the uniform key lookup (see below) |
+
+### Checkbox Example
+
+```javascript
+const sliders = new SliderManager({
+    showLines: { selector: '#showLines', default: false, type: 'checkbox' },
+    invert:    { selector: '#invert',    default: false, type: 'checkbox' },
+})
+```
+
+Checkboxes are sent to shaders as `1.0` (checked) or `0.0` (unchecked).
+
+### Custom Uniform Names
+
+By default, `applyUniforms()` looks for `locations[paramName]`. Use the `uniform` option when your locations object uses a different key:
+
+```javascript
+// If your uniforms object has: { dotDensity: gl.getUniformLocation(...) }
+// But you want the param called 'density':
+const sliders = new SliderManager({
+    density: { selector: '#density', default: 1.0, uniform: 'dotDensity' },
+})
+```
+
+### Methods
+
+| Method | Description |
+|--------|-------------|
+| `sliders.params` | Get all current values as an object |
+| `sliders.get(name)` | Get a single parameter value |
+| `sliders.set(name, value)` | Set a value programmatically (updates UI too) |
+| `sliders.reset()` | Reset all parameters to defaults |
+| `sliders.applyUniforms(gl, locations)` | Send all values to WebGL uniforms |
+
+---
+
+## Other Utilities in controls.js
+
+### setupRecording
+
+One-liner to add video recording capability:
+
+```javascript
+import { setupRecording } from './controls.js'
+
+const recorder = setupRecording(canvas)  // Binds #record-btn and 'R' key
+```
+
+Options:
+- `buttonSelector` — default `'#record-btn'`
+- `keyboardShortcut` — default `'r'` (set to `null` to disable)
+
+### MouseTracker
+
+Reusable mouse position tracking with Y-flip for WebGL:
+
+```javascript
+import { MouseTracker } from './controls.js'
+
+const mouse = new MouseTracker(canvas)
+
+// In render loop:
+mouse.applyUniform(gl, u.mouse)  // Sends vec2 to u_mouse
+```
 
 ---
 
@@ -197,9 +253,9 @@ Claude Code can see all the files and will make the coordinated edits across HTM
 ## Troubleshooting
 
 **Slider shows but has no effect:**
-- Check that the uniform name matches exactly in all 4 places
+- Check that the param name in SliderManager matches the key in your uniforms object
 - Check browser console for WebGL errors
-- Verify you added the `gl.uniform1f()` call in the render loop
+- Verify the uniform location is being fetched in the uniforms object
 
 **Shader won't compile:**
 - Check for typos in the uniform declaration
