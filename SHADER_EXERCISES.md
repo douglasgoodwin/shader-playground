@@ -576,3 +576,54 @@ When stuck, try asking Claude:
 > "I want to draw a triangle. What's the math for that?"
 
 The LLM can see your code and explain what's happening or suggest fixes.
+
+---
+
+## Starter Code Files
+
+All exercises are available as ready-to-use `.glsl` files in `src/shaders/exercises/`. Import any exercise in your `main.js`:
+
+```js
+import fragmentShader from './shaders/exercises/ex1-1-color-mixing.glsl'
+```
+
+### Level 1: Change Values
+- `ex1-1-color-mixing.glsl` - Modify RGB values to create different colors
+- `ex1-2-gradient-position.glsl` - Experiment with UV coordinates
+
+### Level 2: Assignment & Sequence
+- `ex2-1-store-and-reuse.glsl` - Practice creating and using variables
+- `ex2-2-order-matters.glsl` - Understand execution order
+
+### Level 3: Built-in Functions
+- `ex3-1-sin-wave.glsl` - Create wave patterns with sin()
+- `ex3-2-mix-blend.glsl` - Blend colors with mix()
+- `ex3-3-step-cutoff.glsl` - Create hard edges with step()
+
+### Level 4: Shapes with Math
+- `ex4-1-circle.glsl` - Draw your first circle
+- `ex4-2-multiple-circles.glsl` - Combine multiple shapes
+- `ex4-3-rectangle.glsl` - Build rectangles with step()
+
+### Level 5: Animation with Time
+- `ex5-1-pulsing-circle.glsl` - Animate radius over time
+- `ex5-2-moving-circle.glsl` - Move shapes with sin/cos
+- `ex5-3-color-cycle.glsl` - Create color animations
+
+### Level 6: Conditionals & Logic
+- `ex6-1-two-halves.glsl` - Split screen with if/else
+- `ex6-2-four-quadrants.glsl` - Nested conditionals
+
+### Level 7: Loops & Repetition
+- `ex7-1-row-of-circles.glsl` - Draw shapes in a loop
+- `ex7-2-grid-of-circles.glsl` - Nested loops for grids
+
+### Level 8: Functions
+- `ex8-1-circle-function.glsl` - Create reusable shape functions
+- `ex8-2-ring-function.glsl` - Build complex shapes from simple ones
+
+### Challenge Projects
+- `challenge-a-traffic-light.glsl` - Animated traffic light with state cycling
+- `challenge-b-loading-spinner.glsl` - Rotating ring using atan()
+- `challenge-c-gradient-sunset.glsl` - Multi-color gradient blending
+- `challenge-d-spotlight.glsl` - Mouse-interactive lighting effect
