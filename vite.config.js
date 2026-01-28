@@ -13,6 +13,7 @@ export default defineConfig({
         geometries: resolve(__dirname, 'geometries/index.html'),
         ascii: resolve(__dirname, 'ascii/index.html'),
         stipple: resolve(__dirname, 'stipple/index.html'),
+        exercises: resolve(__dirname, 'exercises/index.html'),
       },
     },
   },

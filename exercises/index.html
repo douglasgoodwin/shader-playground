@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shader Exercises</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Exercises</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <div class="group">
+        <span class="group-label">Basics</span>
+        <button data-exercise="ex1-1" class="active">Color Mixing</button>
+        <button data-exercise="ex1-2">Gradient</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Variables</span>
+        <button data-exercise="ex2-1">Store & Reuse</button>
+        <button data-exercise="ex2-2">Order</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Math</span>
+        <button data-exercise="ex3-1">Sin Wave</button>
+        <button data-exercise="ex3-2">Mix</button>
+        <button data-exercise="ex3-3">Step</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Shapes</span>
+        <button data-exercise="ex4-1">Circle</button>
+        <button data-exercise="ex4-2">Circles</button>
+        <button data-exercise="ex4-3">Rectangle</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Animation</span>
+        <button data-exercise="ex5-1">Pulse</button>
+        <button data-exercise="ex5-2">Move</button>
+        <button data-exercise="ex5-3">Color Cycle</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Symmetry</span>
+        <button data-exercise="ex6-1">Halves</button>
+        <button data-exercise="ex6-2">Quadrants</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Grids</span>
+        <button data-exercise="ex7-1">Row</button>
+        <button data-exercise="ex7-2">Grid</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Functions</span>
+        <button data-exercise="ex8-1">Circle Fn</button>
+        <button data-exercise="ex8-2">Ring Fn</button>
+      </div>
+      <div class="group">
+        <span class="group-label">Challenges</span>
+        <button data-exercise="challenge-a">Traffic Light</button>
+        <button data-exercise="challenge-b">Spinner</button>
+        <button data-exercise="challenge-c">Sunset</button>
+        <button data-exercise="challenge-d">Spotlight</button>
+      </div>
+    </div>
+    <div id="exercise-info">
+      <span id="exercise-name"></span>
+      <span id="exercise-nav">
+        <button id="prev-btn" title="Previous (Left arrow)">&larr;</button>
+        <button id="next-btn" title="Next (Right arrow)">&rarr;</button>
+      </span>
+    </div>
+    <script type="module" src="/src/exercises.js"></script>
+  </body>
+</html>

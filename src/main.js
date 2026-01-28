@@ -12,6 +12,7 @@ import kaleidoscopeShader from './shaders/kaleidoscope.glsl'
 import noiseShader from './shaders/noise.glsl'
 import driveShader from './shaders/drive.glsl'
 import fireflyShader from './shaders/firefly.glsl'
+import exerciseShader from './shaders/exercises/ex3-1-sin-wave.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -36,6 +37,7 @@ const shaders = {
     noise: noiseShader,
     drive: driveShader,
     firefly: fireflyShader,
+    exercise: exerciseShader,
 }
 
 const programs = {}
@@ -134,7 +136,7 @@ document.querySelectorAll('#controls button').forEach(btn => {
 const effectKeys = {
     '1': 'ripple', '2': 'plasma', '3': 'warp', '4': 'voronoi',
     '5': 'hexgrid', '6': 'tiles', '7': 'kaleidoscope', '8': 'noise',
-    '9': 'drive', '0': 'firefly'
+    '9': 'drive', '0': 'firefly', 'e': 'exercise'
 }
 
 document.addEventListener('keydown', (e) => {
