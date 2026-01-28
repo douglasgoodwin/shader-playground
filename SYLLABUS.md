@@ -16,13 +16,20 @@
 
 ## Week 1: The Pixel as Canvas
 
-**Concept:** Every pixel runs the same program simultaneously. You're not drawing—you're describing *what color each point should be*.
+**Concept:** Every pixel runs the same program simultaneously. You're not drawing—you're describing *what color each point should be*. But before we write any code, we need to talk about the tools we're using and what they mean for creative work.
 
-**Read:**
+**Read (before class):**
+- `theluddites.md` — *Vibecoding allows artists to write sophisticated code. Who Benefits from the Disruption?*
 - Book of Shaders: [Hello World](https://thebookofshaders.com/02/), [Uniforms](https://thebookofshaders.com/03/), [Running your shader](https://thebookofshaders.com/04/)
 - `EXERCISES.md` Part 1.1 and 1.3
 
-**In-Class:**
+**In-Class Discussion:** AI, Art, and the Frame
+- Read and discuss `theluddites.md` — the Luddites, Lord Byron, vibecoding, and Doctorow's critique
+- What does it mean to use AI as a creative partner in an art school?
+- When tools let one person do the work of many, who benefits?
+- How do we use these tools without pretending the frame isn't already running?
+
+**In-Class Technical:**
 - Run `npm run dev`, explore the Playground tab
 - Study `plasma.glsl` - classic demoscene color cycling
 - Discuss: How is this different from frame-by-frame animation?
@@ -381,6 +388,7 @@ Shaders are highly mathematical. LLMs may:
 - **Exercises tab** (`/exercises/`) - 23 scaffolded shader exercises with TODO prompts, organized by topic
 - `EXERCISES.md` - Progressive exercises analyzing existing playground shaders
 - `SLIDER_TUTORIAL.md` - How to add custom interactive controls
+- `theluddites.md` - Essay on AI, vibecoding, creative labor, and the Luddite legacy
 - `wookash_inigoquilez.md` - Deep dive on IQ's philosophy
 - All shader source in `src/shaders/` - commented and readable
 - Press **R** to record any shader as MP4
