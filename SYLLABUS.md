@@ -1,5 +1,5 @@
 # GLSL Shaders for Experimental Animation
-### CalArts MFA Program | 10-Week Syllabus
+### CalArts MFA Program | 16-Week Semester
 
 **Prerequisites:** None (LLMs bridge the technical gap)
 **Tools:** This shader playground, Claude Code or similar LLM, VS Code
@@ -7,6 +7,10 @@
 - [The Book of Shaders](https://thebookofshaders.com) - Patricio Gonzalez Vivo
 - [Inigo Quilez's articles](https://iquilezles.org/articles/) and [Shadertoy](https://shadertoy.com)
 - `wookash_inigoquilez.md` in this repo (IQ's philosophy)
+
+---
+
+## Part I: Foundations
 
 ---
 
@@ -23,83 +27,129 @@
 - Study `plasma.glsl` - classic demoscene color cycling
 - Discuss: How is this different from frame-by-frame animation?
 
-**Hands-On Exercises** (Exercises tab → Basics & Variables):
+**Hands-On Exercises** (Exercises tab → Basics):
 - **Ex 1.1 - Color Mixing:** RGB values, `vec3`, making colors from numbers
 - **Ex 1.2 - Gradient Position:** Using `uv` coordinates to vary color across the screen
-- **Ex 2.1 - Store & Reuse:** Saving values in variables, building up expressions
-- **Ex 2.2 - Order Matters:** How operation order changes the result
 
 **LLM Exercise:**
 > "Create a shader that makes the screen pulse between two colors of my choice based on time"
 
-**Assignment:** Complete all Basics and Variables exercises. Then use Claude Code to create 3 variations of a simple time-based color shader. Document your prompts and what you learned from each iteration.
+**Assignment:** Complete both Basics exercises. Then use Claude Code to create 3 variations of a simple time-based color shader. Document your prompts and what you learned from each iteration.
 
 ---
 
-## Week 2: Coordinates and Transformation
+## Week 2: Variables and Coordinates
 
-**Concept:** UV space, aspect ratio correction, distance as a tool for drawing shapes.
+**Concept:** Storing values, combining operations, and understanding the UV coordinate system that underpins everything.
 
 **Read:**
 - Book of Shaders: Chapter 5 (Shaping Functions)
-- IQ: [Distance Functions](https://iquilezles.org/articles/distfunctions2d/)
 
-**Hands-On Exercises** (Exercises tab → Shapes & Symmetry):
-- **Ex 4.1 - Circle:** Using `length()` and `step()` to draw a circle from distance
-- **Ex 4.2 - Multiple Circles:** Positioning shapes at different UV coordinates
-- **Ex 4.3 - Rectangle:** Building a rectangle from absolute value and step
-- **Ex 6.1 - Two Halves:** Horizontal and vertical symmetry with `abs()`
-- **Ex 6.2 - Four Quadrants:** Folding the plane into mirrored quadrants
+**Hands-On Exercises** (Exercises tab → Variables):
+- **Ex 2.1 - Store & Reuse:** Saving values in variables, building up expressions
+- **Ex 2.2 - Order Matters:** How operation order changes the result
 
 **Study:**
-- `kaleidoscope.glsl` - polar coordinates and radial symmetry
-- `hexgrid.glsl` - hexagonal tiling mathematics
+- `kaleidoscope.glsl` - how coordinate transformations create visual complexity
 
 **LLM Exercise:**
-> "Convert this shader from Cartesian to polar coordinates and add rotation over time"
+> "Explain what happens to a shader when I change `gl_FragCoord.xy / u_resolution` to `gl_FragCoord.xy / u_resolution - 0.5`"
 
-**Assignment:** Complete all Shapes and Symmetry exercises. Then create a shader that tiles the screen in an unexpected way. Experiment with `mod()`, `fract()`, and coordinate transformations.
+**Assignment:** Complete both Variables exercises. Experiment with centering coordinates and observe how it changes existing shaders.
 
 ---
 
-## Week 3: The Oscillation Toolkit
+## Week 3: The Math Toolkit
 
-**Concept:** `sin`, `cos`, `fract`, `smoothstep` as the building blocks of all motion.
+**Concept:** `sin`, `mix`, `step`, and `smoothstep` — a small set of functions that produce most of the visual effects you'll ever need.
 
 **Read:**
 - Book of Shaders: Chapter 5 continued
 - `EXERCISES.md` Part 1.2 (wave forms)
 
-**Hands-On Exercises** (Exercises tab → Math & Animation):
+**Hands-On Exercises** (Exercises tab → Math):
 - **Ex 3.1 - Sin Wave:** Using `sin()` to create wave patterns
 - **Ex 3.2 - Mix Blend:** Interpolating between values with `mix()`
 - **Ex 3.3 - Step Cutoff:** Hard edges with `step()` and `smoothstep()`
+
+**Study:**
+- Whitney collection: `permutations.glsl` - Lissajous figures built from sin/cos
+
+**LLM Exercise:**
+> "Show me what `smoothstep(0.3, 0.7, x)` looks like compared to `step(0.5, x)` — visualize both as color bands"
+
+**Assignment:** Complete all Math exercises. Create a shader that uses at least two of `sin`, `mix`, and `step` together in a single composition.
+
+---
+
+## Week 4: Drawing Shapes
+
+**Concept:** Distance as the universal drawing tool. If you can measure how far a pixel is from a shape, you can draw that shape.
+
+**Read:**
+- IQ: [Distance Functions](https://iquilezles.org/articles/distfunctions2d/)
+
+**Hands-On Exercises** (Exercises tab → Shapes):
+- **Ex 4.1 - Circle:** Using `length()` and `step()` to draw a circle from distance
+- **Ex 4.2 - Multiple Circles:** Positioning shapes at different UV coordinates
+- **Ex 4.3 - Rectangle:** Building a rectangle from absolute value and step
+
+**Study:**
+- `hexgrid.glsl` - hexagonal tiling from distance calculations
+
+**LLM Exercise:**
+> "Draw a rounded rectangle in a shader using distance fields"
+
+**Assignment:** Complete all Shapes exercises. Create a composition with at least 3 different shapes positioned deliberately on screen.
+
+---
+
+## Week 5: Animation
+
+**Concept:** Time as a material. Everything that moves in a shader is a function of `u_time`.
+
+**Hands-On Exercises** (Exercises tab → Animation):
 - **Ex 5.1 - Pulsing Circle:** Animating radius with `sin(u_time)`
 - **Ex 5.2 - Moving Circle:** Animating position over time
 - **Ex 5.3 - Color Cycle:** Time-based color shifts
 
 **Study:**
 - `ripple.glsl` - concentric waves from interaction points
-- Whitney collection: `permutations.glsl` - Lissajous figures
+- `firefly.glsl` - procedural particle animation
 
 **LLM Exercise:**
 > "Add a second layer of slower, larger waves to this ripple shader with a different color"
 
-**Assignment:** Complete all Math and Animation exercises. Then create a "visual instrument" - a shader where mouse position controls multiple oscillating parameters. Think of it as a single-frame synthesizer.
+**Assignment:** Complete all Animation exercises. Then create a "visual instrument" — a shader where mouse position controls multiple oscillating parameters. Think of it as a single-frame synthesizer.
 
 ---
 
-## Week 4: Grids, Functions, and Organic Form
+## Week 6: Symmetry and Grids
 
-**Concept:** Reusable functions, spatial repetition, and noise as the foundation of organic texture.
+**Concept:** Folding space with `abs()` and repeating it with `mod()`. A single shape becomes a pattern.
 
-**Read:**
-- Book of Shaders: Chapters 10-11 (Random, Noise)
-- IQ: [Value Noise Derivatives](https://iquilezles.org/articles/morenoise/)
-
-**Hands-On Exercises** (Exercises tab → Grids, Functions & Challenges):
+**Hands-On Exercises** (Exercises tab → Symmetry & Grids):
+- **Ex 6.1 - Two Halves:** Horizontal and vertical symmetry with `abs()`
+- **Ex 6.2 - Four Quadrants:** Folding the plane into mirrored quadrants
 - **Ex 7.1 - Row of Circles:** Horizontal repetition with `mod()` and `fract()`
 - **Ex 7.2 - Grid of Circles:** 2D tiling patterns
+
+**Study:**
+- `tiles.glsl` - tiling patterns
+- `kaleidoscope.glsl` - polar symmetry
+
+**LLM Exercise:**
+> "Convert this shader from Cartesian to polar coordinates and add rotation over time"
+
+**Assignment:** Complete all Symmetry and Grids exercises. Create a shader that tiles the screen in an unexpected way. Experiment with `mod()`, `fract()`, and coordinate transformations.
+
+---
+
+## Week 7: Functions and Challenges
+
+**Concept:** Encapsulating logic into reusable functions. Combining everything learned so far.
+
+**Hands-On Exercises** (Exercises tab → Functions & Challenges):
 - **Ex 8.1 - Circle Function:** Encapsulating drawing logic into reusable functions
 - **Ex 8.2 - Ring Function:** Building on functions to create ring shapes
 - **Challenge A - Traffic Light:** Combine circles, color, and time-based switching
@@ -107,18 +157,18 @@
 - **Challenge C - Gradient Sunset:** Layered gradients and color blending
 - **Challenge D - Spotlight:** Mouse-driven lighting with distance falloff
 
-**Study:**
-- `noise.glsl` - "boiling methane sea" with 3D Perlin noise
-- `voronoi.glsl` - cellular patterns
-
 **LLM Exercise:**
-> "Layer multiple octaves of noise at different scales to create a more complex texture (fractal Brownian motion)"
+> "Refactor this shader so the repeated drawing code becomes a function I can call with different parameters"
 
-**Assignment:** Complete the Grids and Functions exercises, then attempt at least 2 of the 4 Challenges. After that, create an "environment" shader - clouds, water, fire, or something invented. Focus on selling the material through motion.
+**Assignment:** Complete both Functions exercises and attempt all 4 Challenges. The challenges are open-ended — push them beyond the TODO prompts.
 
 ---
 
-## Week 5: Color as Emotion
+## Part II: Intermediate Techniques
+
+---
+
+## Week 8: Color as Emotion
 
 **Concept:** Cosine palettes, HSV manipulation, color cycling as animation.
 
@@ -137,9 +187,28 @@
 
 ---
 
-## Week 6: Introduction to Raymarching
+## Week 9: Noise and Organic Form
 
-**Concept:** Describing 3D space through distance—if you know how far away the nearest surface is, you can safely step that far.
+**Concept:** Deterministic randomness. Noise functions create the illusion of natural chaos.
+
+**Read:**
+- Book of Shaders: Chapters 10-11 (Random, Noise)
+- IQ: [Value Noise Derivatives](https://iquilezles.org/articles/morenoise/)
+
+**Study:**
+- `noise.glsl` - "boiling methane sea" with 3D Perlin noise
+- `voronoi.glsl` - cellular patterns
+
+**LLM Exercise:**
+> "Layer multiple octaves of noise at different scales to create a more complex texture (fractal Brownian motion)"
+
+**Assignment:** Create an "environment" shader — clouds, water, fire, or something invented. Focus on selling the material through motion.
+
+---
+
+## Week 10: Introduction to Raymarching
+
+**Concept:** Describing 3D space through distance — if you know how far away the nearest surface is, you can safely step that far.
 
 **Read:**
 - IQ: [Ray Marching Primitives](https://iquilezles.org/articles/distfunctions/)
@@ -156,7 +225,7 @@
 
 ---
 
-## Week 7: Signed Distance Functions (SDFs)
+## Week 11: Signed Distance Functions (SDFs)
 
 **Concept:** Mathematical sculptures. Combine, subtract, repeat, and deform shapes through pure math.
 
@@ -172,11 +241,11 @@
 **LLM Exercise:**
 > "Create an infinite grid of rounded cubes using domain repetition, with slight variations in each"
 
-**Assignment:** Design an "impossible space" - use SDFs to create geometry that couldn't exist physically. The Whitney brothers called this "visual music."
+**Assignment:** Design an "impossible space" — use SDFs to create geometry that couldn't exist physically. The Whitney brothers called this "visual music."
 
 ---
 
-## Week 8: Fractals and Iteration
+## Week 12: Fractals and Iteration
 
 **Concept:** Self-similarity through repetition. Small rules create infinite complexity.
 
@@ -195,7 +264,7 @@
 
 ---
 
-## Week 9: Composition and Layering
+## Week 13: Composition and Layering
 
 **Concept:** Complex imagery through simple layers. Depth, atmosphere, and the "drive shader" technique.
 
@@ -210,11 +279,15 @@
 **LLM Exercise:**
 > "Add atmospheric fog to this raymarched scene that gets thicker with distance"
 
-**Assignment:** Create a "scene" with at least 3 distinct visual layers (foreground, subject, background/atmosphere). This is your portfolio piece draft.
+**Assignment:** Create a "scene" with at least 3 distinct visual layers (foreground, subject, background/atmosphere). This is your final project concept draft.
 
 ---
 
-## Week 10: Final Projects
+## Part III: Final Projects
+
+---
+
+## Week 14: Proposals and Prototyping
 
 **Concept:** Synthesis. Create a shader that expresses something personal.
 
@@ -224,10 +297,46 @@
 3. **Abstract Narrative:** A shader that transforms over time to suggest a story
 4. **Whitney Homage:** A new piece in the Digital Harmony tradition
 
+**In-Class:**
+- Present project proposals (concept, reference images, technical approach)
+- Begin prototyping core shader logic
+- Identify technical risks early
+
+**Assignment:** Working prototype of the primary visual effect for your final project.
+
+---
+
+## Week 15: Studio and Feedback
+
+**In-Class:**
+- Work session with individual feedback
+- Peer critique in small groups
+- Troubleshooting and refinement
+
+**Focus:**
+- Does the piece have a clear emotional register?
+- Is the motion purposeful or arbitrary?
+- Where can complexity be reduced without losing the idea?
+
+**Assignment:** Near-final version of your project. Record a 30-second MP4 capture for critique.
+
+---
+
+## Week 16: Final Presentations
+
+**In-Class:**
+- Final project screenings
+- Group critique and discussion
+
 **Critique Focus:**
 - Does the piece have a clear emotional register?
 - Is the motion purposeful or arbitrary?
 - What does the LLM collaboration reveal about your creative process?
+
+**Deliverables:**
+- Final shader code committed to your branch
+- 30-60 second recorded MP4
+- Written reflection on your LLM collaboration process (1-2 pages)
 
 ---
 
