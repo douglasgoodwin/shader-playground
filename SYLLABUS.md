@@ -170,11 +170,12 @@
 
 ## Week 8: Color as Emotion
 
-**Concept:** Cosine palettes, HSV manipulation, color cycling as animation.
+**Concept:** Cosine palettes, HSV manipulation, color cycling as animation. From this week on, you'll work in the Playground tab and create your own shaders with custom controls.
 
 **Read:**
 - Book of Shaders: Chapter 6 (Colors)
 - IQ: [Palettes](https://iquilezles.org/articles/palettes/)
+- `SLIDER_TUTORIAL.md` — how to add interactive sliders to your shaders (HTML → JS → GLSL data flow)
 
 **Study:**
 - `whitney/fractal.glsl` - cosine palette animation
@@ -183,7 +184,7 @@
 **LLM Exercise:**
 > "Replace this shader's color scheme with a cosine palette. Give me controls for the palette parameters."
 
-**Assignment:** Take one of your previous shaders and completely transform its mood through color alone. Create "day" and "night" versions.
+**Assignment:** Take one of your previous shaders and completely transform its mood through color alone. Create "day" and "night" versions. Add at least one custom slider to control a parameter of your choice (follow `SLIDER_TUTORIAL.md`).
 
 ---
 
