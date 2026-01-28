@@ -23,20 +23,33 @@
 - Study `plasma.glsl` - classic demoscene color cycling
 - Discuss: How is this different from frame-by-frame animation?
 
+**Hands-On Exercises** (Exercises tab → Basics & Variables):
+- **Ex 1.1 - Color Mixing:** RGB values, `vec3`, making colors from numbers
+- **Ex 1.2 - Gradient Position:** Using `uv` coordinates to vary color across the screen
+- **Ex 2.1 - Store & Reuse:** Saving values in variables, building up expressions
+- **Ex 2.2 - Order Matters:** How operation order changes the result
+
 **LLM Exercise:**
 > "Create a shader that makes the screen pulse between two colors of my choice based on time"
 
-**Assignment:** Use Claude Code to create 3 variations of a simple time-based color shader. Document your prompts and what you learned from each iteration.
+**Assignment:** Complete all Basics and Variables exercises. Then use Claude Code to create 3 variations of a simple time-based color shader. Document your prompts and what you learned from each iteration.
 
 ---
 
 ## Week 2: Coordinates and Transformation
 
-**Concept:** UV space, aspect ratio correction, polar coordinates as expressive tools.
+**Concept:** UV space, aspect ratio correction, distance as a tool for drawing shapes.
 
 **Read:**
 - Book of Shaders: Chapter 5 (Shaping Functions)
 - IQ: [Distance Functions](https://iquilezles.org/articles/distfunctions2d/)
+
+**Hands-On Exercises** (Exercises tab → Shapes & Symmetry):
+- **Ex 4.1 - Circle:** Using `length()` and `step()` to draw a circle from distance
+- **Ex 4.2 - Multiple Circles:** Positioning shapes at different UV coordinates
+- **Ex 4.3 - Rectangle:** Building a rectangle from absolute value and step
+- **Ex 6.1 - Two Halves:** Horizontal and vertical symmetry with `abs()`
+- **Ex 6.2 - Four Quadrants:** Folding the plane into mirrored quadrants
 
 **Study:**
 - `kaleidoscope.glsl` - polar coordinates and radial symmetry
@@ -45,7 +58,7 @@
 **LLM Exercise:**
 > "Convert this shader from Cartesian to polar coordinates and add rotation over time"
 
-**Assignment:** Create a shader that tiles the screen in an unexpected way. Experiment with `mod()`, `fract()`, and coordinate transformations.
+**Assignment:** Complete all Shapes and Symmetry exercises. Then create a shader that tiles the screen in an unexpected way. Experiment with `mod()`, `fract()`, and coordinate transformations.
 
 ---
 
@@ -57,6 +70,14 @@
 - Book of Shaders: Chapter 5 continued
 - `EXERCISES.md` Part 1.2 (wave forms)
 
+**Hands-On Exercises** (Exercises tab → Math & Animation):
+- **Ex 3.1 - Sin Wave:** Using `sin()` to create wave patterns
+- **Ex 3.2 - Mix Blend:** Interpolating between values with `mix()`
+- **Ex 3.3 - Step Cutoff:** Hard edges with `step()` and `smoothstep()`
+- **Ex 5.1 - Pulsing Circle:** Animating radius with `sin(u_time)`
+- **Ex 5.2 - Moving Circle:** Animating position over time
+- **Ex 5.3 - Color Cycle:** Time-based color shifts
+
 **Study:**
 - `ripple.glsl` - concentric waves from interaction points
 - Whitney collection: `permutations.glsl` - Lissajous figures
@@ -64,17 +85,27 @@
 **LLM Exercise:**
 > "Add a second layer of slower, larger waves to this ripple shader with a different color"
 
-**Assignment:** Create a "visual instrument" - a shader where mouse position controls multiple oscillating parameters. Think of it as a single-frame synthesizer.
+**Assignment:** Complete all Math and Animation exercises. Then create a "visual instrument" - a shader where mouse position controls multiple oscillating parameters. Think of it as a single-frame synthesizer.
 
 ---
 
-## Week 4: Noise and Organic Form
+## Week 4: Grids, Functions, and Organic Form
 
-**Concept:** Deterministic randomness. Noise functions create the illusion of natural chaos.
+**Concept:** Reusable functions, spatial repetition, and noise as the foundation of organic texture.
 
 **Read:**
 - Book of Shaders: Chapters 10-11 (Random, Noise)
 - IQ: [Value Noise Derivatives](https://iquilezles.org/articles/morenoise/)
+
+**Hands-On Exercises** (Exercises tab → Grids, Functions & Challenges):
+- **Ex 7.1 - Row of Circles:** Horizontal repetition with `mod()` and `fract()`
+- **Ex 7.2 - Grid of Circles:** 2D tiling patterns
+- **Ex 8.1 - Circle Function:** Encapsulating drawing logic into reusable functions
+- **Ex 8.2 - Ring Function:** Building on functions to create ring shapes
+- **Challenge A - Traffic Light:** Combine circles, color, and time-based switching
+- **Challenge B - Loading Spinner:** Rotation and animated arcs
+- **Challenge C - Gradient Sunset:** Layered gradients and color blending
+- **Challenge D - Spotlight:** Mouse-driven lighting with distance falloff
 
 **Study:**
 - `noise.glsl` - "boiling methane sea" with 3D Perlin noise
@@ -83,7 +114,7 @@
 **LLM Exercise:**
 > "Layer multiple octaves of noise at different scales to create a more complex texture (fractal Brownian motion)"
 
-**Assignment:** Create an "environment" shader - clouds, water, fire, or something invented. Focus on selling the material through motion.
+**Assignment:** Complete the Grids and Functions exercises, then attempt at least 2 of the 4 Challenges. After that, create an "environment" shader - clouds, water, fire, or something invented. Focus on selling the material through motion.
 
 ---
 
@@ -237,11 +268,13 @@ Shaders are highly mathematical. LLMs may:
 
 ## Resources in This Repository
 
-- `EXERCISES.md` - Progressive exercises with solutions
+- **Exercises tab** (`/exercises/`) - 23 scaffolded shader exercises with TODO prompts, organized by topic
+- `EXERCISES.md` - Progressive exercises analyzing existing playground shaders
 - `SLIDER_TUTORIAL.md` - How to add custom interactive controls
 - `wookash_inigoquilez.md` - Deep dive on IQ's philosophy
 - All shader source in `src/shaders/` - commented and readable
 - Press **R** to record any shader as MP4
+- Use **Left/Right arrows** in the Exercises tab to step through exercises sequentially
 
 ---
 
