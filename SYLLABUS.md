@@ -19,7 +19,7 @@
 **Concept:** Every pixel runs the same program simultaneously. You're not drawing—you're describing *what color each point should be*.
 
 **Read:**
-- Book of Shaders: Chapters 1-3 (Hello World, Uniforms, Running your shader)
+- Book of Shaders: [Hello World](https://thebookofshaders.com/02/), [Uniforms](https://thebookofshaders.com/03/), [Running your shader](https://thebookofshaders.com/04/)
 - `EXERCISES.md` Part 1.1 and 1.3
 
 **In-Class:**
@@ -43,7 +43,7 @@
 **Concept:** Storing values, combining operations, and understanding the UV coordinate system that underpins everything.
 
 **Read:**
-- Book of Shaders: Chapter 5 (Shaping Functions)
+- Book of Shaders: [Shaping Functions](https://thebookofshaders.com/05/)
 
 **Hands-On Exercises** (Exercises tab → Variables):
 - **Ex 2.1 - Store & Reuse:** Saving values in variables, building up expressions
@@ -64,7 +64,7 @@
 **Concept:** `sin`, `mix`, `step`, and `smoothstep` — a small set of functions that produce most of the visual effects you'll ever need.
 
 **Read:**
-- Book of Shaders: Chapter 5 continued
+- Book of Shaders: [Shaping Functions](https://thebookofshaders.com/05/) continued
 - `EXERCISES.md` Part 1.2 (wave forms)
 
 **Hands-On Exercises** (Exercises tab → Math):
@@ -173,7 +173,7 @@
 **Concept:** Cosine palettes, HSV manipulation, color cycling as animation. From this week on, you'll work in the Playground tab and create your own shaders with custom controls.
 
 **Read:**
-- Book of Shaders: Chapter 6 (Colors)
+- Book of Shaders: [Colors](https://thebookofshaders.com/06/)
 - IQ: [Palettes](https://iquilezles.org/articles/palettes/)
 - `SLIDER_TUTORIAL.md` — how to add interactive sliders to your shaders (HTML → JS → GLSL data flow)
 
@@ -193,7 +193,7 @@
 **Concept:** Deterministic randomness. Noise functions create the illusion of natural chaos.
 
 **Read:**
-- Book of Shaders: Chapters 10-11 (Random, Noise)
+- Book of Shaders: [Random](https://thebookofshaders.com/10/), [Noise](https://thebookofshaders.com/11/)
 - IQ: [Value Noise Derivatives](https://iquilezles.org/articles/morenoise/)
 
 **Study:**
@@ -252,7 +252,7 @@
 
 **Read:**
 - IQ: [Mandelbulb](https://iquilezles.org/articles/mandelbulb/)
-- Book of Shaders: Chapter 13 (Fractals) if available
+- Book of Shaders: [Fractals](https://thebookofshaders.com/13/) if available
 
 **Study:**
 - `geometries/mandelbulb.glsl` - 3D Mandelbrot extension
