@@ -14,6 +14,7 @@ export default defineConfig({
         ascii: resolve(__dirname, 'ascii/index.html'),
         stipple: resolve(__dirname, 'stipple/index.html'),
         exercises: resolve(__dirname, 'exercises/index.html'),
+        particles: resolve(__dirname, 'particles/index.html'),
       },
     },
   },

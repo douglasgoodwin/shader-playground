@@ -14,6 +14,8 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
 - **/ascii/** - ASCII art rendering using 6D shape vectors
 - **/stipple/** - Hodgin-style stippling for webcam/images
+- **/particles/** - GPU particle simulations (boids, physics)
+- **/exercises/** - Scaffolded shader exercises for learning GLSL
 
 ## Playground Effects
 
@@ -34,7 +36,7 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Geometries
 
-8 raymarched 3D shaders exploring signed distance functions:
+9 shaders exploring signed distance functions and procedural effects:
 
 | Piece | Description |
 |-------|-------------|
@@ -46,6 +48,7 @@ This project explores real-time GLSL shader programming through interactive visu
 | Oscillate | Pulsing sphere with displacement |
 | Kelp | Underwater ribbon strands (modified Ropes) |
 | TriVoronoi | Animated triangular Voronoi cells |
+| WaterRipple | Text grid distorted by water droplet ripples |
 
 ### Raymarching Notes
 
@@ -138,6 +141,71 @@ Since real-time particle simulation isn't feasible in a fragment shader, this im
 ### Resources
 
 - [Robert Hodgin's Stippling](http://roberthodgin.com/project/stippling) - Original inspiration
+
+## Particles
+
+GPU-accelerated particle simulations using ping-pong framebuffer techniques.
+
+| Simulation | Description |
+|------------|-------------|
+| Murmuration | Starling flock using Boids algorithm (separation, alignment, cohesion) |
+| Ragdoll | Verlet integration physics with distance constraints |
+
+### How It Works
+
+Both simulations store particle state in textures and update via fragment shaders:
+
+1. **Ping-pong buffers** - Two textures alternate as read/write targets each frame
+2. **Position/velocity encoding** - Particle data packed into RGBA channels
+3. **GPU parallelism** - Each texel computes one particle independently
+
+**Murmuration (Boids):**
+- 4,096 particles (64x64 texture)
+- Each particle samples neighbors and applies three steering forces
+- Triangular sprites oriented to velocity direction
+- Twilight sky background with atmospheric depth
+
+**Ragdoll (Verlet):**
+- 64 stick figures, 16 joints each
+- Verlet integration: `newPos = pos + (pos - prevPos) * damping + accel * dt²`
+- 8 constraint-solving passes per frame to maintain bone lengths
+- Floor collision and mouse repulsion
+
+### Controls
+
+- **Murmuration**: Separation, Cohesion, Alignment sliders
+- **Ragdoll**: Gravity, Damping sliders
+- Mouse interaction affects both simulations
+
+## Exercises
+
+Scaffolded shader exercises for learning GLSL fundamentals, organized by concept:
+
+| Group | Exercises | Concepts |
+|-------|-----------|----------|
+| Basics | Color Mixing, Gradient | `gl_FragColor`, `gl_FragCoord`, RGB |
+| Variables | Store & Reuse, Order | Variable declaration, operation order |
+| Math | Sin Wave, Mix, Step | `sin()`, `mix()`, `step()`, `smoothstep()` |
+| Shapes | Circle, Circles, Rectangle | Distance fields, `length()`, coordinate math |
+| Animation | Pulse, Move, Color Cycle | `u_time`, animated parameters |
+| Symmetry | Halves, Quadrants | `abs()`, coordinate mirroring |
+| Grids | Row, Grid | `fract()`, `mod()`, tiling |
+| Functions | Circle Fn, Ring Fn | Reusable GLSL functions |
+| Challenges | Traffic Light, Spinner, Sunset, Spotlight | Combined techniques |
+
+### Progression
+
+Exercises build incrementally:
+1. Start with basic color output
+2. Add position-based gradients
+3. Introduce math functions for curves
+4. Build shapes using distance
+5. Animate with time
+6. Create patterns with repetition
+7. Abstract into reusable functions
+8. Combine everything in challenges
+
+Each exercise is a complete, runnable shader demonstrating one concept.
 
 ## Recording
 

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particles</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Particles</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-piece="murmuration" class="active"><span class="key">1</span> Murmuration</button>
+      <button data-piece="ragdoll"><span class="key">2</span> Ragdoll</button>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Separation</span>
+        <input type="range" id="separation" min="0.5" max="3" step="0.1" value="1.5">
+      </label>
+      <label>
+        <span>Cohesion</span>
+        <input type="range" id="cohesion" min="0.2" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Alignment</span>
+        <input type="range" id="alignment" min="0.2" max="2" step="0.1" value="1">
+      </label>
+    </div>
+    <script type="module" src="/src/particles.js"></script>
+  </body>
+</html>
