@@ -44,8 +44,8 @@ float joint(vec2 p, float ragdoll, float particle, float radius) {
 
 // Draw complete ragdoll
 float drawRagdoll(vec2 p, float ragdoll) {
-    float thickness = 0.012;
-    float jointRadius = 0.015;
+    float thickness = 0.006;
+    float jointRadius = 0.0075;
 
     float c = 0.0;
 
@@ -75,7 +75,7 @@ float drawRagdoll(vec2 p, float ragdoll) {
     c = max(c, bone(p, ragdoll, 14.0, 15.0, thickness)); // kneeR-footR
 
     // Head (larger circle)
-    c = max(c, joint(p, ragdoll, 0.0, 0.025));
+    c = max(c, joint(p, ragdoll, 0.0, 0.0125));
 
     // Joints
     c = max(c, joint(p, ragdoll, 2.0, jointRadius));  // chest

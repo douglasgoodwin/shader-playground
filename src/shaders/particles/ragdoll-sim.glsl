@@ -21,29 +21,29 @@ varying vec2 v_uv;
 
 // Constraint definitions: pairs of particle indices and rest lengths
 // Spine
-#define C_HEAD_NECK vec3(0.0, 1.0, 0.08)
-#define C_NECK_CHEST vec3(1.0, 2.0, 0.1)
-#define C_CHEST_HIPS vec3(2.0, 3.0, 0.12)
+#define C_HEAD_NECK vec3(0.0, 1.0, 0.04)
+#define C_NECK_CHEST vec3(1.0, 2.0, 0.05)
+#define C_CHEST_HIPS vec3(2.0, 3.0, 0.06)
 
 // Left arm
-#define C_CHEST_SHOULDERL vec3(2.0, 4.0, 0.08)
-#define C_SHOULDERL_ELBOWL vec3(4.0, 5.0, 0.1)
-#define C_ELBOWL_HANDL vec3(5.0, 6.0, 0.09)
+#define C_CHEST_SHOULDERL vec3(2.0, 4.0, 0.04)
+#define C_SHOULDERL_ELBOWL vec3(4.0, 5.0, 0.05)
+#define C_ELBOWL_HANDL vec3(5.0, 6.0, 0.045)
 
 // Right arm
-#define C_CHEST_SHOULDERR vec3(2.0, 7.0, 0.08)
-#define C_SHOULDERR_ELBOWR vec3(7.0, 8.0, 0.1)
-#define C_ELBOWR_HANDR vec3(8.0, 9.0, 0.09)
+#define C_CHEST_SHOULDERR vec3(2.0, 7.0, 0.04)
+#define C_SHOULDERR_ELBOWR vec3(7.0, 8.0, 0.05)
+#define C_ELBOWR_HANDR vec3(8.0, 9.0, 0.045)
 
 // Left leg
-#define C_HIPS_HIPL vec3(3.0, 10.0, 0.06)
-#define C_HIPL_KNEEL vec3(10.0, 11.0, 0.12)
-#define C_KNEEL_FOOTL vec3(11.0, 12.0, 0.11)
+#define C_HIPS_HIPL vec3(3.0, 10.0, 0.03)
+#define C_HIPL_KNEEL vec3(10.0, 11.0, 0.06)
+#define C_KNEEL_FOOTL vec3(11.0, 12.0, 0.055)
 
 // Right leg
-#define C_HIPS_HIPR vec3(3.0, 13.0, 0.06)
-#define C_HIPR_KNEER vec3(13.0, 14.0, 0.12)
-#define C_KNEER_FOOTR vec3(14.0, 15.0, 0.11)
+#define C_HIPS_HIPR vec3(3.0, 13.0, 0.03)
+#define C_HIPR_KNEER vec3(13.0, 14.0, 0.06)
+#define C_KNEER_FOOTR vec3(14.0, 15.0, 0.055)
 
 // Decode position from texture (0-1) to world coords (-1 to 1)
 vec2 decode(vec2 encoded) {
