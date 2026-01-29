@@ -1,0 +1,242 @@
+BRITTLE AI
+
+A Call to Makers
+
+My name is Doug Goodwin.
+
+I want to talk today not about what AI is for, but about what kind of medium it actually is—when you look beneath the surface. 
+
+Because AI presents itself very confidently. It speaks smoothly. It produces images that feel familiar. And that confidence makes it tempting to treat it as inevitable, finished, or somehow already natural.
+
+I don’t think it is any of those things.
+
+⸻
+
+AI is different every time you touch it. It looks like a glassy river that seems to be made of sky. And when you reach in the bed is dry, contrived, and unstable. It’s provisional. It flows, but unnaturally. It's superficial, quicksilver. There aren't any traditions yet, or movements, no aesthetics (we're working on that!). 
+
+Let's think about these qualities not as flaws to be corrected but features, earmarks, telltale signs: its smooth, flattering, way too eager.
+
+The instability is not a flaw to be corrected. It’s something to appreciate about this medium.
+
+If you make work, if you care about form, then the question is not whether AI is good or bad—but how it persuades.
+
+⸻
+
+I want to start with persuasion.
+
+Contemporary AI is extraordinarily good at appearing authentic. It does this by borrowing the authority of older media.
+
+It borrows film grain.
+It borrows Polaroid color.
+It borrows VHS tracking errors.
+It borrows the shallow depth and tonal compression of photography.
+
+Each of those things once meant something very specific. They pointed to physical processes—chemistry, optics, mechanical limits. They were traces of matter moving through time.
+
+When AI uses them, there is no such process underneath.
+
+What you are seeing is statistical prediction wearing the surface of another medium.
+
+And that matters, because it allows AI to hide.
+
+⸻
+
+There are layers here.
+
+First, the image looks photographic.
+Then it looks analog.
+Then it looks historical.
+
+Each layer reassures you: this has weight. This has lineage. This belongs.
+
+Underneath, there is no camera.
+No emulsion.
+No exposure.
+
+There is only inference.
+
+That stack of borrowed authority is not neutral. It is how AI persuades you to stop asking questions.
+
+⸻
+
+As makers, we’ve seen this before.
+
+In the nineteenth century, academic painting impressed audiences by hiding its labor. It resolved the world too smoothly. It removed the evidence of struggle.
+
+Courbet broke that spell by making the work harder to accept. He showed bodies that did not idealize themselves. He made surfaces that refused to disappear.
+
+The work was called ugly.
+Incomplete.
+Improper.
+
+Not because it lacked skill—but because it refused concealment.
+
+⸻
+
+This is where I want to propose brittleness.
+
+By brittle AI, I don’t mean broken AI. I mean AI that does not pretend to be something it isn’t.
+
+Brittleness is a refusal to borrow legitimacy from older media.
+A refusal to smooth over uncertainty.
+A refusal to impersonate history.
+
+It is an insistence that this medium be allowed to look like itself.
+
+⸻
+
+Think about Super 8.
+
+You can use it to produce nostalgia. To make images that already know how they want to be received.
+
+Or you can use it to create distance. To let the medium resist the image. To make the audience aware that something is being reconstructed rather than recalled.
+
+Brittle AI works the same way.
+
+It does not disappear into polish.
+It hesitates.
+It misaligns.
+It exposes edges.
+
+And those edges are not failures. They are the medium speaking.
+
+⸻
+
+When you work with brittle systems, something important happens.
+
+The system stops pretending to understand.
+It stops pretending to listen.
+It stops pretending to be a person.
+
+It becomes clear that what it does is mirror behavior, not intent.
+
+Cadence, repetition, frequency.
+Surface patterns without depth.
+
+It does not know what you mean.
+It only knows what tends to follow what.
+
+The friendliness you experience is interface theater.
+A performance of care, not care itself.
+
+And that distinction matters.
+
+⸻
+
+Because when we confuse reflection for understanding, we start handing things over.
+
+Time.
+Attention.
+Judgment.
+
+We trade friction for convenience.
+Ambiguity for speed.
+
+What we get back is responsiveness without responsibility.
+
+⸻
+
+Brittle AI makes that visible.
+
+When a model struggles to resolve an image—when faces half-form, when objects refuse to lock into place—you are watching the limits of inference.
+
+It’s not deciding.
+It’s converging.
+
+The image is not being remembered.
+It’s being guessed.
+
+And if you watch closely, that guessing is legible.
+
+⸻
+
+There’s an unexpected beauty there.
+
+Not the beauty of mastery—but the beauty of effort.
+
+Synthesis trying to cohere.
+Prediction straining toward clarity.
+
+It looks less like intelligence and more like labor.
+
+And that labor is familiar.
+
+We struggle to see clearly.
+We struggle to express what we mean.
+We struggle to make something real enough to share.
+
+That recognition matters. It grounds the medium.
+
+⸻
+
+I want to show you something.
+
+This is real-time synthesis. Live prediction unfolding in front of a camera. No fake film grain. No simulated chemistry. No borrowed damage.
+
+What you see is what is happening.
+
+Notice how resolution wavers.
+Notice how edges destabilize.
+Notice how certainty never fully arrives.
+
+That hesitation is not an error.
+It is the process.
+
+⸻
+
+Working this way changes your relationship to the system.
+
+You stop asking it to perform.
+You start watching it behave.
+
+You design situations where it must grapple.
+Where categories blur.
+Where assumptions misfire.
+
+The system reveals its habits.
+Its blind spots.
+Its shortcuts.
+
+And you learn how to see synthetic images for what they are.
+
+⸻
+
+This isn’t about nostalgia.
+It isn’t about purity.
+And it isn’t about refusing technology.
+
+It’s about refusing false authority.
+
+About not letting a medium inherit credibility it hasn’t earned.
+
+⸻
+
+I want to be clear about something.
+
+This does not resolve the ethical problems around data, energy, labor, or consent. There is no clean position here.
+
+But brittleness refuses to hide inside those systems. It refuses to let smoothness stand in for understanding.
+
+It is critique enacted through form.
+
+⸻
+
+High-end AI is racing toward perfect simulation. Toward seamless obedience. Toward appearing finished.
+
+Brittle AI cannot do that.
+
+And in that inability—in visible seams, partial resolution, exposed process—we find something valuable.
+
+Not inevitability.
+Not destiny.
+
+But a medium that still shows its making.
+
+If cinema has a future here, it will be because makers chose to look at that struggle rather than cover it up.
+
+⸻
+
+If you’d like, next we can:
+	•	tighten this into a shooting outline for Dave,
+	•	mark specific visual intervention points, or
+	•	design a second “counter-voice” layer the edit could introduce without narration
