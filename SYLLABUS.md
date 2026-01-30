@@ -1,8 +1,23 @@
-# GLSL Shaders for Experimental Animation
-### CalArts MFA Program | 16-Week Semester
+## FVEA-488-01 VibeCoding with AI
+### aka GLSL Shaders for Experimental Animation
+### CalArts program in Experimental Animation
+Doug Goodwin( @calarts.edu )
+
+```text
+Th 9:00 AM - 11:50 AM
+1/26/2026 - 5/15/2026
+Main Building F105 (Lecture/Studio)
+Dates 1/26/2026 - 5/15/2026
+Credits: 2
+```
+
+## [Syllabus](https://github.com/douglasgoodwin/shader-playground/blob/main/SYLLABUS.md)
+
+### Course Description
+Transform poetry, photographs, and everyday objects into dynamic animations with AI. Students will develop conversational programming skills, mastering how to communicate with AI systems to fulfill their creative vision, learning to control animation, timing, interaction, and visual behavior with code generated through conversations with a bot. Working with lyrical texts to supply imagery and ideas for motion, students explore how to translate the poetic imagery into animated behaviors with particle systems, flocking movements, color morphs, and procedural motion. This will result in standalone animations, projection mapping pieces, or components for integration with other creative software. Using Python, Processing, and p5.js through intuitive chat interfaces, students remove traditional coding barriers while producing professional-level results, making this perfect for artists, designers, and anyone curious about computational art without learning to program traditionally. No prior programming experience required.
 
 **Prerequisites:** None (LLMs bridge the technical gap)
-**Tools:** This shader playground, Claude Code or similar LLM, VS Code
+**Tools:** This shader playground, Claude Code or similar LLM, an IDE, access to the Console. 
 **References:**
 - [The Book of Shaders](https://thebookofshaders.com) - Patricio Gonzalez Vivo
 - [Inigo Quilez's articles](https://iquilezles.org/articles/) and [Shadertoy](https://shadertoy.com)

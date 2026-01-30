@@ -9,7 +9,7 @@ void main() {
     //   a) Pure blue
     //   b) Yellow (hint: red + green = yellow)
     //   c) Your favorite color
-    vec3 color = vec3(1.0, 0.0, 0.0);  // Currently red
+    vec3 color = vec3(1.0, 0.5, 0.0);  // Currently red
 
     gl_FragColor = vec4(color, 1.0);
 }
