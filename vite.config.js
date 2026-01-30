@@ -15,6 +15,7 @@ export default defineConfig({
         stipple: resolve(__dirname, 'stipple/index.html'),
         exercises: resolve(__dirname, 'exercises/index.html'),
         particles: resolve(__dirname, 'particles/index.html'),
+        opart: resolve(__dirname, 'opart/index.html'),
       },
     },
   },
