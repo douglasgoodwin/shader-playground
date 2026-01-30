@@ -37,6 +37,18 @@ Key points raised by students:
 
 The consensus: We're in a gray area. The best approach is to learn about it, understand it, and then make informed choices about how (or whether) to use it.
 
+### Student Perspectives (Extended)
+
+The students expressed a range of nuanced, thoughtful positions on AI in art-making, resisting simple pro- or anti-technology stances. Several students emphasized that their feelings were complicated—that this isn't a black-and-white issue. One student drew an analogy to assistive technologies: glasses help those with poor vision, elevators help those who can't climb stairs. These tools don't define the person using them. The consensus was that it's better to understand the technology than to reject it outright without knowledge.
+
+Accessibility emerged as a significant theme. One student noted excitement about AI opening creative possibilities without expensive equipment—that it creates a "whole world" of being able to create for people who might not otherwise have the means. At the same time, students acknowledged serious ethical concerns around data sourcing and using other people's likenesses without permission.
+
+Several students spoke about intentionality as the key factor. One student described using AI to interpret old photographs of their mother, transforming them into images that resembled a younger version of themselves—a deeply personal artistic project. They argued that you can constantly look at AI from different angles: is it exploitative, or is it making art more accessible? The answer depends on how you use the tool and what you're trying to achieve.
+
+Job displacement and economic uncertainty loomed over the discussion. Students worried about what skills they'd need coming out of school, and whether those skills would still be relevant. Frustration with the process itself came up too—one student described spending eight hours prompting an AI, experiencing more exhaustion than unease. The practical difficulty of working with these tools was its own kind of barrier.
+
+Finally, students identified power and data as the core issues. The problems with AI, one student argued, are triggered by the abuse of data—companies absorbing image data without proper consent. Power needs to be regulated, but the laws and definitions of fairness are still being worked out. That uncertainty creates "problems and chaos." The students seemed to agree: they're living in a gray area, and the best approach is to learn about it, engage critically, and then make informed choices about how—or whether—to use it in their own work.
+
 ## The Luddites: Historical Context
 
 You've probably heard "Luddite" used as an insult—someone who refuses technology. But the actual Luddites are exactly who we should be discussing.

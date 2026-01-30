@@ -16,6 +16,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/stipple/** - Hodgin-style stippling for webcam/images
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
+- **/docs/** - Course notes and reference materials
 
 ## Playground Effects
 
