@@ -12,6 +12,7 @@ import ropesShader from './shaders/geometries/ropes.glsl'
 import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 import waterrippleShader from './shaders/geometries/waterripple.glsl'
 import poolwaterShader from './shaders/geometries/poolwater.glsl'
+import flowheartShader from './shaders/geometries/flowheart.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -33,6 +34,7 @@ const shaders = {
     trivoronoi: trivoronoiShader,
     waterripple: waterrippleShader,
     poolwater: poolwaterShader,
+    flowheart: flowheartShader,
 }
 
 const programs = {}
@@ -121,6 +123,7 @@ const pieceKeys = {
     '8': 'trivoronoi',
     '9': 'waterripple',
     '0': 'poolwater',
+    '-': 'flowheart',
 }
 
 document.addEventListener('keydown', (e) => {

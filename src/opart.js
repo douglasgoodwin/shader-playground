@@ -3,6 +3,7 @@ import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import cylinderShader from './shaders/opart/cylinder.glsl'
+import vasarelyShader from './shaders/opart/vasarely.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -15,6 +16,7 @@ if (!gl) {
 // Create shader programs
 const shaders = {
     cylinder: cylinderShader,
+    vasarely: vasarelyShader,
 }
 
 const programs = {}
@@ -91,6 +93,7 @@ document.querySelectorAll('#controls button').forEach(btn => {
 
 const pieceKeys = {
     '1': 'cylinder',
+    '2': 'vasarely',
 }
 
 document.addEventListener('keydown', (e) => {
