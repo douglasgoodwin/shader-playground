@@ -11,6 +11,7 @@ import oscillateShader from './shaders/geometries/oscillate.glsl'
 import ropesShader from './shaders/geometries/ropes.glsl'
 import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 import waterrippleShader from './shaders/geometries/waterripple.glsl'
+import poolwaterShader from './shaders/geometries/poolwater.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -31,6 +32,7 @@ const shaders = {
     ropes: ropesShader,
     trivoronoi: trivoronoiShader,
     waterripple: waterrippleShader,
+    poolwater: poolwaterShader,
 }
 
 const programs = {}
@@ -118,6 +120,7 @@ const pieceKeys = {
     '7': 'ropes',
     '8': 'trivoronoi',
     '9': 'waterripple',
+    '0': 'poolwater',
 }
 
 document.addEventListener('keydown', (e) => {
