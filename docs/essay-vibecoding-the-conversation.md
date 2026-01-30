@@ -2,7 +2,7 @@
 
 **Publication:** The Conversation (pitch draft)
 **Author:** Douglas Goodwin, Design Media Arts, UCLA
-**Length:** ~1,100 words
+**Length:** ~1,800 words
 
 **Standfirst:** While generative AI promises to make art for us, a growing number of artists want something different—tools that let them make art themselves. A new approach called "vibecoding" offers exactly that.
 
@@ -47,6 +47,64 @@ I chose to teach vibecoding through shaders—small programs that generate visua
 In class, students describe what they want to see: "A swirling pattern of dots, organized by harmonics, with color shifting across the frame." Then they work with Claude or ChatGPT to write the shader that produces it. When the result isn't right—and it often isn't at first—they iterate. They learn to say things like "the gradient should go left to right, not top to bottom" or "I think we're using the wrong noise algorithm."
 
 This is the opposite of the prompt lottery. Every choice belongs to the student. The AI contributes knowledge; the student contributes intention.
+
+---
+
+## New tools generate new images
+
+There's a historical parallel here that clarifies what vibecoding actually is.
+
+In his 1970 book *Expanded Cinema*, Gene Youngblood wrote about the experimental filmmaker Pat O'Neill: "New tools generate new images. In the historical context of image-making, the cinema is a new tool." O'Neill, a sculptor by training, found unique possibilities in cinema for exploring perceptual concepts he'd been applying to physical installations.
+
+But O'Neill didn't just point a camera and shoot. He worked through highly technical processes: high-contrast bas-relief, positive/negative bi-pack printing, image "flopping" to create Rorschach-like mirror effects. He named his film *7362* after the high-speed Kodak emulsion on which it was shot—emphasizing the purely cinematic, purely technical nature of the work. He was, as Youngblood put it, a poet of "very technical chemistry and cinematic machines."
+
+This is the better parallel for vibecoding. Belson worked more directly—paint, light, camera, vision. O'Neill worked *through* technical systems that required their own specialized knowledge. The optical printer and the contact printer were mediating layers between his vision and the final image. He had to learn their language to realize what he saw in his mind.
+
+Claude is the new optical printer. Shaders are the new emulsion. The artist still provides the vision—the swirling forms, the color relationships, the rhythm—but the realization happens through technical processes that require vocabulary and understanding. You learn to speak in signed distance functions and noise algorithms the way O'Neill learned emulsion speeds and bi-pack registration.
+
+The difference from Midjourney or Runway is structural. Those tools skip the technical mediation entirely. You describe a finished image; you receive a finished image. There's no contact printer to master, no chemistry to understand. With vibecoding, the technical layer remains—you're just learning it in conversation rather than alone in a darkroom.
+
+---
+
+## The grain of the medium
+
+Every medium leaves traces of its process. CycleGAN has its characteristic smearing. Stable Diffusion has the uncanny smoothness, the melted hands, the watermark ghosts. What are the tells of vibecoded work?
+
+O'Neill didn't hide the artifacts of his process—he foregrounded them. He named his film after the Kodak 7362 emulsion. The grain structure, the tonal response, the way the stock handled high contrast—these weren't incidental. They were the medium declaring itself.
+
+The artifacts of *7362* were traceable: the physical texture of silver halide crystals in the high-speed stock; the flattening of tonal range into stark graphic shapes through high-contrast processing; the halos and color fringing from bi-pack registration; the accumulated fingerprint of each pass through the optical printer. O'Neill learned to work with these artifacts, to push the contrast until the nude figure became "as mechanical as the machinery." The artifacts weren't mistakes to be corrected. They were the vocabulary of the medium.
+
+Vibecoding has its own artifacts, and they work similarly:
+
+| O'Neill / Film | Vibecoding / Shaders |
+|----------------|---------------------|
+| Emulsion grain (7362 stock) | Training data density (where LLMs are confident) |
+| High-contrast processing | Convergence toward common solutions |
+| Bi-pack registration | The "seams" where different code patterns meet |
+| Optical printing generations | Iteration artifacts—each conversation round shaping the code |
+| Chemical color response | Familiar aesthetic patterns, standard palettes |
+
+The crucial difference from Midjourney or Stable Diffusion: those artifacts are buried in latent space. You can't trace them, can't manipulate them, can't name your work after them. The artifact is disconnected from any process you control.
+
+With vibecoding, like with O'Neill's optical printing, the artifacts are in the code. You can see the function Claude suggested. You can decide whether the noise algorithm is a feature or a crutch. You can name your shader after the technique the way O'Neill named his film after the emulsion.
+
+The question for the vibecoding artist becomes the same question O'Neill faced: Do you work with the grain of the medium or against it? And can you tell the difference?
+
+> **Sidebar: The Artifacts of Shader Code**
+>
+> Vibecoded shaders have their own characteristic "grain," shaped by where LLM training data is densest. Much of that density comes from one source: **Inigo Quilez**, a former Pixar engineer whose website and Shadertoy contributions have become the de facto curriculum for real-time graphics. His smooth minimum function, his cosine color palettes, his signed distance function library—these appear in nearly every shader tutorial online.
+>
+> **Convergence toward common solutions.** LLMs suggest what's well-documented. Ask for raymarching, and you'll get the standard setup. Ask for blending shapes, and you'll get Quilez's smooth min. Vibecoded work clusters around these known-good solutions because that's where the training data is dense. The "false summit" problem becomes an aesthetic artifact—you end up where many others got stuck.
+>
+> **The Book of Shaders aesthetic.** Since so much shader education flows through the same sources, there's a recognizable look: smooth signed distance functions, fbm noise layered in particular ways, the characteristic glow of emission effects. Not wrong, but familiar.
+>
+> **Absence of idiosyncrasy.** Hand-tuned shaders often have quirks—specific magic numbers, odd optimizations, accidents that became features. Vibecoded shaders might be "correct" in a generic way, lacking the weird specificity that comes from years of wrestling with a medium. The code is clean because it came from documentation, not from struggle.
+>
+> **Over-smoothness.** Shaders lean toward smooth mathematical functions by nature. Add an LLM's preference for well-behaved solutions, and you get work that might lack grit, grain, the productive noise of imperfection.
+>
+> But here's the difference from generative AI artifacts: the code is visible. You can see exactly where the artifacts come from and choose to keep or change them. The Stable Diffusion user can't edit the latent space. The vibecoder can open the shader and rewrite the noise function.
+>
+> So maybe the deepest artifact of vibecoding isn't visual—it's epistemological. The tell is whether the artist can explain every choice, or whether certain passages remain opaque even to them. "Claude suggested this and it worked" is its own kind of artifact—one you can choose to investigate or leave alone.
 
 ---
 
@@ -100,3 +158,6 @@ Douglas Goodwin teaches experimental writing and creative technology at UCLA's D
 - Structure: starts with teaching experience, ends with critical stance
 - Incorporates student voices from CalArts vibecoding course (Winter 2026)
 - Key themes: finished-output problem, friction as knowledge, practice vs. delegation, the Luddite parallel
+- Added Gene Youngblood on Pat O'Neill as historical precedent (technical mediation, "new tools generate new images")
+- Added "The grain of the medium" section comparing vibecoding artifacts to O'Neill's film stock artifacts
+- Added sidebar on shader-specific artifacts and Inigo Quilez (Pixar)
