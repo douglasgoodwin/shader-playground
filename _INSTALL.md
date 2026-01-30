@@ -1,8 +1,8 @@
-Here’s a clean, repeatable sequence you can follow (and hand to students) to set up and run the project locally with everything installed in the project folder.
+This is a clean, repeatable sequence you can follow to set up and run the project locally with everything installed in the project folder.
 
 ### 1. Download the source code
 
-Option A – Git (recommended):
+Option A – Git (recommended, though you will need to install `git`):
 
 ```sh
 cd ~/_CODE
@@ -35,42 +35,8 @@ npm install
 
 (If installation errors mention missing Node/npm, you need **some** Node in PATH—Herd, nvm, or lab setup—but it doesn’t matter which for this project.)
 
-### 3. (Optional) Add ESLint config for ESLint 9
 
-Create a file `eslint.config.js` in the project root (same folder as `package.json`) with:
-
-```js
-// eslint.config.js
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-
-export default [
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["src/**/*.{js,ts}"],
-    languageOptions: {
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      },
-    },
-    rules: {
-      // custom rules (optional)
-    },
-  },
-];
-```
-
-Then install the extra ESLint helpers:
-
-```sh
-npm install --save-dev @eslint/js typescript-eslint
-```
-
-ESLint 9 expects this `eslint.config.*` flat config and won’t use legacy `.eslintrc` by default.[5][6][7]
-
-### 4. Run the dev server (Vite)
+### 3. Run the dev server (Vite)
 
 Still in `shader-playground`:
 
@@ -79,11 +45,11 @@ npm run dev
 ```
 
 - This runs the `dev` script from `package.json`, which calls `vite` from `./node_modules/.bin`.[8][9]
-- A URL (often `http://localhost:5173/`) will be printed; open it in your browser to see the shader playground.[8]
+- A URL often [http://localhost:5173/](http://localhost:5173/) will be printed; open it in your browser to see the shader playground.[8]
 
 To stop the dev server, hit `Ctrl+C` in the terminal.
 
-### 5. Run build and preview
+### 4. Run build and preview
 
 Build a production bundle:
 
