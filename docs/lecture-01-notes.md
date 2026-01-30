@@ -2,7 +2,7 @@
 
 ## What is Vibecoding?
 
-Vibecoding is a recently coined term, invented by Andrej Karpathy (formerly at Google). The idea is that LLMs (large language models) can help with code because they've absorbed the entire web—all the help anyone has ever given on Stack Overflow goes into training these models. Not only that, but they understand the context of code nearby that might be helpful.
+Vibecoding is a recently coined term, invented by Andrej Karpathy (formerly head of AI at Tesla). The idea is that LLMs (large language models) can help with code because they've absorbed the entire web—all the help anyone has ever given on Stack Overflow goes into training these models. Not only that, but they understand the context of code nearby that might be helpful.
 
 If you can "vibe" your way into the right area—where people have been discussing how to do certain things with shaders, for example—the AI can generate code for you.
 
@@ -52,8 +52,7 @@ You've probably heard "Luddite" used as an insult—someone who refuses technolo
 
 **The Consequences:**
 - Britain changed the law so breaking a machine was punishable by execution
-- 20-30 people were publicly hanged
-- It was meant as a deterrent
+- Dozens were executed or transported; public hangings were used as a deterrent
 
 **Why This Matters:**
 We may feel kinship with the Luddites. We want to know how this stuff works so we can talk about it, comment on it, participate—or if we need to break the machine, we want to know how.
@@ -63,7 +62,7 @@ We may feel kinship with the Luddites. We want to know how this stuff works so w
 At 28 years old, Lord Byron stood up in the House of Lords to defend the Luddites:
 - These people are losing their livelihoods
 - They can't pay for food
-- It was illegal to be poor (poorhouses were essentially jails)
+- It was illegal to be poor (vagrancy was a crime as were some forms of pauperism)
 - Their only form of protest is breaking machines
 - We should not be executing them
 
@@ -78,21 +77,30 @@ But it struck a chord and helped organize the Romantic literature movement.
 
 ## Eliza: The First Chatbot
 
-**Joseph Weizenbaum** (late 1950s, Harvard) created Eliza—a sham AI meant as a critique.
+Try it yourself: [https://cairn.com/eliza.html](https://cairn.com/eliza.html)
+
+**Joseph Weizenbaum** (mid‑1960s, MIT) created Eliza—a sham AI meant as a critique.
 
 **How it works:**
 - Rogerian-style therapy bot
 - Takes a bit of your text and turns it into a question
-- Looks for about 40 keywords (father, mother, happy, etc.)
+- Looks for a few dozen keywords (father, mother, happy, etc.)
 - Generates grammatically correct responses
 - Always brings back something you said
 - Doesn't flatter or tell you you're done
 
-**The irony:** Weizenbaum was horrified that machines could pretend to be human. But his own students—the ones he was preaching to about the dangers—were secretly using Eliza for actual therapy.
+*Details:*
+ - ELIZA/DOCTOR implemented a Rogerian psychotherapist via pattern matching and simple keyword rules, and it did transform user statements into questions using reflected fragments.
+ - Descriptions of ~30–40 keywords (family terms, emotional states, etc.) and grammatically correct but shallow responses are consistent with standard accounts.
+ - Weizenbaum was indeed disturbed by people (including secretaries and others) treating ELIZA as if it possessed genuine understanding; he explicitly criticizes this reaction in his book Computer Power and Human Reason.
+
+**The irony:** Weizenbaum was horrified that machines could pretend to be human. But his own students—the ones he was preaching to about the dangers—were secretly using Eliza for actual therapy. (He explicitly criticizes this reaction in his book "Computer Power and Human Reason").
 
 **Is Eliza AI?** Not really. But it's perhaps a "part" of AI—the catching/collecting information part. It engages us, which makes it seem smarter than it is.
 
 ## The Loebner Prize
+
+Brian Chistian's book [The Most Human Human](https://brianchristian.org/the-most-human-human/)
 
 An annual competition to fool judges into thinking a computer program is human.
 
@@ -100,7 +108,12 @@ An annual competition to fool judges into thinking a computer program is human.
 - Most Human AI
 - Most Human Human (consistently scored as human by judges)
 
-**The winner's strategy:** The program that finally won pretended to be a young boy from Uruguay who didn't speak English very well. Broken English, funny affect, dodging questions—it was all social hack, not good AI.
+**A winning strategy strategy:** One well‑known chatbot, *Eugene Goostman*, posed as a 13‑year‑old Ukrainian boy who wasn’t a fluent English speaker. That persona let it get away with broken English and evasive answers and helped it score highly in Loebner‑style Turing test competitions—even ‘winning’ a widely publicized Turing test event
+
+- It was built in 2001 by Vladimir Veselov, Eugene Demchenko, and Sergey Ulasen.
+- Eugene competed repeatedly in Turing‑test‑style events and in the Loebner Prize contests, placing second in the Loebner Prize in 2005 and 2008 rather than winning those years.
+- Its most famous result was at the 2014 "Turing Test 2014"/"Turing 100"‑style event in the UK, where it reportedly convinced about a third of judges it was human by leaning hard on that "young non‑native speaker" persona. This was widely reported in the press as "chatbot passes the Turing Test," though many researchers were skeptical of the claim.
+
 
 **Lesson:** You don't need to make really great AI. Make a persuasive one.
 
@@ -111,7 +124,7 @@ This is why so many AI images (lemur in astronaut suit on Mars) work—they're n
 **Why "Git"?**
 - Named by Linus Torvalds (creator of Linux)
 - Refers to Monty Python humor (also why Python is called Python)
-- "Git" is British slang for an illegitimate child
+- 'Git' is British slang for a jerk/idiot; Torvalds picked it partly as a self‑deprecating joke and Monty‑Python‑style humor
 
 **The Origin Story:**
 Linus was frustrated with existing source code management. He locked himself in a room for a weekend and emerged with Git—now the universal system for managing collaborative software development.
@@ -151,7 +164,7 @@ A lovely, incomplete, free online text about how shaders work.
 - **Mary Ellen Bute**
 - **Lillian Schwartz**
 - **Jules Engel** - Founder of CalArts Experimental Animation Program
-- **Oscar Fischinger**
+- **Oskar Fischinger**
 - **Len Lye**
 
 **What Whitney Did:**
@@ -199,8 +212,7 @@ To run the shader playground:
 4. Open the local URL in your browser
 
 **For Claude Code:**
-- Costs ~$17/month (Pro plan)
-- Free tier available to start
+- Costs on the order of $20/month; there's also a free tier to start
 - Course funding available as grants—write a paragraph about why you need it
 
 ## Exercises
