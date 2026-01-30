@@ -6,13 +6,32 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src"
   },
   "devDependencies": {
-    "vite": "^7.2.4"
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "vite": "^7.3.1"
   },
   "dependencies": {
     "mp4-muxer": "^5.2.2",
+    "three": "^0.182.0",
     "vite-plugin-glsl": "^1.5.5"
-  }
+  },
+  "description": "Research and experiments for a CalArts course in vibecoding shaders.",
+  "main": "vite.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://douglasgoodwin@github.com/douglasgoodwin/shader-playground.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/douglasgoodwin/shader-playground/issues"
+  },
+  "homepage": "https://github.com/douglasgoodwin/shader-playground#readme"
 }
