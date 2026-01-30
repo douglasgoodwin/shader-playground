@@ -19,7 +19,7 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Playground Effects
 
-10 shader effects exploring 2D patterns and simulations:
+11 shader effects exploring 2D patterns and simulations:
 
 | Effect | Description |
 |--------|-------------|
@@ -33,10 +33,11 @@ This project explores real-time GLSL shader programming through interactive visu
 | Noise | Fractal noise on a sphere ("boiling methane sea") |
 | Drive | Rainy night driving with bokeh lights |
 | Firefly | Particle fireflies with blinking |
+| Phyllotaxis | Golden angle (137.5°) seed arrangement pattern |
 
 ## Geometries
 
-9 shaders exploring signed distance functions and procedural effects:
+12 shaders exploring signed distance functions and procedural effects:
 
 | Piece | Description |
 |-------|-------------|
@@ -49,6 +50,9 @@ This project explores real-time GLSL shader programming through interactive visu
 | Kelp | Underwater ribbon strands (modified Ropes) |
 | TriVoronoi | Animated triangular Voronoi cells |
 | WaterRipple | Text grid distorted by water droplet ripples |
+| PoolWater | Caustic light patterns through water |
+| FlowHeart | Morphing heart with flow field |
+| Phyllotaxis | Golden angle (137.5°) 3D seed dome |
 
 ### Raymarching Notes
 

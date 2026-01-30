@@ -13,6 +13,7 @@ import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 import waterrippleShader from './shaders/geometries/waterripple.glsl'
 import poolwaterShader from './shaders/geometries/poolwater.glsl'
 import flowheartShader from './shaders/geometries/flowheart.glsl'
+import phyllotaxisShader from './shaders/geometries/phyllotaxis.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -35,6 +36,7 @@ const shaders = {
     waterripple: waterrippleShader,
     poolwater: poolwaterShader,
     flowheart: flowheartShader,
+    phyllotaxis: phyllotaxisShader,
 }
 
 const programs = {}
@@ -124,6 +126,7 @@ const pieceKeys = {
     '9': 'waterripple',
     '0': 'poolwater',
     '-': 'flowheart',
+    '=': 'phyllotaxis',
 }
 
 document.addEventListener('keydown', (e) => {
