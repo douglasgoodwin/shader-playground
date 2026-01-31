@@ -1,5 +1,38 @@
 This is a clean, repeatable sequence you can follow to set up and run the project locally with everything installed in the project folder.
 
+### 0. Setting up Node.js on macOS
+
+If you don't have Node.js installed, use nvm (Node Version Manager):
+
+**Install nvm:**
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+```
+
+**Configure your shell** by adding these lines to `~/.zshrc` (or `~/.bashrc` if using bash):
+
+```bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+```
+
+**Reload your shell and install Node:**
+
+```bash
+source ~/.zshrc
+nvm install --lts
+```
+
+**If nvm installs the wrong versions**, reinstall with:
+
+```bash
+nvm install --reinstall-packages-from=node node
+nvm current
+npm -v
+```
+
 ### 1. Download the source code
 
 Option A – Git (recommended, though you will need to install `git`):
