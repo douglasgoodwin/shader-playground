@@ -741,3 +741,88 @@ All exercises are available as ready-to-use `.glsl` files in `src/shaders/exerci
 - `challenge-b-loading-spinner.glsl` — Rotating ring using atan()
 - `challenge-c-gradient-sunset.glsl` — Multi-color gradient blending
 - `challenge-d-spotlight.glsl` — Mouse-interactive lighting effect
+
+---
+
+## Intermediate Track
+
+These exercises bridge the gap between basic shader concepts and professional-level code like "Desert Passage II" by Farbs. They cover the foundational techniques used in advanced Shadertoy shaders.
+
+### Level 9: Hash Functions
+
+Hash functions are the foundation of procedural graphics. They provide deterministic randomness—the same input always produces the same "random-looking" output.
+
+- `ex9-1-hash-basics.glsl` — The simple sin-based hash and why it works
+- `ex9-2-hash-hoskins.glsl` — Dave Hoskins' "Hash without Sine" (more reliable)
+- `ex9-3-hash-applications.glsl` — Practical uses: stippling, jitter, sparkle
+
+**Key concepts:**
+- Why shaders need deterministic randomness (no shared state between pixels)
+- The magic numbers (43758.5453, etc.) and why they're chosen
+- Why sin-based hashes break with large values
+- Hash variants: float→float, vec2→float, vec2→vec2, vec2→vec3
+
+### Level 10: Noise
+
+Noise functions build on hashes to create smooth, organic patterns used for terrain, clouds, and textures.
+
+- `ex10-1-value-noise.glsl` — Smoothly interpolated random values
+- `ex10-2-gradient-noise.glsl` — Ken Perlin's approach (IQ's implementation)
+- `ex10-3-fbm.glsl` — Fractal Brownian Motion (layered octaves)
+
+**Key concepts:**
+- The difference between blocky hash output and smooth noise
+- Cubic vs quintic interpolation curves (and why they matter)
+- Gradient noise: random directions + dot products
+- FBM: each octave doubles frequency, halves amplitude
+- Applications: terrain, clouds, organic textures
+
+### Level 11: Raymarching
+
+Raymarching renders 3D scenes using distance fields instead of polygons. This is the technique behind most impressive Shadertoy shaders.
+
+- `ex11-1-raymarching-basics.glsl` — Sphere tracing algorithm
+- `ex11-2-sdf-shapes.glsl` — IQ's signed distance function library
+- `ex11-3-smooth-blend.glsl` — Smooth min/max for organic blending
+
+**Key concepts:**
+- Signed Distance Functions (SDFs): negative inside, positive outside
+- Sphere tracing: step by the safe distance at each iteration
+- Basic shapes: sphere, box, torus, cylinder, plane
+- Surface normals from the distance field gradient
+- `smin()` and `smax()` for smooth unions and intersections
+- The "k" parameter: blend radius control
+
+### Intermediate Starter Code Files
+
+#### Level 9: Hash Functions
+- `ex9-1-hash-basics.glsl` — Simple sin-based hash, grid visualization
+- `ex9-2-hash-hoskins.glsl` — Dave Hoskins' reliable hash, side-by-side comparison
+- `ex9-3-hash-applications.glsl` — Stipple, jitter, sparkle, multi-scale patterns
+
+#### Level 10: Noise
+- `ex10-1-value-noise.glsl` — Bilinear interpolation of hash values
+- `ex10-2-gradient-noise.glsl` — Perlin-style with dot products and quintic smoothing
+- `ex10-3-fbm.glsl` — Layered octaves, turbulence, ridged noise, domain warping
+
+#### Level 11: Raymarching
+- `ex11-1-raymarching-basics.glsl` — Camera, ray direction, sphere tracing loop, diffuse lighting
+- `ex11-2-sdf-shapes.glsl` — Sphere, box, torus, cylinder, plane SDFs with rotating camera
+- `ex11-3-smooth-blend.glsl` — IQ's smin/smax, metaball effect, floor with checkerboard
+
+---
+
+## Connection to Advanced Shaders
+
+These intermediate exercises prepare you to read and understand professional shader code. For example, "Desert Passage II" by Farbs (https://www.shadertoy.com/view/3cVBzy) uses:
+
+| Technique | Exercise | Usage in Desert Passage II |
+|-----------|----------|---------------------------|
+| Dave Hoskins hash | ex9-2 | `hash22()` for procedural variation |
+| Gradient noise | ex10-2 | `gradN2D()` for terrain perturbation |
+| FBM | ex10-3 | `fBm()` for clouds and surface detail |
+| Raymarching | ex11-1 | `trace()` function, 120 iterations |
+| SDFs | ex11-2 | Tunnel distance, terrain heightmap |
+| Smooth blend | ex11-3 | `smax()` for terrain/tunnel intersection |
+
+After completing these exercises, you'll recognize the building blocks in advanced shaders and understand how they combine to create complex scenes.

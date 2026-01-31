@@ -35,6 +35,18 @@ import challengeA from './shaders/exercises/challenge-a-traffic-light.glsl'
 import challengeB from './shaders/exercises/challenge-b-loading-spinner.glsl'
 import challengeC from './shaders/exercises/challenge-c-gradient-sunset.glsl'
 import challengeD from './shaders/exercises/challenge-d-spotlight.glsl'
+// Intermediate - Hash Functions (from Desert Passage II analysis)
+import ex9_1 from './shaders/exercises/ex9-1-hash-basics.glsl'
+import ex9_2 from './shaders/exercises/ex9-2-hash-hoskins.glsl'
+import ex9_3 from './shaders/exercises/ex9-3-hash-applications.glsl'
+// Intermediate - Noise
+import ex10_1 from './shaders/exercises/ex10-1-value-noise.glsl'
+import ex10_2 from './shaders/exercises/ex10-2-gradient-noise.glsl'
+import ex10_3 from './shaders/exercises/ex10-3-fbm.glsl'
+// Intermediate - Raymarching
+import ex11_1 from './shaders/exercises/ex11-1-raymarching-basics.glsl'
+import ex11_2 from './shaders/exercises/ex11-2-sdf-shapes.glsl'
+import ex11_3 from './shaders/exercises/ex11-3-smooth-blend.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -70,6 +82,18 @@ const shaders = {
     'challenge-b': challengeB,
     'challenge-c': challengeC,
     'challenge-d': challengeD,
+    // Intermediate - Hash
+    'ex9-1': ex9_1,
+    'ex9-2': ex9_2,
+    'ex9-3': ex9_3,
+    // Intermediate - Noise
+    'ex10-1': ex10_1,
+    'ex10-2': ex10_2,
+    'ex10-3': ex10_3,
+    // Intermediate - Raymarching
+    'ex11-1': ex11_1,
+    'ex11-2': ex11_2,
+    'ex11-3': ex11_3,
 }
 
 const exerciseNames = {
@@ -96,6 +120,18 @@ const exerciseNames = {
     'challenge-b': 'Challenge B - Loading Spinner',
     'challenge-c': 'Challenge C - Gradient Sunset',
     'challenge-d': 'Challenge D - Spotlight',
+    // Intermediate - Hash
+    'ex9-1': 'Ex 9.1 - Hash Basics',
+    'ex9-2': 'Ex 9.2 - Hash (Hoskins)',
+    'ex9-3': 'Ex 9.3 - Hash Applications',
+    // Intermediate - Noise
+    'ex10-1': 'Ex 10.1 - Value Noise',
+    'ex10-2': 'Ex 10.2 - Gradient Noise',
+    'ex10-3': 'Ex 10.3 - FBM',
+    // Intermediate - Raymarching
+    'ex11-1': 'Ex 11.1 - Raymarching Basics',
+    'ex11-2': 'Ex 11.2 - SDF Shapes',
+    'ex11-3': 'Ex 11.3 - Smooth Blend',
 }
 
 const exerciseOrder = Object.keys(shaders)

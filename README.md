@@ -197,6 +197,9 @@ Scaffolded shader exercises for learning GLSL fundamentals, organized by concept
 | Grids | Row, Grid | `fract()`, `mod()`, tiling |
 | Functions | Circle Fn, Ring Fn | Reusable GLSL functions |
 | Challenges | Traffic Light, Spinner, Sunset, Spotlight | Combined techniques |
+| Hash | Basics, Hoskins, Applications | Procedural randomness foundations |
+| Noise | Value, Gradient, FBM | Smooth noise and layered fractals |
+| Raymarching | Basics, SDF Shapes, Smooth Blend | 3D rendering with distance fields |
 
 ### Progression
 
@@ -209,8 +212,51 @@ Exercises build incrementally:
 6. Create patterns with repetition
 7. Abstract into reusable functions
 8. Combine everything in challenges
+9. **Intermediate**: Hash functions—the foundation for noise, Voronoi, and procedural textures
 
 Each exercise is a complete, runnable shader demonstrating one concept.
+
+### Intermediate Track
+
+The intermediate exercises are based on techniques from advanced Shadertoy shaders like ["Desert Passage II" by Farbs](https://www.shadertoy.com/view/3cVBzy). They bridge the gap between basic exercises and professional shader code.
+
+#### Hash Functions (Level 9)
+Deterministic randomness—the foundation of all procedural graphics.
+
+- **ex9-1 Basics**: Simple sin-based hash, magic numbers (43758.5453), grid visualization
+- **ex9-2 Hoskins**: Dave Hoskins' "Hash without Sine"—why it's more reliable with large values
+- **ex9-3 Applications**: Stippling, jittered grids, sparkle effects, multi-scale patterns
+
+#### Noise (Level 10)
+Smooth, organic patterns for terrain, clouds, and textures.
+
+- **ex10-1 Value Noise**: Interpolated random values with cubic smoothstep
+- **ex10-2 Gradient Noise**: Ken Perlin's approach via IQ's implementation (quintic smoothing)
+- **ex10-3 FBM**: Fractal Brownian Motion—layered octaves (2× frequency, 0.5× amplitude)
+
+#### Raymarching (Level 11)
+3D rendering with distance fields instead of polygons.
+
+- **ex11-1 Basics**: Sphere tracing algorithm, camera setup, diffuse lighting
+- **ex11-2 SDF Shapes**: IQ's distance functions (sphere, box, torus, cylinder, plane)
+- **ex11-3 Smooth Blend**: `smin()`/`smax()` for organic metaball-style blending
+
+#### Why These Techniques Matter
+
+These nine exercises cover the core toolkit used in professional shader code:
+
+| Desert Passage II Function | Exercise | What You Learn |
+|---------------------------|----------|----------------|
+| `hash22()` | ex9-2 | Dave Hoskins' reliable hash |
+| `gradN2D()` | ex10-2 | Gradient noise for perturbation |
+| `fBm()` | ex10-3 | Layered noise for terrain/clouds |
+| `trace()` | ex11-1 | Raymarching loop (120 iterations) |
+| `sdSphere()`, `sdBox()` | ex11-2 | Signed distance functions |
+| `smax()` | ex11-3 | Smooth blending for terrain |
+
+After completing these exercises, you'll be able to read and understand most advanced Shadertoy shaders.
+
+**Coming soon**: Voronoi, lighting, shadows, the sand ripple pattern
 
 ## Recording
 
