@@ -15,6 +15,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/ascii/** - ASCII art rendering using 6D shape vectors
 - **/stipple/** - Hodgin-style stippling for webcam/images
 - **/particles/** - GPU particle simulations (boids, physics)
+- **/characters/** - Animated shader creatures
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/docs/** - Course notes and reference materials
 
@@ -146,6 +147,20 @@ Since real-time particle simulation isn't feasible in a fragment shader, this im
 ### Resources
 
 - [Robert Hodgin's Stippling](http://roberthodgin.com/project/stippling) - Original inspiration
+
+## Characters
+
+Animated shader creatures using 2D distance fields and procedural animation.
+
+| Character | Description |
+|-----------|-------------|
+| Frightened | Six pastel blobs with repulsion physics, nervously huddling together |
+
+### Techniques
+
+- **Repulsion physics** - Blobs push away from each other to avoid overlap
+- **Procedural animation** - Nervous trembling, orbital movement, individual jitter
+- **Per-creature eyes** - Each blob has its own pair of eyes looking the same direction
 
 ## Particles
 
