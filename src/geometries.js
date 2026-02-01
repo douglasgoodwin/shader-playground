@@ -5,14 +5,12 @@ import vertexShader from './shaders/vertex.glsl'
 import gyroidShader from './shaders/geometries/gyroid.glsl'
 import penroseShader from './shaders/geometries/penrose.glsl'
 import mandelbulbShader from './shaders/geometries/mandelbulb.glsl'
-import cylinderShader from './shaders/geometries/cylinder.glsl'
 import raymarchShader from './shaders/geometries/raymarch.glsl'
 import oscillateShader from './shaders/geometries/oscillate.glsl'
 import ropesShader from './shaders/geometries/ropes.glsl'
 import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 import waterrippleShader from './shaders/geometries/waterripple.glsl'
 import poolwaterShader from './shaders/geometries/poolwater.glsl'
-import flowheartShader from './shaders/geometries/flowheart.glsl'
 import phyllotaxisShader from './shaders/geometries/phyllotaxis.glsl'
 
 const canvas = document.querySelector('#canvas')
@@ -28,14 +26,12 @@ const shaders = {
     gyroid: gyroidShader,
     penrose: penroseShader,
     mandelbulb: mandelbulbShader,
-    cylinder: cylinderShader,
     raymarch: raymarchShader,
     oscillate: oscillateShader,
     ropes: ropesShader,
     trivoronoi: trivoronoiShader,
     waterripple: waterrippleShader,
     poolwater: poolwaterShader,
-    flowheart: flowheartShader,
     phyllotaxis: phyllotaxisShader,
 }
 
@@ -118,15 +114,13 @@ const pieceKeys = {
     '1': 'gyroid',
     '2': 'penrose',
     '3': 'mandelbulb',
-    '4': 'cylinder',
-    '5': 'raymarch',
-    '6': 'oscillate',
-    '7': 'ropes',
-    '8': 'trivoronoi',
-    '9': 'waterripple',
-    '0': 'poolwater',
-    '-': 'flowheart',
-    '=': 'phyllotaxis',
+    '4': 'raymarch',
+    '5': 'oscillate',
+    '6': 'ropes',
+    '7': 'trivoronoi',
+    '8': 'waterripple',
+    '9': 'poolwater',
+    '0': 'phyllotaxis',
 }
 
 document.addEventListener('keydown', (e) => {
