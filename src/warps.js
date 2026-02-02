@@ -4,6 +4,7 @@ import { setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import drapeShader from './shaders/warps/drape.glsl'
 import flowheartShader from './shaders/warps/flowheart.glsl'
+import mercuryShader from './shaders/warps/mercury.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -17,6 +18,7 @@ if (!gl) {
 const shaders = {
     drape: drapeShader,
     flowheart: flowheartShader,
+    mercury: mercuryShader,
 }
 
 // Create programs and uniforms for each shader
@@ -181,6 +183,7 @@ urlInput.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') switchEffect('drape')
     if (e.key === '2') switchEffect('flowheart')
+    if (e.key === '3') switchEffect('mercury')
     if (e.key === 'r' || e.key === 'R') recorder.toggle()
 })
 
