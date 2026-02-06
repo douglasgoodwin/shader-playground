@@ -150,9 +150,9 @@ float raymarch(vec3 ro, vec3 rd) {
 // Procedural fallback texture - metallic gradient
 vec3 proceduralTexture(vec2 uv) {
     // Silvery metallic gradient
-    vec3 col = vec3(0.75, 0.77, 0.8);
-    col += 0.15 * cos(uv.x * 3.0 + vec3(0.0, 0.3, 0.6));
-    col *= 0.85 + 0.15 * sin(uv.y * 4.0 + vec3(0.2, 0.4, 0.6));
+    vec3 col = vec3(0.85, 0.87, 0.9);
+    col += 0.12 * cos(uv.x * 3.0 + vec3(0.0, 0.3, 0.6));
+    col *= 0.9 + 0.1 * sin(uv.y * 4.0 + vec3(0.2, 0.4, 0.6));
     return col;
 }
 
@@ -197,7 +197,7 @@ void main() {
 
         // Start with flat UV
         vec2 deformedUV = flatUV;
-        float deformAmount = u_deform;
+        float deformAmount = u_deform * u_geometry;
 
         // Mercury-like UV distortion - more reflection/refraction feel
         // Offset based on normal for that liquid metal look
@@ -228,8 +228,8 @@ void main() {
         float diffuse2 = max(dot(normal, lightDir2), 0.0) * 0.3;
 
         // Combine lighting
-        float ambient = 0.2;
-        float shade = ambient + diffuse * 0.5 + diffuse2;
+        float ambient = 0.35;
+        float shade = ambient + diffuse * 0.6 + diffuse2;
 
         // Apply metallic shading
         color = surfaceColor * shade;
