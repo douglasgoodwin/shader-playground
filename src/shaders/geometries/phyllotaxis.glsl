@@ -13,19 +13,9 @@ uniform float u_harmonics;
 #define PI 3.14159265359
 #define TAU 6.28318530718
 #define GOLDEN_ANGLE 2.39996323
-#define MAX_STEPS 120
+#define MAX_STEPS 80
 #define MAX_DIST 30.0
 #define SURF_DIST 0.0005
-
-mat2 rot2(float a) {
-    float c = cos(a), s = sin(a);
-    return mat2(c, -s, s, c);
-}
-
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
 
 mat3 rotateY(float a) {
     float c = cos(a), s = sin(a);
@@ -36,29 +26,6 @@ mat3 rotateY(float a) {
 float smin(float a, float b, float k) {
     float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
     return mix(b, a, h) - k * h * (1.0 - h);
-}
-
-// Capsule/petal SDF - elongated rounded shape
-float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
-    vec3 ab = b - a;
-    vec3 ap = p - a;
-    float t = clamp(dot(ap, ab) / dot(ab, ab), 0.0, 1.0);
-    vec3 c = a + t * ab;
-    return length(p - c) - r;
-}
-
-// Curved petal - follows an arc
-float sdPetal(vec3 p, float len, float width, float curve) {
-    // Bend the petal along its length
-    float bend = p.y * curve;
-    p.x -= bend * bend * 0.5;
-
-    // Taper width toward tip
-    float taper = 1.0 - smoothstep(0.0, len, p.y) * 0.7;
-
-    // Basic elongated ellipsoid
-    vec3 sc = vec3(width * taper, len, width * taper * 0.5);
-    return (length(p / sc) - 1.0) * min(sc.x, min(sc.y, sc.z)) * 0.8;
 }
 
 // Track hit info for coloring
@@ -108,37 +75,17 @@ float scene(vec3 p) {
             float z = sin(angle) * radius;
             vec3 pos = vec3(x, y, z);
 
-            // Petal orientation - point outward and upward, with twist
-            // The twist angle creates the apparent motion when rotated
-            float tiltAngle = normalizedR * 0.8; // More horizontal at edges
-            float twistAngle = angle + fi * 0.05; // Helical twist
+            // Sphere size varies - larger toward outside
+            float sphereR = (0.12 + normalizedR * 0.08) * layerScale;
 
-            // Transform to petal local space
-            vec3 lp = p - pos;
+            float sphere = length(p - pos) - sphereR;
 
-            // Rotate petal to face outward
-            lp.xz = rot2(-angle) * lp.xz;
-            // Tilt based on position (more vertical at center, horizontal at edges)
-            lp.xy = rot2(tiltAngle - 0.3) * lp.xy;
-            // Add the characteristic twist
-            lp.xz = rot2(twistAngle * 0.1) * lp.xz;
-
-            // Petal size varies - larger toward outside
-            float petalLen = (0.3 + normalizedR * 0.4) * layerScale;
-            float petalWidth = (0.08 + normalizedR * 0.06) * layerScale;
-            float petalCurve = 0.5 + normalizedR * 1.0; // More curved at edges
-
-            // Shift so petal grows from base
-            lp.y -= petalLen * 0.5;
-
-            float petal = sdPetal(lp, petalLen, petalWidth, petalCurve);
-
-            if (petal < d) {
+            if (sphere < d) {
                 hitIndex = fi;
                 hitLayer = float(layer);
             }
 
-            d = smin(d, petal, 0.02);
+            d = smin(d, sphere, 0.02);
         }
     }
 
@@ -168,10 +115,10 @@ vec3 getNormal(vec3 p) {
 float getAO(vec3 p, vec3 n) {
     float ao = 0.0;
     float scale = 1.0;
-    for (int i = 0; i < 5; i++) {
-        float dist = 0.05 + 0.08 * float(i);
+    for (int i = 0; i < 3; i++) {
+        float dist = 0.05 + 0.1 * float(i);
         ao += (dist - scene(p + n * dist)) * scale;
-        scale *= 0.6;
+        scale *= 0.5;
     }
     return clamp(1.0 - ao * 3.0, 0.0, 1.0);
 }
