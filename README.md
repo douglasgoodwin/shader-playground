@@ -170,9 +170,15 @@ Animated shader creatures using 2D distance fields and procedural animation.
 
 ### Techniques
 
+**Frightened:**
 - **Repulsion physics** - Blobs push away from each other to avoid overlap
 - **Procedural animation** - Nervous trembling, orbital movement, individual jitter
 - **Per-creature eyes** - Each blob has its own pair of eyes looking the same direction
+
+**Stickfolk:**
+- **Line-segment SDFs** - Body, arms, and legs built from line segments with rounded caps
+- **Action cycling** - Each figure walks, waves, or jumps based on its phase offset
+- **Mouse tracking** - Heads turn toward the cursor
 
 ## Particles
 
