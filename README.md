@@ -12,7 +12,8 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/playground/** - Interactive shader effects with parameter controls
 - **/geometries/** - Raymarched 3D geometry explorations
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
-- **/ascii/** - ASCII art rendering using 6D shape vectors
+- **/glyphs/** - ASCII art rendering and symbol morphing
+- **/tiles/** - Voronoi, hexgrid, and tiling patterns
 - **/stipple/** - Hodgin-style stippling for webcam/images
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
@@ -22,24 +23,19 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Playground Effects
 
-14 shader effects exploring 2D patterns and simulations:
+9 shader effects exploring 2D patterns and simulations:
 
 | Effect | Description |
 |--------|-------------|
 | Ripple | Concentric waves from center |
 | Plasma | Classic demoscene color cycling |
 | Warp | Distorted UV coordinates |
-| Voronoi | Cellular noise pattern |
-| HexGrid | Hexagonal tiling |
-| Tiles | Geometric tile patterns |
 | Kaleidoscope | Radial symmetry reflections |
 | Noise | Fractal noise on a sphere ("boiling methane sea") |
 | Drive | Rainy night driving with bokeh lights |
 | Firefly | Particle fireflies with blinking |
 | Phyllotaxis | Golden angle (137.5°) seed arrangement pattern |
-| Glyphs | SDF symbols (circle, cross, triangle, diamond, star) morphing between forms |
 | Stickfolk | Stick figures from line/circle SDFs — walking, waving, jumping |
-| Varitiles | Grid of tiles with per-cell random shape, rotation, color, and scale |
 
 ## Geometries
 
@@ -85,16 +81,17 @@ These shaders use sphere tracing to render implicit surfaces. Key parameters:
 | Trails | Music Box with motion blur |
 | Fractal | Iterative UV fractal with cosine palette |
 
-## ASCII Renderer
+## Glyphs
 
-4 modes exploring ASCII art rendering using Alex Harri's 6D shape vector approach:
+5 modes exploring ASCII art, letterforms, and symbol morphing:
 
 | Mode | Description |
 |------|-------------|
-| Waves | Animated wave pattern with split-screen comparison |
+| Waves | Animated ASCII wave pattern with split-screen comparison |
 | Image | Convert any image to ASCII (drag/drop or URL) |
 | Platonic | Raymarched Platonic solids in ASCII |
 | Cube | Rotating cube with per-face characters |
+| Glyphs | SDF symbols (circle, cross, triangle, diamond, star) morphing between forms |
 
 ### How It Works
 
@@ -110,6 +107,17 @@ This allows ASCII characters to follow contours and edges, not just represent ov
 ### Resources
 
 - [Alex Harri - Rethinking Text Rendering](https://alexharri.com/blog/ascii-rendering) - The technique implemented here
+
+## Tiles
+
+4 tiling and cellular pattern effects:
+
+| Effect | Description |
+|--------|-------------|
+| Voronoi | Cellular noise pattern |
+| HexGrid | Hexagonal tiling |
+| Tiles | Geometric tile patterns with rotation |
+| Varitiles | Grid of tiles with per-cell random shape, rotation, color, and scale |
 
 ## Stipple Renderer
 

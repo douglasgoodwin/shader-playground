@@ -4,24 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Playground</title>
+    <title>Tiles</title>
   </head>
   <body>
     <canvas id="canvas"></canvas>
     <nav id="nav">
       <a href="/" class="back">Home</a>
+      <span class="title">Tiles</span>
     </nav>
     <button id="record-btn" title="Record video (R)"></button>
     <div id="controls">
-      <button data-effect="ripple" class="active"><span class="key">1</span> Ripple</button>
-      <button data-effect="plasma"><span class="key">2</span> Plasma</button>
-      <button data-effect="warp"><span class="key">3</span> Warp</button>
-      <button data-effect="kaleidoscope"><span class="key">4</span> Kaleido</button>
-      <button data-effect="noise"><span class="key">5</span> Noise</button>
-      <button data-effect="drive"><span class="key">6</span> Drive</button>
-      <button data-effect="firefly"><span class="key">7</span> Firefly</button>
-      <button data-effect="phyllotaxis"><span class="key">8</span> Phyllotaxis</button>
-      <button data-effect="stickfolk"><span class="key">9</span> Stickfolk</button>
+      <button data-piece="voronoi" class="active"><span class="key">1</span> Voronoi</button>
+      <button data-piece="hexgrid"><span class="key">2</span> Hexgrid</button>
+      <button data-piece="tiles"><span class="key">3</span> Tiles</button>
+      <button data-piece="varitiles"><span class="key">4</span> Varitiles</button>
     </div>
     <div id="sliders">
       <label>
@@ -37,6 +33,6 @@
         <input type="range" id="scale" min="0.2" max="3" step="0.1" value="1">
       </label>
     </div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/tiles.js"></script>
   </body>
 </html>

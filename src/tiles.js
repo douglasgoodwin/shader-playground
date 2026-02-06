@@ -1,17 +1,11 @@
-import './style.css'
+import './tiles.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
-import rippleShader from './shaders/ripple.glsl'
-import plasmaShader from './shaders/plasma.glsl'
-import warpShader from './shaders/warp.glsl'
-import kaleidoscopeShader from './shaders/kaleidoscope.glsl'
-import noiseShader from './shaders/noise.glsl'
-import driveShader from './shaders/drive.glsl'
-import fireflyShader from './shaders/firefly.glsl'
-import exerciseShader from './shaders/exercises/ex3-1-sin-wave.glsl'
-import phyllotaxisShader from './shaders/phyllotaxis.glsl'
-import stickfolkShader from './shaders/stickfolk.glsl'
+import voronoiShader from './shaders/voronoi.glsl'
+import hexgridShader from './shaders/hexgrid.glsl'
+import tilesShader from './shaders/tiles.glsl'
+import varitilesShader from './shaders/varitiles.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -21,21 +15,12 @@ if (!gl) {
     throw new Error('WebGL not supported')
 }
 
-// Enable required extensions
-gl.getExtension('OES_standard_derivatives')
-
-// Create all shader programs
+// Create shader programs
 const shaders = {
-    ripple: rippleShader,
-    plasma: plasmaShader,
-    warp: warpShader,
-    kaleidoscope: kaleidoscopeShader,
-    noise: noiseShader,
-    drive: driveShader,
-    firefly: fireflyShader,
-    exercise: exerciseShader,
-    phyllotaxis: phyllotaxisShader,
-    stickfolk: stickfolkShader,
+    voronoi: voronoiShader,
+    hexgrid: hexgridShader,
+    tiles: tilesShader,
+    varitiles: varitilesShader,
 }
 
 const programs = {}
@@ -49,8 +34,6 @@ for (const [name, fragmentShader] of Object.entries(shaders)) {
             resolution: gl.getUniformLocation(program, 'u_resolution'),
             time: gl.getUniformLocation(program, 'u_time'),
             mouse: gl.getUniformLocation(program, 'u_mouse'),
-            ripples: gl.getUniformLocation(program, 'u_ripples'),
-            rippleColors: gl.getUniformLocation(program, 'u_rippleColors'),
             speed: gl.getUniformLocation(program, 'u_speed'),
             intensity: gl.getUniformLocation(program, 'u_intensity'),
             scale: gl.getUniformLocation(program, 'u_scale'),
@@ -58,19 +41,13 @@ for (const [name, fragmentShader] of Object.entries(shaders)) {
     }
 }
 
-let currentEffect = 'ripple'
-let currentProgram = programs[currentEffect]
+let currentPiece = 'voronoi'
+let currentProgram = programs[currentPiece]
 gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
 
 // Mouse tracking
 const mouse = new MouseTracker(canvas)
-
-// Ripple state
-const MAX_RIPPLES = 10
-let ripples = new Float32Array(MAX_RIPPLES * 3)
-let rippleColors = new Float32Array(MAX_RIPPLES * 3)
-let rippleIndex = 0
 
 // Slider parameters
 const sliders = new SliderManager({
@@ -82,21 +59,21 @@ const sliders = new SliderManager({
 // Recording
 const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
-function switchEffect(name) {
+function switchPiece(name) {
     if (!programs[name]) return
-    currentEffect = name
+    currentPiece = name
     currentProgram = programs[name]
 
     gl.useProgram(currentProgram)
     createFullscreenQuad(gl, currentProgram)
 
-    const u = uniforms[currentEffect]
+    const u = uniforms[currentPiece]
     if (u && u.resolution) {
         gl.uniform2f(u.resolution, canvas.width, canvas.height)
     }
 
     document.querySelectorAll('#controls button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.effect === name)
+        btn.classList.toggle('active', btn.dataset.piece === name)
     })
 }
 
@@ -105,41 +82,29 @@ function resize() {
     canvas.height = window.innerHeight
     gl.viewport(0, 0, canvas.width, canvas.height)
 
-    const u = uniforms[currentEffect]
+    const u = uniforms[currentPiece]
     if (u && u.resolution) {
         gl.uniform2f(u.resolution, canvas.width, canvas.height)
     }
 }
 
-canvas.addEventListener('click', (e) => {
-    const x = e.clientX
-    const y = canvas.height - e.clientY
-    const idx = rippleIndex * 3
-    ripples[idx] = x
-    ripples[idx + 1] = y
-    ripples[idx + 2] = performance.now() * 0.001
-    rippleColors[idx] = 0.5 + Math.random() * 0.5
-    rippleColors[idx + 1] = 0.5 + Math.random() * 0.5
-    rippleColors[idx + 2] = 0.5 + Math.random() * 0.5
-    rippleIndex = (rippleIndex + 1) % MAX_RIPPLES
-})
-
 document.querySelectorAll('#controls button').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation()
-        switchEffect(btn.dataset.effect)
+        switchPiece(btn.dataset.piece)
     })
 })
 
-const effectKeys = {
-    '1': 'ripple', '2': 'plasma', '3': 'warp', '4': 'kaleidoscope',
-    '5': 'noise', '6': 'drive', '7': 'firefly', '8': 'phyllotaxis',
-    '9': 'stickfolk', 'e': 'exercise',
+const pieceKeys = {
+    '1': 'voronoi',
+    '2': 'hexgrid',
+    '3': 'tiles',
+    '4': 'varitiles',
 }
 
 document.addEventListener('keydown', (e) => {
-    if (effectKeys[e.key]) {
-        switchEffect(effectKeys[e.key])
+    if (pieceKeys[e.key]) {
+        switchPiece(pieceKeys[e.key])
     }
     if (e.key === 'r' || e.key === 'R') {
         recorder.toggle()
@@ -151,12 +116,12 @@ resize()
 
 function render(time) {
     const t = time * 0.001
-    const u = uniforms[currentEffect]
+    const u = uniforms[currentPiece]
+
     gl.uniform1f(u.time, t)
     mouse.applyUniform(gl, u.mouse)
-    gl.uniform3fv(u.ripples, ripples)
-    gl.uniform3fv(u.rippleColors, rippleColors)
     sliders.applyUniforms(gl, u)
+
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)
 }

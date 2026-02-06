@@ -6,6 +6,7 @@ import asciiImageShader from './shaders/ascii-image.glsl'
 import asciiPlatonicShader from './shaders/ascii.glsl'
 import asciiCubeShader from './shaders/ascii-geometry.glsl'
 import asciiFontShader from './shaders/ascii-font.glsl'
+import glyphsShader from './shaders/glyphs.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -69,6 +70,7 @@ const shaders = {
     image: asciiImageShader,
     platonic: asciiPlatonicShader,
     cube: asciiCubeShader,
+    glyphs: glyphsShader,
 }
 
 const programs = {}
@@ -158,10 +160,11 @@ function switchMode(mode) {
     const isImageMode = mode === 'image'
     const isWavesMode = mode === 'waves'
     const is3DMode = mode === 'platonic' || mode === 'cube'
+    const isGlyphsMode = mode === 'glyphs'
 
     imageControls.style.display = isImageMode ? 'flex' : 'none'
-    speedLabel.style.display = (isWavesMode || is3DMode) ? 'flex' : 'none'
-    scaleLabel.style.display = is3DMode ? 'flex' : 'none'
+    speedLabel.style.display = (isWavesMode || is3DMode || isGlyphsMode) ? 'flex' : 'none'
+    scaleLabel.style.display = (is3DMode || isGlyphsMode) ? 'flex' : 'none'
 
     // For image mode, load default image if none loaded
     if (isImageMode && !imageLoaded) {
@@ -184,6 +187,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === '2') switchMode('image')
     if (e.key === '3') switchMode('platonic')
     if (e.key === '4') switchMode('cube')
+    if (e.key === '5') switchMode('glyphs')
     if (e.key === 'r' || e.key === 'R') {
         recorder.toggle()
     }
@@ -347,6 +351,14 @@ function render(time) {
         gl.uniform1f(u.speed, sliders.get('speed'))
         gl.uniform1f(u.contrast, sliders.get('contrast'))
         gl.uniform1f(u.charSize, sliders.get('charSize'))
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
+    } else if (currentMode === 'glyphs') {
+        // Glyphs mode - simple fullscreen shader, no font atlas
+        gl.uniform1f(u.time, t)
+        mouse.applyUniform(gl, u.mouse)
+        gl.uniform1f(u.speed, sliders.get('speed'))
+        gl.uniform1f(u.intensity, sliders.get('contrast'))
+        gl.uniform1f(u.scale, sliders.get('scale'))
         gl.drawArrays(gl.TRIANGLES, 0, 6)
     } else {
         // 3D modes (platonic, cube) with font atlas
