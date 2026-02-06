@@ -22,7 +22,7 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Playground Effects
 
-11 shader effects exploring 2D patterns and simulations:
+14 shader effects exploring 2D patterns and simulations:
 
 | Effect | Description |
 |--------|-------------|
@@ -37,6 +37,9 @@ This project explores real-time GLSL shader programming through interactive visu
 | Drive | Rainy night driving with bokeh lights |
 | Firefly | Particle fireflies with blinking |
 | Phyllotaxis | Golden angle (137.5°) seed arrangement pattern |
+| Glyphs | SDF symbols (circle, cross, triangle, diamond, star) morphing between forms |
+| Stickfolk | Stick figures from line/circle SDFs — walking, waving, jumping |
+| Varitiles | Grid of tiles with per-cell random shape, rotation, color, and scale |
 
 ## Geometries
 

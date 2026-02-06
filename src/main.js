@@ -14,6 +14,9 @@ import driveShader from './shaders/drive.glsl'
 import fireflyShader from './shaders/firefly.glsl'
 import exerciseShader from './shaders/exercises/ex3-1-sin-wave.glsl'
 import phyllotaxisShader from './shaders/phyllotaxis.glsl'
+import glyphsShader from './shaders/glyphs.glsl'
+import stickfolkShader from './shaders/stickfolk.glsl'
+import varitilesShader from './shaders/varitiles.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -40,6 +43,9 @@ const shaders = {
     firefly: fireflyShader,
     exercise: exerciseShader,
     phyllotaxis: phyllotaxisShader,
+    glyphs: glyphsShader,
+    stickfolk: stickfolkShader,
+    varitiles: varitilesShader,
 }
 
 const programs = {}
@@ -138,7 +144,8 @@ document.querySelectorAll('#controls button').forEach(btn => {
 const effectKeys = {
     '1': 'ripple', '2': 'plasma', '3': 'warp', '4': 'voronoi',
     '5': 'hexgrid', '6': 'tiles', '7': 'kaleidoscope', '8': 'noise',
-    '9': 'drive', '0': 'firefly', 'e': 'exercise', 'p': 'phyllotaxis'
+    '9': 'drive', '0': 'firefly', 'e': 'exercise', 'p': 'phyllotaxis',
+    'g': 'glyphs', 's': 'stickfolk', 'v': 'varitiles'
 }
 
 document.addEventListener('keydown', (e) => {
