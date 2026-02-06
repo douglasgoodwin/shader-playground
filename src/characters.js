@@ -3,6 +3,7 @@ import { createProgram, createFullscreenQuad } from './webgl.js'
 import { setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import frightenedShader from './shaders/characters/frightened.glsl'
+import stickfolkShader from './shaders/stickfolk.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -14,6 +15,7 @@ if (!gl) {
 
 const shaders = {
     frightened: frightenedShader,
+    stickfolk: stickfolkShader,
 }
 
 const programs = {}
@@ -29,6 +31,9 @@ for (const [name, fragmentShader] of Object.entries(shaders)) {
             mouse: gl.getUniformLocation(program, 'u_mouse'),
             blinkSpeed: gl.getUniformLocation(program, 'u_blinkSpeed'),
             sizeVariation: gl.getUniformLocation(program, 'u_sizeVariation'),
+            speed: gl.getUniformLocation(program, 'u_speed'),
+            intensity: gl.getUniformLocation(program, 'u_intensity'),
+            scale: gl.getUniformLocation(program, 'u_scale'),
         }
     }
 }
@@ -101,8 +106,14 @@ function render(time) {
     gl.uniform1f(u.time, t)
     mouse.applyUniform(gl, u.mouse)
 
-    if (u.blinkSpeed) gl.uniform1f(u.blinkSpeed, parseFloat(blinkSpeedSlider.value))
-    if (u.sizeVariation) gl.uniform1f(u.sizeVariation, parseFloat(sizeVariationSlider.value))
+    if (currentPiece === 'stickfolk') {
+        if (u.speed) gl.uniform1f(u.speed, parseFloat(blinkSpeedSlider.value))
+        if (u.intensity) gl.uniform1f(u.intensity, 0.7)
+        if (u.scale) gl.uniform1f(u.scale, parseFloat(sizeVariationSlider.value) * 3.0 + 1.0)
+    } else {
+        if (u.blinkSpeed) gl.uniform1f(u.blinkSpeed, parseFloat(blinkSpeedSlider.value))
+        if (u.sizeVariation) gl.uniform1f(u.sizeVariation, parseFloat(sizeVariationSlider.value))
+    }
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)
