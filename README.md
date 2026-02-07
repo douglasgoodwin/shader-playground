@@ -18,6 +18,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
 - **/landscape/** - Raymarched terrain with lightning storms
+- **/displace/** - Vertex displacement with image textures
 - **/warps/** - Image warping effects
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/docs/** - Course notes and reference materials
@@ -183,25 +184,56 @@ Animated shader creatures using 2D distance fields and procedural animation.
 
 ## Landscape
 
-Raymarched terrain with procedural lightning storms.
+Raymarched terrain scenes.
 
 | Piece | Description |
 |-------|-------------|
 | Lightning | Multi-plane dark landscape illuminated by simplex noise lightning bolts |
+| Sand | Procedural sand dunes with wavy ripple texture, slow circular pan (adapted from Shane's "Desert Sand") |
 
 ### Techniques
 
+**Lightning:**
 - **Multi-plane compositing** - Three depth layers (sky → far hills → near hills) with the lightning bolt rendered between them for a theatrical silhouette effect
 - **Simplex noise bolts** - Vertical lightning generated from 3D simplex FBM, producing organic, jagged bolt shapes
 - **Flash timing** - Three overlapping strike intervals create irregular, natural-feeling lightning patterns with sharp attack and exponential decay
 - **Terrain raymarching** - Two independent noise-based heightfields at different scales and offsets for foreground and background hill layers
 
+**Sand:**
+- **Dune generation** - Layered smoothstep noise with triangle-wave ridgelines for rounded dune shapes
+- **Sand ripple texture** - Two rotated gradient line layers perturbed by noise and screen-blended for realistic wavy sand patterns
+- **Bump-mapped surface** - Ripple pattern follows terrain contours via terrain-gradient perturbation
+- **Circular panning camera** - Slow orbit over the dunes with terrain-following height, no flying
+
 ### Controls
 
-- **Speed** - Storm animation rate
-- **Intensity** - Lightning flash brightness
-- **Near Hills** - Verticality/height of the foreground terrain
-- **Camera Height** - Raise or lower the viewpoint to control how much the near hills occlude the background
+- **Speed** - Animation rate (storm timing / camera orbit speed)
+- **Intensity** - Lightning flash brightness / sun scatter strength
+- **Near Hills** - Terrain height scale
+- **Camera Height** - Raise or lower the viewpoint
+
+## Displace
+
+Vertex-displaced subdivided plane with image texture mapping — the first section using true 3D geometry rather than fullscreen quads.
+
+| Piece | Description |
+|-------|-------------|
+| Terrain | 128x128 subdivided plane with simplex FBM vertex displacement |
+
+### Techniques
+
+- **Subdivided plane mesh** - 129x129 vertices (16,641) with indexed triangles via `gl.drawElements`, generated in JS
+- **Simplex noise displacement** - 3D simplex FBM (4 octaves) pushes vertices along Y based on XZ position + time
+- **Finite-difference normals** - Normals computed in the vertex shader by sampling noise at nearby points for accurate directional lighting
+- **Minimal matrix math** - Perspective projection and lookAt view matrix implemented without dependencies (~30 lines)
+- **Orbiting camera** - Slow automatic orbit around the terrain
+- **Image texture mapping** - Upload/drop an image to map it onto the deformed surface; fallback gradient (blue → sand → snow) when no image is loaded
+
+### Controls
+
+- **Displacement** - Height of the noise-based vertex displacement
+- **Noise Scale** - Frequency of the noise pattern (higher = more detailed terrain)
+- **Speed** - Animation speed of the noise displacement
 
 ## Particles
 

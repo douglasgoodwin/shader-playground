@@ -3,6 +3,7 @@ import { createProgram, createFullscreenQuad } from './webgl.js'
 import { setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import lightningShader from './shaders/landscape/lightning.glsl'
+import sandShader from './shaders/landscape/sand.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -14,6 +15,7 @@ if (!gl) {
 
 const shaders = {
     lightning: lightningShader,
+    sand: sandShader,
 }
 
 const programs = {}

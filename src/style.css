@@ -115,7 +115,7 @@ body {
 }
 
 #sliders input[type="range"] {
-  width: 100px;
+  width: 140px;
   height: 4px;
   -webkit-appearance: none;
   appearance: none;

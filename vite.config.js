@@ -18,6 +18,7 @@ export default defineConfig({
         opart: resolve(__dirname, 'opart/index.html'),
         tiles: resolve(__dirname, 'tiles/index.html'),
         landscape: resolve(__dirname, 'landscape/index.html'),
+        displace: resolve(__dirname, 'displace/index.html'),
       },
     },
   },
