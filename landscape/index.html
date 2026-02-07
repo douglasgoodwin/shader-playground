@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landscape</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Landscape</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-piece="lightning" class="active"><span class="key">1</span> Lightning</button>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Speed</span>
+        <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Intensity</span>
+        <input type="range" id="intensity" min="0.1" max="2" step="0.1" value="0.7">
+      </label>
+      <label>
+        <span>Near Hills</span>
+        <input type="range" id="scale" min="0.5" max="3" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Camera Height</span>
+        <input type="range" id="camHeight" min="-0.5" max="1.5" step="0.05" value="0">
+      </label>
+    </div>
+    <script type="module" src="/src/landscape.js"></script>
+  </body>
+</html>

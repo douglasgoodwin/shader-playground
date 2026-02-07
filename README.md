@@ -17,6 +17,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/stipple/** - Hodgin-style stippling for webcam/images
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
+- **/landscape/** - Raymarched terrain with lightning storms
 - **/warps/** - Image warping effects
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/docs/** - Course notes and reference materials
@@ -179,6 +180,28 @@ Animated shader creatures using 2D distance fields and procedural animation.
 - **Line-segment SDFs** - Body, arms, and legs built from line segments with rounded caps
 - **Action cycling** - Each figure walks, waves, or jumps based on its phase offset
 - **Mouse tracking** - Heads turn toward the cursor
+
+## Landscape
+
+Raymarched terrain with procedural lightning storms.
+
+| Piece | Description |
+|-------|-------------|
+| Lightning | Multi-plane dark landscape illuminated by simplex noise lightning bolts |
+
+### Techniques
+
+- **Multi-plane compositing** - Three depth layers (sky → far hills → near hills) with the lightning bolt rendered between them for a theatrical silhouette effect
+- **Simplex noise bolts** - Vertical lightning generated from 3D simplex FBM, producing organic, jagged bolt shapes
+- **Flash timing** - Three overlapping strike intervals create irregular, natural-feeling lightning patterns with sharp attack and exponential decay
+- **Terrain raymarching** - Two independent noise-based heightfields at different scales and offsets for foreground and background hill layers
+
+### Controls
+
+- **Speed** - Storm animation rate
+- **Intensity** - Lightning flash brightness
+- **Near Hills** - Verticality/height of the foreground terrain
+- **Camera Height** - Raise or lower the viewpoint to control how much the near hills occlude the background
 
 ## Particles
 

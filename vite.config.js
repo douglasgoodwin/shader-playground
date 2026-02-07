@@ -17,6 +17,7 @@ export default defineConfig({
         particles: resolve(__dirname, 'particles/index.html'),
         opart: resolve(__dirname, 'opart/index.html'),
         tiles: resolve(__dirname, 'tiles/index.html'),
+        landscape: resolve(__dirname, 'landscape/index.html'),
       },
     },
   },
