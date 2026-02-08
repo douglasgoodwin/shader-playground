@@ -49,41 +49,43 @@ float drawRagdoll(vec2 p, float ragdoll) {
 
     float c = 0.0;
 
-    // Spine
-    c = max(c, bone(p, ragdoll, 0.0, 1.0, thickness));   // head-neck
-    c = max(c, bone(p, ragdoll, 1.0, 2.0, thickness));   // neck-chest
-    c = max(c, bone(p, ragdoll, 2.0, 3.0, thickness));   // chest-hips
+    // Bone table: (particleA, particleB) - matches constraint topology
+    vec2 bones[15];
+    bones[0]  = vec2(0, 1);    // head-neck
+    bones[1]  = vec2(1, 2);    // neck-chest
+    bones[2]  = vec2(2, 3);    // chest-hips
+    bones[3]  = vec2(2, 4);    // chest-shoulderL
+    bones[4]  = vec2(4, 5);    // shoulderL-elbowL
+    bones[5]  = vec2(5, 6);    // elbowL-handL
+    bones[6]  = vec2(2, 7);    // chest-shoulderR
+    bones[7]  = vec2(7, 8);    // shoulderR-elbowR
+    bones[8]  = vec2(8, 9);    // elbowR-handR
+    bones[9]  = vec2(3, 10);   // hips-hipL
+    bones[10] = vec2(10, 11);  // hipL-kneeL
+    bones[11] = vec2(11, 12);  // kneeL-footL
+    bones[12] = vec2(3, 13);   // hips-hipR
+    bones[13] = vec2(13, 14);  // hipR-kneeR
+    bones[14] = vec2(14, 15);  // kneeR-footR
 
-    // Left arm
-    c = max(c, bone(p, ragdoll, 2.0, 4.0, thickness));   // chest-shoulderL
-    c = max(c, bone(p, ragdoll, 4.0, 5.0, thickness));   // shoulderL-elbowL
-    c = max(c, bone(p, ragdoll, 5.0, 6.0, thickness));   // elbowL-handL
-
-    // Right arm
-    c = max(c, bone(p, ragdoll, 2.0, 7.0, thickness));   // chest-shoulderR
-    c = max(c, bone(p, ragdoll, 7.0, 8.0, thickness));   // shoulderR-elbowR
-    c = max(c, bone(p, ragdoll, 8.0, 9.0, thickness));   // elbowR-handR
-
-    // Left leg
-    c = max(c, bone(p, ragdoll, 3.0, 10.0, thickness));  // hips-hipL
-    c = max(c, bone(p, ragdoll, 10.0, 11.0, thickness)); // hipL-kneeL
-    c = max(c, bone(p, ragdoll, 11.0, 12.0, thickness)); // kneeL-footL
-
-    // Right leg
-    c = max(c, bone(p, ragdoll, 3.0, 13.0, thickness));  // hips-hipR
-    c = max(c, bone(p, ragdoll, 13.0, 14.0, thickness)); // hipR-kneeR
-    c = max(c, bone(p, ragdoll, 14.0, 15.0, thickness)); // kneeR-footR
+    for (int i = 0; i < 15; i++) {
+        c = max(c, bone(p, ragdoll, bones[i].x, bones[i].y, thickness));
+    }
 
     // Head (larger circle)
     c = max(c, joint(p, ragdoll, 0.0, 0.0125));
 
-    // Joints
-    c = max(c, joint(p, ragdoll, 2.0, jointRadius));  // chest
-    c = max(c, joint(p, ragdoll, 3.0, jointRadius));  // hips
-    c = max(c, joint(p, ragdoll, 5.0, jointRadius * 0.7));  // elbowL
-    c = max(c, joint(p, ragdoll, 8.0, jointRadius * 0.7));  // elbowR
-    c = max(c, joint(p, ragdoll, 11.0, jointRadius * 0.7)); // kneeL
-    c = max(c, joint(p, ragdoll, 14.0, jointRadius * 0.7)); // kneeR
+    // Joint table: (particleIndex, radiusScale)
+    vec2 joints[6];
+    joints[0] = vec2(2, 1.0);    // chest
+    joints[1] = vec2(3, 1.0);    // hips
+    joints[2] = vec2(5, 0.7);    // elbowL
+    joints[3] = vec2(8, 0.7);    // elbowR
+    joints[4] = vec2(11, 0.7);   // kneeL
+    joints[5] = vec2(14, 0.7);   // kneeR
+
+    for (int i = 0; i < 6; i++) {
+        c = max(c, joint(p, ragdoll, joints[i].x, jointRadius * joints[i].y));
+    }
 
     return c;
 }

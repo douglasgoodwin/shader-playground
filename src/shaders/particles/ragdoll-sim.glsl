@@ -19,31 +19,8 @@ varying vec2 v_uv;
 
 #define PARTICLES_PER_RAGDOLL 16.0
 
-// Constraint definitions: pairs of particle indices and rest lengths
-// Spine
-#define C_HEAD_NECK vec3(0.0, 1.0, 0.04)
-#define C_NECK_CHEST vec3(1.0, 2.0, 0.05)
-#define C_CHEST_HIPS vec3(2.0, 3.0, 0.06)
-
-// Left arm
-#define C_CHEST_SHOULDERL vec3(2.0, 4.0, 0.04)
-#define C_SHOULDERL_ELBOWL vec3(4.0, 5.0, 0.05)
-#define C_ELBOWL_HANDL vec3(5.0, 6.0, 0.045)
-
-// Right arm
-#define C_CHEST_SHOULDERR vec3(2.0, 7.0, 0.04)
-#define C_SHOULDERR_ELBOWR vec3(7.0, 8.0, 0.05)
-#define C_ELBOWR_HANDR vec3(8.0, 9.0, 0.045)
-
-// Left leg
-#define C_HIPS_HIPL vec3(3.0, 10.0, 0.03)
-#define C_HIPL_KNEEL vec3(10.0, 11.0, 0.06)
-#define C_KNEEL_FOOTL vec3(11.0, 12.0, 0.055)
-
-// Right leg
-#define C_HIPS_HIPR vec3(3.0, 13.0, 0.03)
-#define C_HIPR_KNEER vec3(13.0, 14.0, 0.06)
-#define C_KNEER_FOOTR vec3(14.0, 15.0, 0.055)
+// Number of bone constraints
+#define NUM_CONSTRAINTS 15
 
 // Decode position from texture (0-1) to world coords (-1 to 1)
 vec2 decode(vec2 encoded) {
@@ -132,71 +109,37 @@ void main() {
         vec2 correction = vec2(0.0);
         int idx = int(particleIndex);
 
-        // Each particle checks constraints it's part of
-        // This is verbose but necessary for GLSL ES 1.0
+        // Constraint table: (particleA, particleB, restLength)
+        vec3 constraints[NUM_CONSTRAINTS];
+        // Spine
+        constraints[0]  = vec3(0, 1, 0.04);    // head-neck
+        constraints[1]  = vec3(1, 2, 0.05);    // neck-chest
+        constraints[2]  = vec3(2, 3, 0.06);    // chest-hips
+        // Left arm
+        constraints[3]  = vec3(2, 4, 0.04);    // chest-shoulderL
+        constraints[4]  = vec3(4, 5, 0.05);    // shoulderL-elbowL
+        constraints[5]  = vec3(5, 6, 0.045);   // elbowL-handL
+        // Right arm
+        constraints[6]  = vec3(2, 7, 0.04);    // chest-shoulderR
+        constraints[7]  = vec3(7, 8, 0.05);    // shoulderR-elbowR
+        constraints[8]  = vec3(8, 9, 0.045);   // elbowR-handR
+        // Left leg
+        constraints[9]  = vec3(3, 10, 0.03);   // hips-hipL
+        constraints[10] = vec3(10, 11, 0.06);  // hipL-kneeL
+        constraints[11] = vec3(11, 12, 0.055); // kneeL-footL
+        // Right leg
+        constraints[12] = vec3(3, 13, 0.03);   // hips-hipR
+        constraints[13] = vec3(13, 14, 0.06);  // hipR-kneeR
+        constraints[14] = vec3(14, 15, 0.055); // kneeR-footR
 
-        if (idx == 0) { // head
-            vec2 other = getParticle(ragdollY, 1.0).xy;
-            correction += solveConstraint(pos, other, C_HEAD_NECK.z, 1.0);
-        }
-        else if (idx == 1) { // neck
-            correction += solveConstraint(pos, getParticle(ragdollY, 0.0).xy, C_HEAD_NECK.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 2.0).xy, C_NECK_CHEST.z, 1.0);
-        }
-        else if (idx == 2) { // chest
-            correction += solveConstraint(pos, getParticle(ragdollY, 1.0).xy, C_NECK_CHEST.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 3.0).xy, C_CHEST_HIPS.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 4.0).xy, C_CHEST_SHOULDERL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 7.0).xy, C_CHEST_SHOULDERR.z, 1.0);
-        }
-        else if (idx == 3) { // hips
-            correction += solveConstraint(pos, getParticle(ragdollY, 2.0).xy, C_CHEST_HIPS.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 10.0).xy, C_HIPS_HIPL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 13.0).xy, C_HIPS_HIPR.z, 1.0);
-        }
-        else if (idx == 4) { // shoulderL
-            correction += solveConstraint(pos, getParticle(ragdollY, 2.0).xy, C_CHEST_SHOULDERL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 5.0).xy, C_SHOULDERL_ELBOWL.z, 1.0);
-        }
-        else if (idx == 5) { // elbowL
-            correction += solveConstraint(pos, getParticle(ragdollY, 4.0).xy, C_SHOULDERL_ELBOWL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 6.0).xy, C_ELBOWL_HANDL.z, 1.0);
-        }
-        else if (idx == 6) { // handL
-            correction += solveConstraint(pos, getParticle(ragdollY, 5.0).xy, C_ELBOWL_HANDL.z, 1.0);
-        }
-        else if (idx == 7) { // shoulderR
-            correction += solveConstraint(pos, getParticle(ragdollY, 2.0).xy, C_CHEST_SHOULDERR.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 8.0).xy, C_SHOULDERR_ELBOWR.z, 1.0);
-        }
-        else if (idx == 8) { // elbowR
-            correction += solveConstraint(pos, getParticle(ragdollY, 7.0).xy, C_SHOULDERR_ELBOWR.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 9.0).xy, C_ELBOWR_HANDR.z, 1.0);
-        }
-        else if (idx == 9) { // handR
-            correction += solveConstraint(pos, getParticle(ragdollY, 8.0).xy, C_ELBOWR_HANDR.z, 1.0);
-        }
-        else if (idx == 10) { // hipL
-            correction += solveConstraint(pos, getParticle(ragdollY, 3.0).xy, C_HIPS_HIPL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 11.0).xy, C_HIPL_KNEEL.z, 1.0);
-        }
-        else if (idx == 11) { // kneeL
-            correction += solveConstraint(pos, getParticle(ragdollY, 10.0).xy, C_HIPL_KNEEL.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 12.0).xy, C_KNEEL_FOOTL.z, 1.0);
-        }
-        else if (idx == 12) { // footL
-            correction += solveConstraint(pos, getParticle(ragdollY, 11.0).xy, C_KNEEL_FOOTL.z, 1.0);
-        }
-        else if (idx == 13) { // hipR
-            correction += solveConstraint(pos, getParticle(ragdollY, 3.0).xy, C_HIPS_HIPR.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 14.0).xy, C_HIPR_KNEER.z, 1.0);
-        }
-        else if (idx == 14) { // kneeR
-            correction += solveConstraint(pos, getParticle(ragdollY, 13.0).xy, C_HIPR_KNEER.z, 1.0);
-            correction += solveConstraint(pos, getParticle(ragdollY, 15.0).xy, C_KNEER_FOOTR.z, 1.0);
-        }
-        else if (idx == 15) { // footR
-            correction += solveConstraint(pos, getParticle(ragdollY, 14.0).xy, C_KNEER_FOOTR.z, 1.0);
+        for (int i = 0; i < NUM_CONSTRAINTS; i++) {
+            float a = constraints[i].x;
+            float b = constraints[i].y;
+            float len = constraints[i].z;
+            if (idx == int(a))
+                correction += solveConstraint(pos, getParticle(ragdollY, b).xy, len, 1.0);
+            else if (idx == int(b))
+                correction += solveConstraint(pos, getParticle(ragdollY, a).xy, len, 1.0);
         }
 
         pos += correction;

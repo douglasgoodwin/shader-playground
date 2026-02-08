@@ -64,7 +64,7 @@ function createProgram(vertexSource, fragmentSource) {
 }
 
 // ============== MURMURATION ==============
-const SIM_RESOLUTION = 64
+const SIM_RESOLUTION = 80
 const PARTICLE_COUNT = SIM_RESOLUTION * SIM_RESOLUTION
 
 const velocityProgram = createProgram(simVertexShader, simVelocityShader)
@@ -85,6 +85,7 @@ const velocityUniforms = {
     cohesion: gl.getUniformLocation(velocityProgram, 'u_cohesion'),
     maxSpeed: gl.getUniformLocation(velocityProgram, 'u_maxSpeed'),
     perceptionRadius: gl.getUniformLocation(velocityProgram, 'u_perceptionRadius'),
+    time: gl.getUniformLocation(velocityProgram, 'u_time'),
 }
 
 const positionUniforms = {
@@ -402,6 +403,7 @@ function renderMurmuration(t, deltaTime) {
     gl.uniform1f(velocityUniforms.cohesion, cohesion)
     gl.uniform1f(velocityUniforms.maxSpeed, 0.8)
     gl.uniform1f(velocityUniforms.perceptionRadius, 0.3)
+    gl.uniform1f(velocityUniforms.time, t)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer)
     const velPosLoc = gl.getAttribLocation(velocityProgram, 'a_position')

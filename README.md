@@ -255,12 +255,15 @@ Both simulations store particle state in textures and update via fragment shader
 **Murmuration (Boids):**
 - 4,096 particles (64x64 texture)
 - Each particle samples neighbors and applies three steering forces
+- Hartman & Benes "change of leadership" — random birds temporarily become leaders who suppress cohesion/alignment and steer independently, pulling nearby birds along and creating organic flock splitting/reforming
+- Leadership timer stored in velocity texture alpha channel (no extra textures needed)
 - Triangular sprites oriented to velocity direction
 - Twilight sky background with atmospheric depth
 
 **Ragdoll (Verlet):**
 - 64 stick figures, 16 joints each
 - Verlet integration: `newPos = pos + (pos - prevPos) * damping + accel * dt²`
+- Data-driven constraint table — skeleton topology defined once as a `vec3` array, iterated with a loop instead of per-particle if/else branching
 - 8 constraint-solving passes per frame to maintain bone lengths
 - Floor collision and mouse repulsion
 
