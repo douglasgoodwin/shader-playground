@@ -40,7 +40,7 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Geometries
 
-12 shaders exploring signed distance functions and procedural effects:
+15 shaders exploring signed distance functions and procedural effects:
 
 | Piece | Description |
 |-------|-------------|
@@ -56,6 +56,9 @@ This project explores real-time GLSL shader programming through interactive visu
 | PoolWater | Caustic light patterns through water |
 | FlowHeart | Morphing heart with flow field |
 | Phyllotaxis | Golden angle (137.5°) 3D seed dome |
+| Still Life | Voronoi-faceted pear with mottled color per facet |
+| Still Life 2 | Pear with convex bulge facets and procedural skin texture (speckles, vertical gradient, noise bump, SSS) |
+| Bust | Minimal Venus de Milo (4 ellipsoids) with mottled marble faceting |
 
 ### Raymarching Notes
 
