@@ -9,13 +9,10 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#define PI 3.14159265359
-
-// Rotate 2D
-vec2 rotate(vec2 p, float a) {
-    float c = cos(a), s = sin(a);
-    return vec2(p.x * c - p.y * s, p.x * s + p.y * c);
-}
+#include "lygia/math/const.glsl"
+#include "lygia/math/rotate2d.glsl"
+#include "lygia/generative/random.glsl"
+#include "lygia/generative/snoise.glsl"
 
 // Kaleidoscope fold - reflects coordinates to create symmetry
 vec2 kaleidoscope(vec2 p, float segments) {
@@ -28,28 +25,12 @@ vec2 kaleidoscope(vec2 p, float segments) {
     return length(p) * vec2(cos(a), abs(sin(a)));
 }
 
-// Noise for patterns
-float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-
-    return mix(
-        mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-        mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
-        f.y
-    );
-}
-
+// FBM using simplex noise
 float fbm(vec2 p) {
     float v = 0.0;
     float a = 0.5;
     for (int i = 0; i < 5; i++) {
-        v += a * noise(p);
+        v += a * (snoise(p) * 0.5 + 0.5);
         p *= 2.0;
         a *= 0.5;
     }
@@ -65,7 +46,7 @@ void main() {
     float segments = 6.0 + floor(u_scale * 4.0);
 
     // Rotate the whole thing slowly
-    uv = rotate(uv, t * 0.1);
+    uv = rotate2d(t * 0.1) * uv;
 
     // Mouse affects the center offset
     vec2 center = mouse * 0.3;
@@ -79,7 +60,7 @@ void main() {
 
     // Layer 1: Flowing shapes
     vec2 p1 = kp * 3.0;
-    p1 = rotate(p1, t * 0.2);
+    p1 = rotate2d(t * 0.2) * p1;
     float pattern1 = sin(p1.x * 5.0 + t) * sin(p1.y * 5.0 + t * 0.7);
     pattern1 = smoothstep(-0.2, 0.2, pattern1);
 
@@ -124,7 +105,7 @@ void main() {
     vec2 dotUV = kp * 10.0;
     vec2 dotID = floor(dotUV);
     vec2 dotF = fract(dotUV) - 0.5;
-    float sparkle = hash(dotID + floor(t));
+    float sparkle = random(dotID + floor(t));
     float dot = smoothstep(0.3, 0.0, length(dotF)) * step(0.9, sparkle);
     color += dot * vec3(1.0) * u_intensity;
 

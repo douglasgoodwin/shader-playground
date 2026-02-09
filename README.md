@@ -378,3 +378,4 @@ npm run dev
 - Vite + vite-plugin-glsl
 - WebGL 1.0
 - GLSL ES 1.0
+- [Lygia](https://lygia.xyz) shader library for shared utilities (rotation matrices, noise, SDF primitives, color space conversions, constants)

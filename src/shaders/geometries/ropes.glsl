@@ -10,11 +10,8 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.141592654
-
-float hash(vec2 p) {
-    return fract(sin(1.0 + dot(p, vec2(127.1, 311.7))) * 43758.545);
-}
+#include "../lygia/math/const.glsl"
+#include "../lygia/generative/random.glsl"
 
 vec2 sincos(float x) {
     return vec2(sin(x), cos(x));
@@ -46,8 +43,8 @@ vec2 sdRibbon(vec3 p) {
 vec3 map(vec3 p, float time) {
     // Grid cell ID for variation
     vec2 id = floor((p.xz + 1.0) / 2.0);
-    float ph = hash(id + 113.1);
-    float ve = hash(id);
+    float ph = random(id + 113.1);
+    float ve = random(id);
 
     // Repeat space
     p.xz = mod(p.xz + 1.0, 2.0) - 1.0;

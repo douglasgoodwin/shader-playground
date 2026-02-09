@@ -11,35 +11,9 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
-#define TAU 6.28318530718
-
-// Hash functions for noise
-float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-float hash(float n) {
-    return fract(sin(n) * 43758.5453);
-}
-
-vec2 hash2(vec2 p) {
-    return vec2(hash(p), hash(p + vec2(17.1, 31.7)));
-}
-
-// Smooth noise
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-
-    float a = hash(i);
-    float b = hash(i + vec2(1.0, 0.0));
-    float c = hash(i + vec2(0.0, 1.0));
-    float d = hash(i + vec2(1.0, 1.0));
-
-    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-}
+#include "../lygia/math/const.glsl"
+#include "../lygia/generative/random.glsl"
+#include "../lygia/generative/snoise.glsl"
 
 // Fractal Brownian Motion for water surface
 float fbm(vec2 p, float t) {
@@ -48,7 +22,7 @@ float fbm(vec2 p, float t) {
     float frequency = 1.0;
 
     for (int i = 0; i < 5; i++) {
-        value += amplitude * noise(p * frequency + t * 0.5);
+        value += amplitude * (snoise(p * frequency + t * 0.5) * 0.5 + 0.5);
         amplitude *= 0.5;
         frequency *= 2.0;
     }
@@ -122,8 +96,8 @@ float caustics(vec2 uv, float t) {
     for (int x = -1; x <= 1; x++) {
         for (int y = -1; y <= 1; y++) {
             vec2 neighbor = vec2(float(x), float(y));
-            vec2 point = hash2(vi + neighbor) * 0.5 + 0.25;
-            point += 0.3 * sin(t * speed + hash(vi + neighbor) * TAU);
+            vec2 point = random2(vi + neighbor) * 0.5 + 0.25;
+            point += 0.3 * sin(t * speed + random(vi + neighbor) * TAU);
             float d = length(vf - neighbor - point);
             minDist = min(minDist, d);
         }
@@ -146,7 +120,7 @@ vec3 poolTiles(vec2 uv) {
     isGrout = clamp(isGrout, 0.0, 1.0);
 
     // Tile color variation
-    float variation = hash(tileID) * 0.1;
+    float variation = random(tileID) * 0.1;
     vec3 tileColor = vec3(0.6 + variation, 0.75 + variation * 0.5, 0.85 + variation * 0.3);
     vec3 groutColor = vec3(0.5, 0.55, 0.6);
 

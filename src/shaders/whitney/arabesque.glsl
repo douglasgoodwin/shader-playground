@@ -10,7 +10,7 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
+#include "../lygia/math/const.glsl"
 
 // Soft dot
 float dot_shape(vec2 uv, vec2 center, float radius) {

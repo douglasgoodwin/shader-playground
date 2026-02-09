@@ -13,25 +13,10 @@ uniform float u_scale;
 #define MAX_DIST 100.0
 #define SURF_DIST 0.001
 
-mat2 rot2D(float a) {
-    float s = sin(a), c = cos(a);
-    return mat2(c, -s, s, c);
-}
-
-// Signed distance functions
-float sdSphere(vec3 p, float r) {
-    return length(p) - r;
-}
-
-float sdBox(vec3 p, vec3 b) {
-    vec3 q = abs(p) - b;
-    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
-}
-
-float sdTorus(vec3 p, vec2 t) {
-    vec2 q = vec2(length(p.xz) - t.x, p.y);
-    return length(q) - t.y;
-}
+#include "../lygia/math/rotate2d.glsl"
+#include "../lygia/sdf/sphereSDF.glsl"
+#include "../lygia/sdf/boxSDF.glsl"
+#include "../lygia/sdf/torusSDF.glsl"
 
 // Smooth minimum for blending shapes
 float smin(float a, float b, float k) {
@@ -45,21 +30,21 @@ float map(vec3 p) {
 
     // Rotating torus
     vec3 torusP = p;
-    torusP.xz *= rot2D(t);
-    torusP.xy *= rot2D(t * 0.7);
-    float torus = sdTorus(torusP, vec2(1.0, 0.3) * u_scale);
+    torusP.xz *= rotate2d(t);
+    torusP.xy *= rotate2d(t * 0.7);
+    float torus = torusSDF(torusP, vec2(1.0, 0.3) * u_scale);
 
     // Orbiting spheres
     float spheres = MAX_DIST;
     for (int i = 0; i < 4; i++) {
         float angle = t + float(i) * 1.5708;
         vec3 spherePos = vec3(cos(angle), sin(angle * 0.5) * 0.5, sin(angle)) * 1.5 * u_scale;
-        spheres = min(spheres, sdSphere(p - spherePos, 0.25 * u_scale));
+        spheres = min(spheres, sphereSDF(p - spherePos, 0.25 * u_scale));
     }
 
     // Central pulsing sphere
     float pulse = 0.3 + 0.1 * sin(t * 3.0);
-    float centerSphere = sdSphere(p, pulse * u_scale);
+    float centerSphere = sphereSDF(p, pulse * u_scale);
 
     // Combine with smooth blending
     float d = smin(torus, spheres, 0.5);
@@ -116,7 +101,7 @@ void main() {
     vec3 ro = vec3(0.0, 0.0, -5.0); // Ray origin (camera position)
 
     // Rotate camera based on mouse
-    ro.xz *= rot2D(mouse.x * 3.14159);
+    ro.xz *= rotate2d(mouse.x * 3.14159);
     ro.y += mouse.y * 3.0;
 
     // Look at origin

@@ -12,23 +12,9 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-// Rotation matrices
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
-
-mat3 rotateY(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(c, 0, s, 0, 1, 0, -s, 0, c);
-}
-
-// Smooth hash
-vec3 hash33(vec3 p) {
-    p = fract(p * vec3(0.1031, 0.1030, 0.0973));
-    p += dot(p, p.yxz + 33.33);
-    return fract((p.xxy + p.yxx) * p.zyx);
-}
+#include "lygia/math/rotate3dX.glsl"
+#include "lygia/math/rotate3dY.glsl"
+#include "lygia/generative/random.glsl"
 
 // Smooth 3D noise
 float noise(vec3 p) {
@@ -36,14 +22,14 @@ float noise(vec3 p) {
     vec3 f = fract(p);
     f = f * f * f * (f * (f * 6.0 - 15.0) + 10.0); // quintic smooth
 
-    float a = dot(hash33(i), f);
-    float b = dot(hash33(i + vec3(1, 0, 0)), f - vec3(1, 0, 0));
-    float c = dot(hash33(i + vec3(0, 1, 0)), f - vec3(0, 1, 0));
-    float d = dot(hash33(i + vec3(1, 1, 0)), f - vec3(1, 1, 0));
-    float e = dot(hash33(i + vec3(0, 0, 1)), f - vec3(0, 0, 1));
-    float g = dot(hash33(i + vec3(1, 0, 1)), f - vec3(1, 0, 1));
-    float h = dot(hash33(i + vec3(0, 1, 1)), f - vec3(0, 1, 1));
-    float k = dot(hash33(i + vec3(1, 1, 1)), f - vec3(1, 1, 1));
+    float a = dot(random3(i), f);
+    float b = dot(random3(i + vec3(1, 0, 0)), f - vec3(1, 0, 0));
+    float c = dot(random3(i + vec3(0, 1, 0)), f - vec3(0, 1, 0));
+    float d = dot(random3(i + vec3(1, 1, 0)), f - vec3(1, 1, 0));
+    float e = dot(random3(i + vec3(0, 0, 1)), f - vec3(0, 0, 1));
+    float g = dot(random3(i + vec3(1, 0, 1)), f - vec3(1, 0, 1));
+    float h = dot(random3(i + vec3(0, 1, 1)), f - vec3(0, 1, 1));
+    float k = dot(random3(i + vec3(1, 1, 1)), f - vec3(1, 1, 1));
 
     return mix(mix(mix(a, b, f.x), mix(c, d, f.x), f.y),
                mix(mix(e, g, f.x), mix(h, k, f.x), f.y), f.z);
@@ -117,8 +103,8 @@ void main() {
 
     // Mouse rotation
     vec2 mouse = u_mouse / u_resolution - 0.5;
-    rd = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * rd;
-    ro = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * ro;
+    rd = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * rd;
+    ro = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * ro;
 
     // Raymarch
     float d = raymarch(ro, rd, t);

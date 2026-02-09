@@ -104,25 +104,14 @@ int findBestChar(vec3 sampleA, vec3 sampleB) {
 // 3D RAYMARCHING (Platonic solids)
 // ============================================================
 
-mat2 rot2D(float a) {
-    float s = sin(a), c = cos(a);
-    return mat2(c, -s, s, c);
-}
-
-float sdOctahedron(vec3 p, float s) {
-    p = abs(p);
-    return (p.x + p.y + p.z - s) * 0.57735027;
-}
+#include "lygia/math/rotate2d.glsl"
+#include "lygia/sdf/octahedronSDF.glsl"
+#include "lygia/sdf/boxSDF.glsl"
 
 float sdTetrahedron(vec3 p, float r) {
     float md = max(max(-p.x - p.y - p.z, p.x + p.y - p.z),
                    max(-p.x + p.y + p.z, p.x - p.y + p.z));
     return (md - r) / sqrt(3.0);
-}
-
-float sdBox(vec3 p, vec3 b) {
-    vec3 q = abs(p) - b;
-    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
 }
 
 float sdIcosahedron(vec3 p, float r) {
@@ -145,23 +134,23 @@ float map(vec3 p) {
     float t = u_time * u_speed * 0.3;
 
     vec3 p1 = p;
-    p1.xz *= rot2D(t);
-    p1.xy *= rot2D(t * 0.7);
-    float oct = sdOctahedron(p1, 1.2 * u_scale);
+    p1.xz *= rotate2d(t);
+    p1.xy *= rotate2d(t * 0.7);
+    float oct = octahedronSDF(p1, 1.2 * u_scale);
 
     vec3 p2 = p - vec3(cos(t) * 2.5, sin(t * 0.5) * 0.5, sin(t) * 2.5) * u_scale;
-    p2.xy *= rot2D(t * 1.5);
-    p2.yz *= rot2D(t * 1.2);
+    p2.xy *= rotate2d(t * 1.5);
+    p2.yz *= rotate2d(t * 1.2);
     float tet = sdTetrahedron(p2, 0.7 * u_scale);
 
     vec3 p3 = p - vec3(cos(t + 2.094) * 2.5, sin(t * 0.5 + 1.0) * 0.5, sin(t + 2.094) * 2.5) * u_scale;
-    p3.xz *= rot2D(t * 0.8);
-    p3.xy *= rot2D(t * 1.1);
-    float cube = sdBox(p3, vec3(0.55 * u_scale));
+    p3.xz *= rotate2d(t * 0.8);
+    p3.xy *= rotate2d(t * 1.1);
+    float cube = boxSDF(p3, vec3(0.55 * u_scale));
 
     vec3 p4 = p - vec3(cos(t + 4.188) * 2.5, sin(t * 0.5 + 2.0) * 0.5, sin(t + 4.188) * 2.5) * u_scale;
-    p4.yz *= rot2D(t * 1.3);
-    p4.xz *= rot2D(t * 0.9);
+    p4.yz *= rotate2d(t * 1.3);
+    p4.xz *= rotate2d(t * 0.9);
     float ico = sdIcosahedron(p4, 0.55 * u_scale);
 
     float d = smin(oct, tet, 0.2);
@@ -228,7 +217,7 @@ void main() {
 
     vec2 mouse = u_mouse / u_resolution - 0.5;
     vec3 ro = vec3(0.0, 0.0, -6.0);
-    ro.xz *= rot2D(mouse.x * 3.14159);
+    ro.xz *= rotate2d(mouse.x * 3.14159);
     ro.y += mouse.y * 4.0;
 
     vec3 lookAt = vec3(0.0);

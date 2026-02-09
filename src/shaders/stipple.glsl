@@ -10,15 +10,7 @@ uniform float u_contrast;      // Contrast adjustment
 uniform float u_showLines;     // 0 = no lines, 1 = show lines between nearby dots
 uniform float u_invert;        // 0 = dark dots on light, 1 = light dots on dark
 
-// Hash function for pseudo-random jitter
-vec2 hash2(vec2 p) {
-    p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-    return fract(sin(p) * 43758.5453) * 2.0 - 1.0;
-}
-
-float hash1(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
+#include "lygia/generative/random.glsl"
 
 // Sample video luminance with aspect ratio correction
 float sampleLuminance(vec2 uv) {
@@ -95,7 +87,7 @@ void main() {
                 vec2 neighborID = cellID + vec2(float(dx), float(dy));
 
                 // Jitter the dot position within cell
-                vec2 jitter = hash2(neighborID + float(scale) * 100.0) * 0.4;
+                vec2 jitter = (random2(neighborID + float(scale) * 100.0) * 2.0 - 1.0) * 0.4;
                 vec2 dotCellPos = vec2(0.5) + jitter;
 
                 // World position of this dot
@@ -110,7 +102,7 @@ void main() {
                 // But for visibility, we need the dots themselves to be visible
 
                 // Probability of dot appearing based on luminance and grid scale
-                float threshold = hash1(neighborID + float(scale) * 200.0);
+                float threshold = random(neighborID + float(scale) * 200.0);
 
                 // For finer grids (higher scale), only spawn in darker areas
                 float lumThreshold = float(scale) * 0.3;
@@ -181,7 +173,7 @@ void main() {
         for (int dy = -2; dy <= 2; dy++) {
             for (int dx = -2; dx <= 2; dx++) {
                 vec2 neighborID1 = cellID + vec2(float(dx), float(dy));
-                vec2 jitter1 = hash2(neighborID1) * 0.4;
+                vec2 jitter1 = (random2(neighborID1) * 2.0 - 1.0) * 0.4;
                 vec2 dot1UV = (neighborID1 + vec2(0.5) + jitter1) / gridScale;
                 vec2 dot1Pos = dot1UV * u_resolution;
 
@@ -191,7 +183,7 @@ void main() {
                         if (dx2 == 0 && dy2 == 0) continue;
 
                         vec2 neighborID2 = neighborID1 + vec2(float(dx2), float(dy2));
-                        vec2 jitter2 = hash2(neighborID2) * 0.4;
+                        vec2 jitter2 = (random2(neighborID2) * 2.0 - 1.0) * 0.4;
                         vec2 dot2UV = (neighborID2 + vec2(0.5) + jitter2) / gridScale;
                         vec2 dot2Pos = dot2UV * u_resolution;
 

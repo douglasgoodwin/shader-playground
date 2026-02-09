@@ -10,33 +10,16 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
+#include "../lygia/math/const.glsl"
+#include "../lygia/generative/random.glsl"
+#include "../lygia/generative/snoise.glsl"
 
-// Hash and noise functions
-float hash(vec2 p) {
-    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
-}
-
-float noise(vec2 p) {
-    vec2 i = floor(p);
-    vec2 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-
-    float a = hash(i);
-    float b = hash(i + vec2(1.0, 0.0));
-    float c = hash(i + vec2(0.0, 1.0));
-    float d = hash(i + vec2(1.0, 1.0));
-
-    return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-}
-
+// FBM using simplex noise, remapped to 0-1 range
 float fbm(vec2 p) {
     float value = 0.0;
     float amplitude = 0.5;
     for (int i = 0; i < 5; i++) {
-        value += amplitude * noise(p);
+        value += amplitude * (snoise(p) * 0.5 + 0.5);
         p *= 2.0;
         amplitude *= 0.5;
     }
@@ -143,7 +126,7 @@ void main() {
     color += ropeColor * rope * pulse;
 
     // Add subtle noise texture
-    color += (hash(uv * 1000.0 + t) - 0.5) * 0.02;
+    color += (random(uv * 1000.0 + t) - 0.5) * 0.02;
 
     // Mouse interaction - ripple from mouse
     vec2 mouse = u_mouse / u_resolution;

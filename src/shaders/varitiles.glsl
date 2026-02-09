@@ -9,25 +9,9 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#define PI 3.14159265358979
-
-// Hash functions
-float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-vec2 hash2(vec2 p) {
-    return vec2(
-        fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453),
-        fract(sin(dot(p, vec2(269.5, 183.3))) * 43758.5453)
-    );
-}
-
-// Rotate a point
-vec2 rot(vec2 p, float a) {
-    float c = cos(a), s = sin(a);
-    return vec2(c * p.x - s * p.y, s * p.x + c * p.y);
-}
+#include "lygia/math/const.glsl"
+#include "lygia/generative/random.glsl"
+#include "lygia/math/rotate2d.glsl"
 
 // SDF shapes
 float sdCircle(vec2 p, float r) {
@@ -69,10 +53,10 @@ void main() {
     vec2 cellUv = fract(st) - 0.5;
 
     // Per-cell random values
-    float r0 = hash(cellId);
-    float r1 = hash(cellId + 100.0);
-    float r2 = hash(cellId + 200.0);
-    vec2 r3 = hash2(cellId + 300.0);
+    float r0 = random(cellId);
+    float r1 = random(cellId + 100.0);
+    float r2 = random(cellId + 200.0);
+    vec2 r3 = random2(cellId + 300.0);
 
     // Shape selection (4 shapes)
     float shapeType = floor(r0 * 4.0);
@@ -96,7 +80,7 @@ void main() {
     shapeSize += mouseInfluence * 0.05;
 
     // Rotate cell UV
-    vec2 ruv = rot(cellUv, rotation);
+    vec2 ruv = rotate2d(rotation) * cellUv;
 
     // Evaluate chosen shape
     float d;
@@ -119,7 +103,7 @@ void main() {
     ) * u_intensity;
 
     // Neighbor influence: blend hue slightly toward neighbors
-    float neighborHue = hash(cellId + vec2(1.0, 0.0)) + hash(cellId + vec2(0.0, 1.0));
+    float neighborHue = random(cellId + vec2(1.0, 0.0)) + random(cellId + vec2(0.0, 1.0));
     neighborHue *= 0.5;
     shapeColor = mix(shapeColor, vec3(
         0.5 + 0.45 * sin(neighborHue * PI * 2.0 + t * 0.15),

@@ -30,15 +30,8 @@ float sampleChar(int charIdx, vec2 uv) {
 // 3D GEOMETRY
 // ============================================================
 
-mat2 rot2D(float a) {
-    float s = sin(a), c = cos(a);
-    return mat2(c, -s, s, c);
-}
-
-float sdBox(vec3 p, vec3 b) {
-    vec3 q = abs(p) - b;
-    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
-}
+#include "lygia/math/rotate2d.glsl"
+#include "lygia/sdf/boxSDF.glsl"
 
 // Scene: Single rotating cube for clear face demonstration
 vec3 cubePos;
@@ -49,8 +42,8 @@ float map(vec3 p) {
     float t = u_time * u_speed * 0.3;
 
     // Store transformations for UV calculation
-    cubeRotXZ = rot2D(t);
-    cubeRotXY = rot2D(t * 0.7);
+    cubeRotXZ = rotate2d(t);
+    cubeRotXY = rotate2d(t * 0.7);
 
     // Transform point into cube's local space
     vec3 localP = p;
@@ -58,7 +51,7 @@ float map(vec3 p) {
     localP.xy *= cubeRotXY;
 
     float cubeSize = 1.5 * u_scale;
-    return sdBox(localP, vec3(cubeSize));
+    return boxSDF(localP, vec3(cubeSize));
 }
 
 vec3 calcNormal(vec3 p) {
@@ -153,7 +146,7 @@ void main() {
 
     // Camera
     vec3 ro = vec3(0.0, 0.0, -5.0);
-    ro.xz *= rot2D(mouse.x * 3.14159);
+    ro.xz *= rotate2d(mouse.x * 3.14159);
     ro.y += mouse.y * 3.0;
 
     vec3 lookAt = vec3(0.0);

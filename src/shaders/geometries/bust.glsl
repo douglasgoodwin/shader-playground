@@ -85,23 +85,35 @@ float hash1(vec3 p) {
 // Material: 1=marble
 float materialId;
 
-// Venus de Milo — minimal forms, like the pear
+// Cycladic head — from OBJ scan proportions
+// OBJ: Z-up, ~70 wide, ~68 deep, ~130 tall
+// Normalized to ~2 units tall, Y-up
 float mapBody(vec3 p) {
-    // Draped lower half — one tall ellipsoid
-    vec3 lowerP = p - vec3(0.0, 0.9, 0.0);
-    float lower = sdEllipsoid(lowerP, vec3(0.38, 0.7, 0.35));
+    // Neck — tapered cylinder at base
+    vec3 neckP = p - vec3(0.0, 0.25, 0.0);
+    float neck = sdEllipsoid(neckP, vec3(0.38, 0.35, 0.38));
 
-    // Upper torso — wider, offset slightly left for contrapposto
-    vec3 upperP = p - vec3(-0.06, 2.2, 0.0);
-    float upper = sdEllipsoid(upperP, vec3(0.4, 0.55, 0.3));
+    // Lower head / jaw — widening from neck
+    vec3 jawP = p - vec3(0.0, 0.7, 0.02);
+    float jaw = sdEllipsoid(jawP, vec3(0.48, 0.3, 0.42));
 
-    // Neck + head as one tapered form
-    vec3 headP = p - vec3(-0.1, 3.1, 0.02);
-    float head = sdEllipsoid(headP, vec3(0.18, 0.28, 0.2));
+    // Main head volume — cheeks to forehead, widest part
+    vec3 headP = p - vec3(0.0, 1.2, 0.0);
+    float head = sdEllipsoid(headP, vec3(0.53, 0.5, 0.52));
 
-    // Blend like a pear — generous smin
-    float body = smin(lower, upper, 0.35);
-    body = smin(body, head, 0.15);
+    // Crown — tapering top
+    vec3 crownP = p - vec3(0.0, 1.8, -0.02);
+    float crown = sdEllipsoid(crownP, vec3(0.35, 0.3, 0.35));
+
+    // Nose ridge — the defining Cycladic feature
+    vec3 noseP = p - vec3(0.0, 1.1, 0.5);
+    float nose = sdCapsule(noseP, vec3(0.0, -0.15, 0.0), vec3(0.0, 0.2, 0.0), 0.06);
+
+    // Blend head forms
+    float body = smin(neck, jaw, 0.15);
+    body = smin(body, head, 0.2);
+    body = smin(body, crown, 0.15);
+    body = smin(body, nose, 0.08);
 
     return body;
 }
@@ -161,8 +173,8 @@ void main() {
     float t = u_time * u_speed * 0.15;
 
     float camAngle = t * 0.2 + mouse.x * 3.14159;
-    float camDist = 7.0;
-    float camHeight = 1.8 + mouse.y * 3.0;
+    float camDist = 5.0;
+    float camHeight = 1.0 + mouse.y * 2.0;
 
     vec3 ro = vec3(
         camDist * sin(camAngle),
@@ -170,7 +182,7 @@ void main() {
         camDist * cos(camAngle)
     );
 
-    vec3 lookAt = vec3(-0.05, 1.7, 0.0);
+    vec3 lookAt = vec3(0.0, 1.0, 0.0);
     vec3 forward = normalize(lookAt - ro);
     vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), forward));
     vec3 up = cross(forward, right);

@@ -10,36 +10,16 @@ uniform float u_geometry;
 uniform float u_speed;
 uniform int u_hasTexture;
 
-// Rotation matrices
-mat3 rotateY(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(c, 0, s, 0, 1, 0, -s, 0, c);
-}
-
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
+#include "../lygia/math/rotate3dX.glsl"
+#include "../lygia/math/rotate3dY.glsl"
+#include "../lygia/sdf/sphereSDF.glsl"
+#include "../lygia/sdf/boxSDF.glsl"
+#include "../lygia/sdf/torusSDF.glsl"
 
 // Smooth min for blending shapes
 float smin(float a, float b, float k) {
     float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
     return mix(b, a, h) - k * h * (1.0 - h);
-}
-
-// SDF primitives
-float sdSphere(vec3 p, float r) {
-    return length(p) - r;
-}
-
-float sdBox(vec3 p, vec3 b) {
-    vec3 q = abs(p) - b;
-    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
-}
-
-float sdTorus(vec3 p, vec2 t) {
-    vec2 q = vec2(length(p.xz) - t.x, p.y);
-    return length(q) - t.y;
 }
 
 // Scene - geometry that deforms the texture
@@ -48,20 +28,20 @@ float map(vec3 p) {
     float geo = u_geometry;
 
     // Rotate
-    p = rotateY(t * 0.5) * rotateX(t * 0.3) * p;
+    p = rotate3dY(t * 0.5) * rotate3dX(t * 0.3) * p;
 
     // Base box
-    float box = sdBox(p, vec3(0.6, 0.4, 0.5));
+    float box = boxSDF(p, vec3(0.6, 0.4, 0.5));
 
     // Spherical bumps
     float bumps = 1e10;
-    bumps = min(bumps, sdSphere(p - vec3(0.5, 0.3, 0.4) * geo, 0.25 * geo));
-    bumps = min(bumps, sdSphere(p - vec3(-0.4, -0.2, 0.5) * geo, 0.3 * geo));
-    bumps = min(bumps, sdSphere(p - vec3(0.3, -0.4, -0.3) * geo, 0.2 * geo));
-    bumps = min(bumps, sdSphere(p - vec3(-0.5, 0.4, -0.2) * geo, 0.28 * geo));
+    bumps = min(bumps, sphereSDF(p - vec3(0.5, 0.3, 0.4) * geo, 0.25 * geo));
+    bumps = min(bumps, sphereSDF(p - vec3(-0.4, -0.2, 0.5) * geo, 0.3 * geo));
+    bumps = min(bumps, sphereSDF(p - vec3(0.3, -0.4, -0.3) * geo, 0.2 * geo));
+    bumps = min(bumps, sphereSDF(p - vec3(-0.5, 0.4, -0.2) * geo, 0.28 * geo));
 
     // Torus ring
-    float torus = sdTorus(p, vec2(0.5 * geo, 0.15));
+    float torus = torusSDF(p, vec2(0.5 * geo, 0.15));
 
     // Blend together
     float d = smin(box, bumps, 0.2);
@@ -127,8 +107,8 @@ void main() {
     // Mouse interaction
     if (u_mouse.x > 0.0) {
         vec2 m = u_mouse / u_resolution.xy - 0.5;
-        ro = rotateY(m.x * 3.14) * rotateX(-m.y * 1.5) * ro;
-        rd = rotateY(m.x * 3.14) * rotateX(-m.y * 1.5) * rd;
+        ro = rotate3dY(m.x * 3.14) * rotate3dX(-m.y * 1.5) * ro;
+        rd = rotate3dY(m.x * 3.14) * rotate3dX(-m.y * 1.5) * rd;
     }
 
     // Flat texture UV (screen space)

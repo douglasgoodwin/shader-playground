@@ -25,9 +25,7 @@ float hexDist(vec2 p) {
     return max(dot(p, normalize(vec2(1.0, 1.732))), p.x);
 }
 
-float random(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
+#include "lygia/generative/random.glsl"
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;

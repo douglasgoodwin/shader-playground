@@ -7,22 +7,13 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-// Golden angle in radians: 137.5 degrees = 137.5 * PI / 180
-const float GOLDEN_ANGLE = 2.39996323;
-const float PI = 3.14159265359;
-const float TAU = 6.28318530718;
+#include "lygia/math/const.glsl"
+#include "lygia/color/space/hsv2rgb.glsl"
 
 // Soft circle/seed shape
 float seed(vec2 uv, vec2 center, float radius) {
     float d = length(uv - center);
     return smoothstep(radius, radius * 0.3, d);
-}
-
-// HSV to RGB conversion
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
 void main() {

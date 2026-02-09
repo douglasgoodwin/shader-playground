@@ -10,42 +10,14 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
+#include "../lygia/math/const.glsl"
+#include "../lygia/math/rotate3dX.glsl"
+#include "../lygia/math/rotate3dY.glsl"
+#include "../lygia/generative/snoise.glsl"
+
 #define MAX_STEPS 200
 #define MAX_DIST 10.0
 #define SURF_DIST 0.001
-
-// Rotation matrices
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
-
-mat3 rotateY(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(c, 0, s, 0, 1, 0, -s, 0, c);
-}
-
-// Noise functions
-float hash(vec3 p) {
-    p = fract(p * 0.3183099 + 0.1);
-    p *= 17.0;
-    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-}
-
-float noise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-
-    return mix(
-        mix(mix(hash(i + vec3(0, 0, 0)), hash(i + vec3(1, 0, 0)), f.x),
-            mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
-        mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x),
-            mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y),
-        f.z
-    );
-}
 
 // Gyroid surface - triply periodic minimal surface
 float gyroid(vec3 p, float scale) {
@@ -58,13 +30,13 @@ float scene(vec3 p) {
     float t = u_time * u_speed * 0.5;
 
     // Rotate
-    p = rotateX(t * 0.5) * p;
+    p = rotate3dX(t * 0.5) * p;
 
     // Slight x-axis squeeze like original
     p.x *= 0.9;
 
     // Noise modulation for sphere radius
-    float n1 = sin(noise(p * 0.4) * 6.0) * 0.5 + 0.5;
+    float n1 = sin(snoise(p * 0.4) * 6.0) * 0.5 + 0.5;
     float sphereR = 0.6 + n1 * 0.25;
 
     // Sphere
@@ -113,7 +85,7 @@ vec3 getColor(vec3 p, vec3 n) {
 
     // Noise-based coloring like vectorContourNoise
     vec3 noiseP = p * 3.0 + vec3(0.0, 0.0, t * 0.5);
-    float nVal = noise(noiseP) + gy;
+    float nVal = snoise(noiseP) + gy;
 
     // Sharp color bands
     float band = sin(nVal * 2.0 * u_density) * 0.5 + 0.5;
@@ -137,8 +109,8 @@ void main() {
 
     // Mouse rotation
     vec2 mouse = u_mouse / u_resolution - 0.5;
-    rd = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * rd;
-    ro = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * ro;
+    rd = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * rd;
+    ro = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * ro;
 
     // Raymarch
     float d = raymarch(ro, rd);

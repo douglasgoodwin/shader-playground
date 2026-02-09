@@ -10,28 +10,14 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
+#include "../lygia/math/const.glsl"
+#include "../lygia/math/rotate3dX.glsl"
+#include "../lygia/math/rotate3dY.glsl"
+#include "../lygia/color/space/hsv2rgb.glsl"
+
 #define MAX_STEPS 600
 #define MAX_DIST 10.0
 #define SURF_DIST 0.001
-
-// Rotation matrices
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
-
-mat3 rotateY(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(c, 0, s, 0, 1, 0, -s, 0, c);
-}
-
-// HSV to RGB conversion
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
 
 // Cartesian to spherical coordinates
 // Returns vec3(r, theta, phi) where theta is polar angle, phi is azimuthal
@@ -110,8 +96,8 @@ void main() {
 
     // Mouse rotation
     vec2 mouse = u_mouse / u_resolution - 0.5;
-    rd = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * rd;
-    ro = rotateY(mouse.x * 3.0) * rotateX(-mouse.y * 2.0) * ro;
+    rd = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * rd;
+    ro = rotate3dY(mouse.x * 3.0) * rotate3dX(-mouse.y * 2.0) * ro;
 
     // Raymarch
     float d = raymarch(ro, rd);

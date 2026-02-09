@@ -9,7 +9,8 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#define PI 3.14159265358979
+#include "lygia/math/const.glsl"
+#include "lygia/generative/random.glsl"
 
 // SDF for a line segment
 float sdSegment(vec2 p, vec2 a, vec2 b, float thick) {
@@ -21,11 +22,6 @@ float sdSegment(vec2 p, vec2 a, vec2 b, float thick) {
 // SDF for a circle
 float sdCircle(vec2 p, vec2 center, float r) {
     return length(p - center) - r;
-}
-
-// Hash for per-character randomness
-float hash(float n) {
-    return fract(sin(n * 127.1) * 43758.5453);
 }
 
 void main() {
@@ -45,8 +41,8 @@ void main() {
 
         // Character center x position
         float cx = (i - (count - 1.0) * 0.5) * spacing;
-        float phase = hash(i) * PI * 2.0 + t;
-        float charRand = hash(i + 100.0);
+        float phase = random(i) * PI * 2.0 + t;
+        float charRand = random(i + 100.0);
 
         // Pick an action: walk, wave, jump (cycle through)
         float action = mod(floor(phase * 0.3), 3.0);

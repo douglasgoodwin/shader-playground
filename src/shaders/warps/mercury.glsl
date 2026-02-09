@@ -10,44 +10,15 @@ uniform float u_geometry;
 uniform float u_speed;
 uniform int u_hasTexture;
 
-// Rotation matrices
-mat3 rotateY(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(c, 0, s, 0, 1, 0, -s, 0, c);
-}
-
-mat3 rotateX(float a) {
-    float c = cos(a), s = sin(a);
-    return mat3(1, 0, 0, 0, c, -s, 0, s, c);
-}
+#include "../lygia/math/rotate3dX.glsl"
+#include "../lygia/math/rotate3dY.glsl"
+#include "../lygia/generative/snoise.glsl"
+#include "../lygia/sdf/sphereSDF.glsl"
 
 // Smooth min for liquid blob merging - larger k = more blend
 float smin(float a, float b, float k) {
     float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
     return mix(b, a, h) - k * h * (1.0 - h);
-}
-
-// Simple noise functions for organic movement
-float hash(vec3 p) {
-    p = fract(p * 0.3183099 + 0.1);
-    p *= 17.0;
-    return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
-}
-
-float noise(vec3 p) {
-    vec3 i = floor(p);
-    vec3 f = fract(p);
-    f = f * f * (3.0 - 2.0 * f);
-
-    return mix(mix(mix(hash(i + vec3(0, 0, 0)), hash(i + vec3(1, 0, 0)), f.x),
-                   mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
-               mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x),
-                   mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
-}
-
-// SDF for sphere
-float sdSphere(vec3 p, float r) {
-    return length(p) - r;
 }
 
 // Mercury blob scene - multiple spheres that merge like liquid
@@ -56,11 +27,11 @@ float map(vec3 p) {
     float geo = u_geometry;
 
     // Slow rotation for the whole scene
-    p = rotateY(t * 0.15) * p;
+    p = rotate3dY(t * 0.15) * p;
 
     // Main central blob - pulsing gently
     float pulse = 0.95 + 0.05 * sin(t * 2.0);
-    float mainBlob = sdSphere(p, 0.45 * geo * pulse);
+    float mainBlob = sphereSDF(p, 0.45 * geo * pulse);
 
     // Orbiting blobs with different phases and speeds
     // They move in elliptical paths and bob up/down
@@ -71,7 +42,7 @@ float map(vec3 p) {
         sin(t * 1.1) * 0.25,
         cos(t * 0.7) * 0.5
     ) * geo;
-    float blob1 = sdSphere(p1, 0.28 * geo * (0.9 + 0.1 * sin(t * 1.5)));
+    float blob1 = sphereSDF(p1, 0.28 * geo * (0.9 + 0.1 * sin(t * 1.5)));
 
     // Blob 2 - medium, faster orbit
     vec3 p2 = p - vec3(
@@ -79,7 +50,7 @@ float map(vec3 p) {
         sin(t * 1.3 + 1.0) * 0.3,
         sin(t * 0.9 + 2.0) * 0.45
     ) * geo;
-    float blob2 = sdSphere(p2, 0.22 * geo * (0.95 + 0.05 * sin(t * 2.1)));
+    float blob2 = sphereSDF(p2, 0.22 * geo * (0.95 + 0.05 * sin(t * 2.1)));
 
     // Blob 3 - smaller, different plane
     vec3 p3 = p - vec3(
@@ -87,7 +58,7 @@ float map(vec3 p) {
         cos(t * 0.8) * 0.4,
         cos(t * 1.1 + 4.0) * 0.35
     ) * geo;
-    float blob3 = sdSphere(p3, 0.18 * geo);
+    float blob3 = sphereSDF(p3, 0.18 * geo);
 
     // Blob 4 - tiny, fast
     vec3 p4 = p - vec3(
@@ -95,7 +66,7 @@ float map(vec3 p) {
         sin(t * 1.6 + 0.5) * 0.35,
         sin(t * 1.2 + 1.5) * 0.5
     ) * geo;
-    float blob4 = sdSphere(p4, 0.12 * geo);
+    float blob4 = sphereSDF(p4, 0.12 * geo);
 
     // Blob 5 - dripping down periodically
     float dripPhase = mod(t * 0.5, 6.28);
@@ -105,7 +76,7 @@ float map(vec3 p) {
         dripY,
         cos(t * 0.3) * 0.15
     ) * geo;
-    float blob5 = sdSphere(p5, 0.15 * geo * (1.0 + 0.3 * sin(dripPhase)));
+    float blob5 = sphereSDF(p5, 0.15 * geo * (1.0 + 0.3 * sin(dripPhase)));
 
     // Merge all blobs with smooth minimum for liquid effect
     // Larger k value = more gooey merging
@@ -117,8 +88,9 @@ float map(vec3 p) {
     d = smin(d, blob4, k * 0.6);
     d = smin(d, blob5, k);
 
-    // Add subtle surface ripples using noise
-    float ripple = noise(p * 8.0 + t * 0.5) * 0.02;
+    // Broad, slow surface undulations like real mercury
+    float ripple = snoise(p * 1.2 + t * 0.2) * 0.09
+                 + snoise(p * 3.0 - t * 0.15) * 0.03;
     d += ripple * geo;
 
     return d;
@@ -178,8 +150,8 @@ void main() {
     // Mouse interaction
     if (u_mouse.x > 0.0) {
         vec2 m = u_mouse / u_resolution.xy - 0.5;
-        ro = rotateY(m.x * 3.14) * rotateX(-m.y * 1.5) * ro;
-        rd = rotateY(m.x * 3.14) * rotateX(-m.y * 1.5) * rd;
+        ro = rotate3dY(m.x * 3.14) * rotate3dX(-m.y * 1.5) * ro;
+        rd = rotate3dY(m.x * 3.14) * rotate3dX(-m.y * 1.5) * rd;
     }
 
     // Flat texture UV

@@ -13,10 +13,7 @@ uniform float u_scale;
 #define MAX_DIST 10.0
 #define SURF_DIST 0.0005
 
-mat2 rot2D(float a) {
-    float s = sin(a), c = cos(a);
-    return mat2(c, -s, s, c);
-}
+#include "../lygia/math/rotate2d.glsl"
 
 // Mandelbulb distance estimator
 vec2 mandelbulb(vec3 p) {
@@ -58,8 +55,8 @@ vec2 mandelbulb(vec3 p) {
 vec2 map(vec3 p) {
     // Rotate the whole thing
     float t = u_time * u_speed * 0.1;
-    p.xz *= rot2D(t);
-    p.xy *= rot2D(t * 0.7);
+    p.xz *= rotate2d(t);
+    p.xy *= rotate2d(t * 0.7);
 
     // Scale
     p /= u_scale;
@@ -119,7 +116,7 @@ void main() {
     vec3 ro = vec3(0.0, 0.0, -camDist);
 
     // Mouse controls camera orbit
-    ro.xz *= rot2D(mouse.x * 6.28);
+    ro.xz *= rotate2d(mouse.x * 6.28);
     ro.y += mouse.y * 2.0;
     ro = normalize(ro) * camDist;
 

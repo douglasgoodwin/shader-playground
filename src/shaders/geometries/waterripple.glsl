@@ -10,12 +10,8 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#define PI 3.14159265359
-
-// Simple hash for pseudo-random
-float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
+#include "../lygia/math/const.glsl"
+#include "../lygia/generative/random.glsl"
 
 // Character patterns - each is a 5x5 bitmap encoded in bits
 // Returns 1.0 if pixel is "on" for the character
@@ -133,7 +129,7 @@ void main() {
     vec2 cellUV = fract(gridUV);
 
     // Pick a random character for each cell
-    float randVal = hash(cellID);
+    float randVal = random(cellID);
     int charIndex = int(randVal * 14.0);
 
     // Render the character
