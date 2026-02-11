@@ -16,6 +16,7 @@
     <div id="controls">
       <button data-piece="murmuration" class="active"><span class="key">1</span> Murmuration</button>
       <button data-piece="ragdoll"><span class="key">2</span> Ragdoll</button>
+      <button data-piece="lenia"><span class="key">3</span> Lenia</button>
     </div>
     <div id="sliders">
       <label>
@@ -29,6 +30,32 @@
       <label>
         <span>Alignment</span>
         <input type="range" id="alignment" min="0.2" max="2" step="0.1" value="1">
+      </label>
+    </div>
+    <div id="lenia-sliders" style="display:none">
+      <label>
+        <span>Steps</span>
+        <input type="range" id="lenia-steps" min="0" max="50" step="1" value="5">
+      </label>
+      <label>
+        <span>Kernel &mu;</span>
+        <input type="range" id="lenia-mu-k" min="0" max="5" step="0.1" value="4">
+      </label>
+      <label>
+        <span>Kernel &sigma;</span>
+        <input type="range" id="lenia-sigma-k" min="0.1" max="2" step="0.05" value="1">
+      </label>
+      <label>
+        <span>Growth &mu;</span>
+        <input type="range" id="lenia-mu-g" min="0" max="1.5" step="0.05" value="0.6">
+      </label>
+      <label>
+        <span>Growth &sigma;</span>
+        <input type="range" id="lenia-sigma-g" min="0.01" max="1" step="0.01" value="0.15">
+      </label>
+      <label>
+        <span>Repulsion</span>
+        <input type="range" id="lenia-c-rep" min="0" max="2" step="0.05" value="1">
       </label>
     </div>
     <script type="module" src="/src/particles.js"></script>

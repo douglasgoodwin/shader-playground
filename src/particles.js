@@ -13,6 +13,11 @@ import backgroundShader from './shaders/particles/background.glsl'
 import ragdollSimShader from './shaders/particles/ragdoll-sim.glsl'
 import ragdollRenderShader from './shaders/particles/ragdoll-render.glsl'
 
+// Shader imports - Lenia
+import leniaSimShader from './shaders/particles/lenia-sim.glsl'
+import leniaRenderVertexShader from './shaders/particles/lenia-render-vertex.glsl'
+import leniaRenderShader from './shaders/particles/lenia-render.glsl'
+
 import basicVertexShader from './shaders/vertex.glsl'
 
 const canvas = document.querySelector('#canvas')
@@ -127,6 +132,44 @@ const ragdollRenderUniforms = {
     resolution: gl.getUniformLocation(ragdollRenderProgram, 'u_resolution'),
     simResolution: gl.getUniformLocation(ragdollRenderProgram, 'u_simResolution'),
     time: gl.getUniformLocation(ragdollRenderProgram, 'u_time'),
+}
+
+// ============== LENIA ==============
+const LENIA_SIM_RES = 16
+const LENIA_PARTICLE_COUNT = 200
+
+// Compute normalization coefficient w_k from kernel params
+function computeWk(mu_k, sigma_k) {
+    const dr = 0.01
+    let sum = 0
+    for (let r = 0; r < 20; r += dr) {
+        const t = (r - mu_k * sigma_k) / sigma_k
+        sum += Math.exp(-0.5 * t * t) * r * dr
+    }
+    return 1.0 / (2.0 * Math.PI * sum)
+}
+
+const leniaSimProgram = createProgram(simVertexShader, leniaSimShader)
+const leniaRenderProgram = createProgram(leniaRenderVertexShader, leniaRenderShader)
+
+const leniaSimUniforms = {
+    positionTex: gl.getUniformLocation(leniaSimProgram, 'u_positionTex'),
+    dt: gl.getUniformLocation(leniaSimProgram, 'u_dt'),
+    mu_k: gl.getUniformLocation(leniaSimProgram, 'u_mu_k'),
+    sigma_k: gl.getUniformLocation(leniaSimProgram, 'u_sigma_k'),
+    w_k: gl.getUniformLocation(leniaSimProgram, 'u_w_k'),
+    mu_g: gl.getUniformLocation(leniaSimProgram, 'u_mu_g'),
+    sigma_g: gl.getUniformLocation(leniaSimProgram, 'u_sigma_g'),
+    c_rep: gl.getUniformLocation(leniaSimProgram, 'u_c_rep'),
+    simResolution: gl.getUniformLocation(leniaSimProgram, 'u_simResolution'),
+    particleCount: gl.getUniformLocation(leniaSimProgram, 'u_particleCount'),
+}
+
+const leniaRenderUniforms = {
+    positionTex: gl.getUniformLocation(leniaRenderProgram, 'u_positionTex'),
+    resolution: gl.getUniformLocation(leniaRenderProgram, 'u_resolution'),
+    pointSize: gl.getUniformLocation(leniaRenderProgram, 'u_pointSize'),
+    viewR: gl.getUniformLocation(leniaRenderProgram, 'u_viewR'),
 }
 
 // ============== TEXTURE HELPERS ==============
@@ -245,6 +288,27 @@ function initRagdollParticles() {
     return data
 }
 
+// ============== LENIA INIT ==============
+function initLeniaParticles() {
+    const data = new Float32Array(LENIA_SIM_RES * LENIA_SIM_RES * 4)
+    for (let i = 0; i < LENIA_SIM_RES * LENIA_SIM_RES; i++) {
+        if (i < LENIA_PARTICLE_COUNT) {
+            const x = (Math.random() - 0.5) * 12.0 // [-6, 6]
+            const y = (Math.random() - 0.5) * 12.0
+            data[i * 4 + 0] = x / 14.0 + 0.5
+            data[i * 4 + 1] = y / 14.0 + 0.5
+            data[i * 4 + 2] = 0.5
+            data[i * 4 + 3] = 0.5
+        } else {
+            data[i * 4 + 0] = 0.5
+            data[i * 4 + 1] = 0.5
+            data[i * 4 + 2] = 0.5
+            data[i * 4 + 3] = 0.5
+        }
+    }
+    return data
+}
+
 // ============== CREATE BUFFERS ==============
 // Murmuration
 const murmData = initMurmurationParticles()
@@ -263,6 +327,25 @@ let ragdollTex0 = createDataTexture(ragdollData, RAGDOLL_SIM_RES)
 let ragdollTex1 = createDataTexture(ragdollData, RAGDOLL_SIM_RES)
 let ragdollFB0 = createFramebuffer(ragdollTex0)
 let ragdollFB1 = createFramebuffer(ragdollTex1)
+
+// Lenia
+const leniaData = initLeniaParticles()
+let leniaTex0 = createDataTexture(leniaData, LENIA_SIM_RES)
+let leniaTex1 = createDataTexture(leniaData, LENIA_SIM_RES)
+let leniaFB0 = createFramebuffer(leniaTex0)
+let leniaFB1 = createFramebuffer(leniaTex1)
+
+// Lenia particle tex coords (only first LENIA_PARTICLE_COUNT)
+const leniaTexCoords = new Float32Array(LENIA_PARTICLE_COUNT * 2)
+for (let i = 0; i < LENIA_PARTICLE_COUNT; i++) {
+    const x = i % LENIA_SIM_RES
+    const y = Math.floor(i / LENIA_SIM_RES)
+    leniaTexCoords[i * 2] = (x + 0.5) / LENIA_SIM_RES
+    leniaTexCoords[i * 2 + 1] = (y + 0.5) / LENIA_SIM_RES
+}
+const leniaParticleBuffer = gl.createBuffer()
+gl.bindBuffer(gl.ARRAY_BUFFER, leniaParticleBuffer)
+gl.bufferData(gl.ARRAY_BUFFER, leniaTexCoords, gl.STATIC_DRAW)
 
 let currentBuffer = 0
 
@@ -296,6 +379,15 @@ const sliders = new SliderManager({
     alignment: { selector: '#alignment', default: 1.0 },
 })
 
+const leniaSliders = new SliderManager({
+    steps: { selector: '#lenia-steps', default: 5 },
+    mu_k: { selector: '#lenia-mu-k', default: 4.0 },
+    sigma_k: { selector: '#lenia-sigma-k', default: 1.0 },
+    mu_g: { selector: '#lenia-mu-g', default: 0.6 },
+    sigma_g: { selector: '#lenia-sigma-g', default: 0.15 },
+    c_rep: { selector: '#lenia-c-rep', default: 1.0 },
+})
+
 setupRecording(canvas, { keyboardShortcut: 'r' })
 
 // ============== MODE SWITCHING ==============
@@ -309,16 +401,31 @@ function switchMode(mode) {
         btn.classList.toggle('active', btn.dataset.piece === mode)
     })
 
-    // Update slider labels based on mode
-    const labels = document.querySelectorAll('#sliders label span')
-    if (mode === 'murmuration') {
-        labels[0].textContent = 'Separation'
-        labels[1].textContent = 'Cohesion'
-        labels[2].textContent = 'Alignment'
-    } else {
-        labels[0].textContent = 'Gravity'
-        labels[1].textContent = 'Damping'
-        labels[2].textContent = 'Bounce'
+    // Toggle slider panels
+    document.getElementById('sliders').style.display = mode === 'lenia' ? 'none' : ''
+    document.getElementById('lenia-sliders').style.display = mode === 'lenia' ? '' : 'none'
+
+    // Update slider labels for murmuration/ragdoll
+    if (mode !== 'lenia') {
+        const labels = document.querySelectorAll('#sliders label span')
+        if (mode === 'murmuration') {
+            labels[0].textContent = 'Separation'
+            labels[1].textContent = 'Cohesion'
+            labels[2].textContent = 'Alignment'
+        } else {
+            labels[0].textContent = 'Gravity'
+            labels[1].textContent = 'Damping'
+            labels[2].textContent = 'Bounce'
+        }
+    }
+
+    // Reset lenia when switching to that mode
+    if (mode === 'lenia') {
+        const newData = initLeniaParticles()
+        gl.bindTexture(gl.TEXTURE_2D, leniaTex0)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, LENIA_SIM_RES, LENIA_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
+        gl.bindTexture(gl.TEXTURE_2D, leniaTex1)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, LENIA_SIM_RES, LENIA_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
     }
 
     // Reset ragdolls when switching to that mode
@@ -341,6 +448,7 @@ document.querySelectorAll('#controls button').forEach(btn => {
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') switchMode('murmuration')
     if (e.key === '2') switchMode('ragdoll')
+    if (e.key === '3') switchMode('lenia')
 })
 
 // ============== RESIZE ==============
@@ -361,6 +469,8 @@ function render(time) {
 
     if (currentMode === 'murmuration') {
         renderMurmuration(t, deltaTime)
+    } else if (currentMode === 'lenia') {
+        renderLenia(t, deltaTime)
     } else {
         renderRagdoll(t, deltaTime)
     }
@@ -543,6 +653,81 @@ function renderRagdoll(t, deltaTime) {
     gl.enableVertexAttribArray(renderPosLoc)
     gl.vertexAttribPointer(renderPosLoc, 2, gl.FLOAT, false, 0, 0)
     gl.drawArrays(gl.TRIANGLES, 0, 6)
+}
+
+function renderLenia(t, deltaTime) {
+    const mu_k = leniaSliders.get('mu_k')
+    const sigma_k = leniaSliders.get('sigma_k')
+    const mu_g = leniaSliders.get('mu_g')
+    const sigma_g = leniaSliders.get('sigma_g')
+    const c_rep = leniaSliders.get('c_rep')
+    const stepsPerFrame = Math.round(leniaSliders.get('steps'))
+    const w_k = computeWk(mu_k, sigma_k)
+    const simDt = 0.1
+
+    const textures = [leniaTex0, leniaTex1]
+    const framebuffers = [leniaFB0, leniaFB1]
+    let readIdx = currentBuffer
+    let writeIdx = 1 - currentBuffer
+
+    gl.viewport(0, 0, LENIA_SIM_RES, LENIA_SIM_RES)
+    gl.useProgram(leniaSimProgram)
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer)
+    const simPosLoc = gl.getAttribLocation(leniaSimProgram, 'a_position')
+    gl.enableVertexAttribArray(simPosLoc)
+    gl.vertexAttribPointer(simPosLoc, 2, gl.FLOAT, false, 0, 0)
+
+    // Set uniforms
+    gl.uniform1f(leniaSimUniforms.dt, simDt)
+    gl.uniform1f(leniaSimUniforms.mu_k, mu_k)
+    gl.uniform1f(leniaSimUniforms.sigma_k, sigma_k)
+    gl.uniform1f(leniaSimUniforms.w_k, w_k)
+    gl.uniform1f(leniaSimUniforms.mu_g, mu_g)
+    gl.uniform1f(leniaSimUniforms.sigma_g, sigma_g)
+    gl.uniform1f(leniaSimUniforms.c_rep, c_rep)
+    gl.uniform1f(leniaSimUniforms.simResolution, LENIA_SIM_RES)
+    gl.uniform1f(leniaSimUniforms.particleCount, LENIA_PARTICLE_COUNT)
+
+    for (let i = 0; i < stepsPerFrame; i++) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffers[writeIdx])
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, textures[readIdx])
+        gl.uniform1i(leniaSimUniforms.positionTex, 0)
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+        let tmp = readIdx
+        readIdx = writeIdx
+        writeIdx = tmp
+    }
+
+    // Render particles
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.viewport(0, 0, canvas.width, canvas.height)
+
+    // Dark background
+    gl.clearColor(0.02, 0.02, 0.05, 1.0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+
+    // Additive blending for gaussian spots
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.ONE, gl.ONE)
+
+    gl.useProgram(leniaRenderProgram)
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, textures[readIdx])
+    gl.uniform1i(leniaRenderUniforms.positionTex, 0)
+    gl.uniform2f(leniaRenderUniforms.resolution, canvas.width, canvas.height)
+    gl.uniform1f(leniaRenderUniforms.pointSize, Math.min(canvas.width, canvas.height) * 0.04)
+    gl.uniform1f(leniaRenderUniforms.viewR, 8.0)
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, leniaParticleBuffer)
+    const texCoordLoc = gl.getAttribLocation(leniaRenderProgram, 'a_texCoord')
+    gl.enableVertexAttribArray(texCoordLoc)
+    gl.vertexAttribPointer(texCoordLoc, 2, gl.FLOAT, false, 0, 0)
+    gl.drawArrays(gl.POINTS, 0, LENIA_PARTICLE_COUNT)
+
+    gl.disable(gl.BLEND)
 }
 
 requestAnimationFrame(render)
