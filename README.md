@@ -21,6 +21,9 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/displace/** - Vertex displacement with image textures
 - **/warps/** - Image warping effects
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
+- **/audio/** - Audio-reactive raymarched terrain
+- **/reaction-diffusion/** - Gray-Scott simulation on a twisted torus
+- **/opart/** - Bridget Riley-inspired optical illusions
 - **/docs/** - Course notes and reference materials
 
 ## Playground Effects
@@ -246,6 +249,7 @@ GPU-accelerated particle simulations using ping-pong framebuffer techniques.
 |------------|-------------|
 | Murmuration | Starling flock using Boids algorithm (separation, alignment, cohesion) |
 | Ragdoll | Verlet integration physics with distance constraints |
+| Lenia | Particle Lenia — continuous artificial life with Gaussian kernel forces |
 
 ### How It Works
 
@@ -270,11 +274,47 @@ Both simulations store particle state in textures and update via fragment shader
 - 8 constraint-solving passes per frame to maintain bone lengths
 - Floor collision and mouse repulsion
 
+**Lenia (Particle Lenia):**
+- 200 particles on a 16×16 state texture
+- N-body Gaussian kernel forces: short-range repulsion + longer-range growth/attraction
+- `peak_f` (Gaussian) computes both value and derivative for force calculation
+- Particles self-organize into clusters and patterns
+- Additive-blended gaussian spot rendering with energy-driven color
+
 ### Controls
 
 - **Murmuration**: Separation, Cohesion, Alignment sliders
 - **Ragdoll**: Gravity, Damping sliders
-- Mouse interaction affects both simulations
+- **Lenia**: Kernel μ/σ, Growth μ/σ, Repulsion, Steps per frame
+- Mouse interaction affects Murmuration and Ragdoll
+
+## Reaction Diffusion
+
+Gray-Scott reaction-diffusion simulation visualized on a 3D twisted torus.
+
+### Techniques
+
+- **Gray-Scott simulation** — 256×256 ping-pong textures with two chemicals (A and B). Chemical B catalyzes its own production from A while both diffuse and decay
+- **Diagonal blur** — Samples at half-texel offsets with `LINEAR` texture filtering for efficient diffusion (no explicit Laplacian stencil)
+- **Parametric torus mesh** — 128×256 grid (33K vertices) with positions computed entirely in the vertex shader from UV coordinates
+- **Displacement mapping** — Chemical B concentration drives tube radius (`mix(0.1, 0.6, v)`), creating organic bumps where patterns form
+- **Helical twist** — Tube angle includes `UV.y * twist` term, twisting the cross-section pattern around the ring
+- **MVP projection** — Perspective camera orbiting the torus, reusing matrix math from the Displace section
+
+### Controls
+
+- **Steps** — Simulation steps per frame (0–20)
+- **Twist** — Helical twist of tube pattern (0–5)
+- **Feed** — Feed rate f (controls pattern type)
+- **Kill** — Kill rate k (controls pattern type)
+- **Space** — Reset simulation
+
+### Pattern Types
+
+Different feed/kill combinations produce different patterns:
+- Default (f=0.023, k=0.054): spots and mitosis
+- Higher feed: stripes and maze-like patterns
+- Lower kill: coral/branching growth
 
 ## Exercises
 

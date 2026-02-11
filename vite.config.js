@@ -19,6 +19,8 @@ export default defineConfig({
         tiles: resolve(__dirname, 'tiles/index.html'),
         landscape: resolve(__dirname, 'landscape/index.html'),
         displace: resolve(__dirname, 'displace/index.html'),
+        audio: resolve(__dirname, 'audio/index.html'),
+        'reaction-diffusion': resolve(__dirname, 'reaction-diffusion/index.html'),
       },
     },
   },
