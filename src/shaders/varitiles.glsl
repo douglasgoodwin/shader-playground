@@ -9,9 +9,9 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/const.glsl"
-#include "lygia/generative/random.glsl"
-#include "lygia/math/rotate2d.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
+#include "/lygia/math/rotate2d.glsl"
 
 // SDF shapes
 float sdCircle(vec2 p, float r) {

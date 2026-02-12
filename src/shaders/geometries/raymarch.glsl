@@ -13,10 +13,10 @@ uniform float u_scale;
 #define MAX_DIST 100.0
 #define SURF_DIST 0.001
 
-#include "../lygia/math/rotate2d.glsl"
-#include "../lygia/sdf/sphereSDF.glsl"
-#include "../lygia/sdf/boxSDF.glsl"
-#include "../lygia/sdf/torusSDF.glsl"
+#include "/lygia/math/rotate2d.glsl"
+#include "/lygia/sdf/sphereSDF.glsl"
+#include "/lygia/sdf/boxSDF.glsl"
+#include "/lygia/sdf/torusSDF.glsl"
 
 // Smooth minimum for blending shapes
 float smin(float a, float b, float k) {

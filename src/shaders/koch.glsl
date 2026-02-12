@@ -10,7 +10,7 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/const.glsl"
+#include "/lygia/math/const.glsl"
 
 // Fold space to create Koch curve pattern
 // Based on the iterative subdivision principle

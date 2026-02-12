@@ -10,10 +10,10 @@ uniform float u_geometry;
 uniform float u_speed;
 uniform int u_hasTexture;
 
-#include "../lygia/math/rotate3dX.glsl"
-#include "../lygia/math/rotate3dY.glsl"
-#include "../lygia/generative/snoise.glsl"
-#include "../lygia/sdf/sphereSDF.glsl"
+#include "/lygia/math/rotate3dX.glsl"
+#include "/lygia/math/rotate3dY.glsl"
+#include "/lygia/generative/snoise.glsl"
+#include "/lygia/sdf/sphereSDF.glsl"
 
 // Smooth min for liquid blob merging - larger k = more blend
 float smin(float a, float b, float k) {

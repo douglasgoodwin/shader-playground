@@ -104,9 +104,9 @@ int findBestChar(vec3 sampleA, vec3 sampleB) {
 // 3D RAYMARCHING (Platonic solids)
 // ============================================================
 
-#include "lygia/math/rotate2d.glsl"
-#include "lygia/sdf/octahedronSDF.glsl"
-#include "lygia/sdf/boxSDF.glsl"
+#include "/lygia/math/rotate2d.glsl"
+#include "/lygia/sdf/octahedronSDF.glsl"
+#include "/lygia/sdf/boxSDF.glsl"
 
 float sdTetrahedron(vec3 p, float r) {
     float md = max(max(-p.x - p.y - p.z, p.x + p.y - p.z),

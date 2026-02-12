@@ -25,7 +25,7 @@ float hexDist(vec2 p) {
     return max(dot(p, normalize(vec2(1.0, 1.732))), p.x);
 }
 
-#include "lygia/generative/random.glsl"
+#include "/lygia/generative/random.glsl"
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;

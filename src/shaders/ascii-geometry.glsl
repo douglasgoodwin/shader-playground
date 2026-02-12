@@ -30,8 +30,8 @@ float sampleChar(int charIdx, vec2 uv) {
 // 3D GEOMETRY
 // ============================================================
 
-#include "lygia/math/rotate2d.glsl"
-#include "lygia/sdf/boxSDF.glsl"
+#include "/lygia/math/rotate2d.glsl"
+#include "/lygia/sdf/boxSDF.glsl"
 
 // Scene: Single rotating cube for clear face demonstration
 vec3 cubePos;

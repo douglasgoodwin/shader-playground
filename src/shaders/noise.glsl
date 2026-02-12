@@ -12,9 +12,9 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/rotate3dX.glsl"
-#include "lygia/math/rotate3dY.glsl"
-#include "lygia/generative/random.glsl"
+#include "/lygia/math/rotate3dX.glsl"
+#include "/lygia/math/rotate3dY.glsl"
+#include "/lygia/generative/random.glsl"
 
 // Smooth 3D noise
 float noise(vec3 p) {

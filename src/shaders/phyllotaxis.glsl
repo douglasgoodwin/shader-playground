@@ -7,8 +7,8 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/const.glsl"
-#include "lygia/color/space/hsv2rgb.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/color/space/hsv2rgb.glsl"
 
 // Soft circle/seed shape
 float seed(vec2 uv, vec2 center, float radius) {

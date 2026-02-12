@@ -10,7 +10,7 @@ uniform float u_contrast;      // Contrast adjustment
 uniform float u_showLines;     // 0 = no lines, 1 = show lines between nearby dots
 uniform float u_invert;        // 0 = dark dots on light, 1 = light dots on dark
 
-#include "lygia/generative/random.glsl"
+#include "/lygia/generative/random.glsl"
 
 // Sample video luminance with aspect ratio correction
 float sampleLuminance(vec2 uv) {

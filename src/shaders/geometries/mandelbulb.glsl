@@ -13,7 +13,7 @@ uniform float u_scale;
 #define MAX_DIST 10.0
 #define SURF_DIST 0.0005
 
-#include "../lygia/math/rotate2d.glsl"
+#include "/lygia/math/rotate2d.glsl"
 
 // Mandelbulb distance estimator
 vec2 mandelbulb(vec3 p) {

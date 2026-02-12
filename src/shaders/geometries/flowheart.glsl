@@ -10,9 +10,9 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/generative/random.glsl"
-#include "../lygia/generative/snoise.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
+#include "/lygia/generative/snoise.glsl"
 
 // FBM using simplex noise, remapped to 0-1 range
 float fbm(vec2 p) {

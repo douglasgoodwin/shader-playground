@@ -12,8 +12,8 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/const.glsl"
-#include "lygia/generative/random.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
 
 // Smooth "spark/firefly" intensity blob with halo
 float blob(vec2 p, vec2 c, float rCore, float rHalo) {

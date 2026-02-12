@@ -10,11 +10,11 @@ uniform float u_geometry;
 uniform float u_speed;
 uniform int u_hasTexture;
 
-#include "../lygia/math/rotate3dX.glsl"
-#include "../lygia/math/rotate3dY.glsl"
-#include "../lygia/sdf/sphereSDF.glsl"
-#include "../lygia/sdf/boxSDF.glsl"
-#include "../lygia/sdf/torusSDF.glsl"
+#include "/lygia/math/rotate3dX.glsl"
+#include "/lygia/math/rotate3dY.glsl"
+#include "/lygia/sdf/sphereSDF.glsl"
+#include "/lygia/sdf/boxSDF.glsl"
+#include "/lygia/sdf/torusSDF.glsl"
 
 // Smooth min for blending shapes
 float smin(float a, float b, float k) {

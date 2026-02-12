@@ -3,7 +3,7 @@ import glsl from 'vite-plugin-glsl'
 import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [glsl()],
+  plugins: [glsl({ root: '/node_modules' })],
   build: {
     rollupOptions: {
       input: {

@@ -11,8 +11,8 @@ uniform float u_geometry;
 uniform float u_speed;
 uniform int u_hasTexture;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/generative/snoise.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/snoise.glsl"
 
 // FBM using simplex noise, remapped to 0-1 range
 float fbm(vec2 p) {

@@ -11,9 +11,9 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/generative/random.glsl"
-#include "../lygia/generative/snoise.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
+#include "/lygia/generative/snoise.glsl"
 
 // Fractal Brownian Motion for water surface
 float fbm(vec2 p, float t) {

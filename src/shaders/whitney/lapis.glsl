@@ -10,7 +10,7 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
+#include "/lygia/math/const.glsl"
 
 // Soft dot function
 float dot_pattern(vec2 uv, vec2 center, float radius) {

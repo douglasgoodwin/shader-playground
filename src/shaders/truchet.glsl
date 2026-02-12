@@ -9,7 +9,7 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/generative/random.glsl"
+#include "/lygia/generative/random.glsl"
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;

@@ -10,8 +10,8 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/generative/random.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
 
 // Character patterns - each is a 5x5 bitmap encoded in bits
 // Returns 1.0 if pixel is "on" for the character

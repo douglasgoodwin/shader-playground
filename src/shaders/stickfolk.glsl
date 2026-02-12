@@ -9,8 +9,8 @@ uniform float u_speed;
 uniform float u_intensity;
 uniform float u_scale;
 
-#include "lygia/math/const.glsl"
-#include "lygia/generative/random.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/generative/random.glsl"
 
 // SDF for a line segment
 float sdSegment(vec2 p, vec2 a, vec2 b, float thick) {

@@ -10,10 +10,10 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/math/rotate3dX.glsl"
-#include "../lygia/math/rotate3dY.glsl"
-#include "../lygia/generative/snoise.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/math/rotate3dX.glsl"
+#include "/lygia/math/rotate3dY.glsl"
+#include "/lygia/generative/snoise.glsl"
 
 #define MAX_STEPS 200
 #define MAX_DIST 10.0

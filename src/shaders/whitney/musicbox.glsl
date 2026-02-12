@@ -10,8 +10,8 @@ uniform float u_speed;
 uniform float u_density;
 uniform float u_harmonics;
 
-#include "../lygia/math/const.glsl"
-#include "../lygia/color/space/hsv2rgb.glsl"
+#include "/lygia/math/const.glsl"
+#include "/lygia/color/space/hsv2rgb.glsl"
 
 // Soft dot with glow
 float dot_shape(vec2 uv, vec2 center, float radius) {
