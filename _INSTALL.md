@@ -38,8 +38,9 @@ npm -v
 Option A – Git (recommended, though you will need to install `git`):
 
 ```sh
-cd ~/_CODE
-git clone https://github.com/douglasgoodwin/shader-playground.git
+mkdir ~/_CODE ;
+cd ~/_CODE ;
+git clone https://github.com/douglasgoodwin/shader-playground.git ;
 cd shader-playground
 ```
 
