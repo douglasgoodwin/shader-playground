@@ -1,4 +1,5 @@
 import './particles.css'
+import { createProgram } from './webgl.js'
 import { setupRecording, MouseTracker, SliderManager } from './controls.js'
 
 // Shader imports - Murmuration
@@ -37,45 +38,14 @@ if (!floatTexExt) {
     console.warn('OES_texture_float not supported, using UNSIGNED_BYTE textures')
 }
 
-// Compile shader
-function compileShader(type, source) {
-    const shader = gl.createShader(type)
-    gl.shaderSource(shader, source)
-    gl.compileShader(shader)
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error('Shader compile error:', gl.getShaderInfoLog(shader))
-        gl.deleteShader(shader)
-        return null
-    }
-    return shader
-}
-
-// Create program
-function createProgram(vertexSource, fragmentSource) {
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource)
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource)
-    if (!vertexShader || !fragmentShader) return null
-
-    const program = gl.createProgram()
-    gl.attachShader(program, vertexShader)
-    gl.attachShader(program, fragmentShader)
-    gl.linkProgram(program)
-
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('Program link error:', gl.getProgramInfoLog(program))
-        return null
-    }
-    return program
-}
-
 // ============== MURMURATION ==============
 const SIM_RESOLUTION = 80
 const PARTICLE_COUNT = SIM_RESOLUTION * SIM_RESOLUTION
 
-const velocityProgram = createProgram(simVertexShader, simVelocityShader)
-const positionProgram = createProgram(simVertexShader, simPositionShader)
-const renderProgram = createProgram(renderVertexShader, renderFragmentShader)
-const backgroundProgram = createProgram(basicVertexShader, backgroundShader)
+const velocityProgram = createProgram(gl, simVertexShader, simVelocityShader)
+const positionProgram = createProgram(gl, simVertexShader, simPositionShader)
+const renderProgram = createProgram(gl, renderVertexShader, renderFragmentShader)
+const backgroundProgram = createProgram(gl, basicVertexShader, backgroundShader)
 
 const velocityUniforms = {
     positionTex: gl.getUniformLocation(velocityProgram, 'u_positionTex'),
@@ -113,8 +83,8 @@ const backgroundUniforms = {
 
 // ============== RAGDOLL ==============
 const RAGDOLL_SIM_RES = 64  // 64 rows = 64 ragdolls, 16 particles each
-const ragdollSimProgram = createProgram(simVertexShader, ragdollSimShader)
-const ragdollRenderProgram = createProgram(basicVertexShader, ragdollRenderShader)
+const ragdollSimProgram = createProgram(gl, simVertexShader, ragdollSimShader)
+const ragdollRenderProgram = createProgram(gl, basicVertexShader, ragdollRenderShader)
 
 const ragdollSimUniforms = {
     positionTex: gl.getUniformLocation(ragdollSimProgram, 'u_positionTex'),
@@ -149,8 +119,8 @@ function computeWk(mu_k, sigma_k) {
     return 1.0 / (2.0 * Math.PI * sum)
 }
 
-const leniaSimProgram = createProgram(simVertexShader, leniaSimShader)
-const leniaRenderProgram = createProgram(leniaRenderVertexShader, leniaRenderShader)
+const leniaSimProgram = createProgram(gl, simVertexShader, leniaSimShader)
+const leniaRenderProgram = createProgram(gl, leniaRenderVertexShader, leniaRenderShader)
 
 const leniaSimUniforms = {
     positionTex: gl.getUniformLocation(leniaSimProgram, 'u_positionTex'),
