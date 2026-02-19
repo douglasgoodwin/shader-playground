@@ -36,6 +36,16 @@ export class AudioEngine {
         // Mic
         this._micStream = null
         this._micSource = null
+
+        // File playback
+        this.isFileActive = false
+        this._fileBuffer = null
+        this._fileSource = null
+        this._fileGain = null
+        this._fileStartTime = 0
+        this._filePauseOffset = 0
+        this._fileIsPlaying = false
+        this._fileName = ''
     }
 
     start() {
@@ -62,14 +72,19 @@ export class AudioEngine {
 
     stop() {
         if (!this.isPlaying) return
-        this._stopArp()
-        this._stopDrone()
+        this._stopSynth()
+        this.stopFile()
         this.disableMic()
         if (this.ctx) {
             this.ctx.close()
             this.ctx = null
         }
         this.isPlaying = false
+    }
+
+    _stopSynth() {
+        this._stopDrone()
+        this._stopArp()
     }
 
     _startDrone() {
@@ -196,9 +211,8 @@ export class AudioEngine {
     async enableMic() {
         if (this.isMicActive || !this.ctx) return
         try {
-            // Stop synth
-            this._stopDrone()
-            this._stopArp()
+            this._stopSynth()
+            this.stopFile()
 
             this._micStream = await navigator.mediaDevices.getUserMedia({ audio: true })
             this._micSource = this.ctx.createMediaStreamSource(this._micStream)
@@ -221,8 +235,8 @@ export class AudioEngine {
         }
         this.isMicActive = false
 
-        // Restart synth if still playing
-        if (this.ctx && this.ctx.state !== 'closed') {
+        // Restart synth if still playing (but not if file is active)
+        if (!this.isFileActive && this.ctx && this.ctx.state !== 'closed') {
             this._startDrone()
             this._startArp()
         }
@@ -248,6 +262,87 @@ export class AudioEngine {
         }
         if (this._droneLFOGain) {
             this._droneLFOGain.gain.value = 40 * value
+        }
+    }
+
+    async loadFile(file) {
+        if (!this.ctx) return
+        // Decode first so a bad file doesn't leave silence
+        let buffer
+        try {
+            const arrayBuffer = await file.arrayBuffer()
+            buffer = await this.ctx.decodeAudioData(arrayBuffer)
+        } catch (e) {
+            console.error('Failed to decode audio file:', e)
+            return
+        }
+
+        // Stop other sources
+        this._stopSynth()
+        this.disableMic()
+        // Stop previous file if any
+        this._teardownFile()
+
+        this._fileBuffer = buffer
+        this._fileName = file.name
+        this._filePauseOffset = 0
+        this.isFileActive = true
+
+        this._fileGain = this.ctx.createGain()
+        this._fileGain.gain.value = 1.0
+        this._fileGain.connect(this.masterGain)
+
+        this._playFileFromOffset(0)
+    }
+
+    _playFileFromOffset(offset) {
+        if (!this._fileBuffer || !this.ctx) return
+        this._fileSource = this.ctx.createBufferSource()
+        this._fileSource.buffer = this._fileBuffer
+        this._fileSource.loop = true
+        this._fileSource.connect(this._fileGain)
+        this._fileSource.start(0, offset)
+        this._fileStartTime = this.ctx.currentTime - offset
+        this._fileIsPlaying = true
+    }
+
+    pauseFile() {
+        if (!this._fileIsPlaying || !this._fileSource) return
+        this._filePauseOffset = (this.ctx.currentTime - this._fileStartTime) % this._fileBuffer.duration
+        this._fileSource.stop()
+        this._fileSource = null
+        this._fileIsPlaying = false
+    }
+
+    resumeFile() {
+        if (this._fileIsPlaying || !this._fileBuffer) return
+        this._playFileFromOffset(this._filePauseOffset)
+    }
+
+    _teardownFile() {
+        if (this._fileSource) {
+            this._fileSource.stop()
+            this._fileSource = null
+        }
+        if (this._fileGain) {
+            this._fileGain.disconnect()
+            this._fileGain = null
+        }
+        this._fileIsPlaying = false
+    }
+
+    stopFile() {
+        if (!this.isFileActive) return
+        this._teardownFile()
+        this._fileBuffer = null
+        this._fileName = ''
+        this._filePauseOffset = 0
+        this.isFileActive = false
+
+        // Restart synth if engine is still running
+        if (this.ctx && this.ctx.state !== 'closed') {
+            this._startDrone()
+            this._startArp()
         }
     }
 

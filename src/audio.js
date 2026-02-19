@@ -117,6 +117,12 @@ const startBtn = document.querySelector('#start-audio')
 const micBtn = document.querySelector('#mic-toggle')
 const tempoSlider = document.querySelector('#tempo')
 const fmDepthSlider = document.querySelector('#fmDepth')
+const fileUploadBtn = document.querySelector('#file-upload-btn')
+const fileInput = document.querySelector('#file-input')
+const filePauseBtn = document.querySelector('#file-pause-btn')
+const fileNameSpan = document.querySelector('#file-name')
+const tempoLabel = tempoSlider.closest('label')
+const fmDepthLabel = fmDepthSlider.closest('label')
 
 startBtn.addEventListener('click', () => {
     audioEngine.start()
@@ -131,6 +137,7 @@ micBtn.addEventListener('click', () => {
         if (!audioEngine.isPlaying) audioEngine.start()
         audioEngine.enableMic()
         micBtn.classList.add('active')
+        updateFileUI()
     }
 })
 
@@ -142,6 +149,48 @@ fmDepthSlider.addEventListener('input', (e) => {
     audioEngine.setModDepth(parseFloat(e.target.value))
 })
 
+function updateFileUI() {
+    if (audioEngine.isFileActive) {
+        filePauseBtn.classList.remove('hidden')
+        filePauseBtn.textContent = audioEngine._fileIsPlaying ? 'Pause' : 'Resume'
+        fileNameSpan.textContent = audioEngine._fileName
+        tempoLabel.style.display = 'none'
+        fmDepthLabel.style.display = 'none'
+    } else {
+        filePauseBtn.classList.add('hidden')
+        fileNameSpan.textContent = ''
+        tempoLabel.style.display = ''
+        fmDepthLabel.style.display = ''
+    }
+}
+
+fileUploadBtn.addEventListener('click', () => {
+    if (!audioEngine.isPlaying) audioEngine.start()
+    fileInput.click()
+})
+
+fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0]
+    if (!file) return
+    if (!audioEngine.isPlaying) {
+        audioEngine.start()
+        startBtn.classList.add('hidden')
+    }
+    await audioEngine.loadFile(file)
+    micBtn.classList.remove('active')
+    updateFileUI()
+    fileInput.value = ''
+})
+
+filePauseBtn.addEventListener('click', () => {
+    if (audioEngine._fileIsPlaying) {
+        audioEngine.pauseFile()
+    } else {
+        audioEngine.resumeFile()
+    }
+    updateFileUI()
+})
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (pieceKeys[e.key]) {
@@ -149,6 +198,13 @@ document.addEventListener('keydown', (e) => {
     }
     if (e.key === 'r' || e.key === 'R') {
         recorder.toggle()
+    }
+    if (e.key === 'f' || e.key === 'F') {
+        fileUploadBtn.click()
+    }
+    if (e.key === ' ' && audioEngine.isFileActive) {
+        e.preventDefault()
+        filePauseBtn.click()
     }
 })
 

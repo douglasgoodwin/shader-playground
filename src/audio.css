@@ -104,6 +104,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   z-index: 100;
 }
@@ -242,4 +244,15 @@ body {
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
   50% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); }
+}
+
+#file-name {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  align-self: center;
 }
