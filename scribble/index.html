@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scribble Circles</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+
+    <div id="controls" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:100;">
+      <button data-scheme="red" class="active" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">1</span> Red</button>
+      <button data-scheme="cyan" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">2</span> Cyan</button>
+    </div>
+
+    <div id="image-controls" style="position:fixed; bottom:100px; right:20px; z-index:1000;">
+      <div id="drop-zone" style="width:200px; padding:24px; border:2px dashed rgba(255,255,255,0.5); border-radius:12px; background:rgba(0,0,0,0.7); color:white; text-align:center; cursor:pointer; font-family:system-ui,sans-serif;">
+        <p>Drop image or video<br><span style="font-size:11px; opacity:0.6;">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" style="display:none;" />
+      </div>
+      <div class="url-row" style="display:flex; gap:8px; margin-top:12px;">
+        <input type="text" id="url-input" placeholder="Or paste image URL..." style="flex:1; padding:8px; border:1px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(0,0,0,0.7); color:white; font-size:12px;" />
+        <button id="load-url" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(0,0,0,0.7); color:white; cursor:pointer;">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+    </div>
+
+    <div id="sliders">
+      <label>
+        <span>Density</span>
+        <input type="range" id="density" min="0.3" max="3" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Circle Size</span>
+        <input type="range" id="circleSize" min="0.3" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Contrast</span>
+        <input type="range" id="contrast" min="0.5" max="3" step="0.1" value="1.5">
+      </label>
+      <label>
+        <span>Jitter</span>
+        <input type="range" id="jitter" min="0" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Ellipse</span>
+        <input type="range" id="ellipse" min="1" max="4" step="0.1" value="1">
+      </label>
+    </div>
+
+    <script type="module" src="/src/scribble.js"></script>
+  </body>
+</html>

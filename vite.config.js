@@ -21,6 +21,7 @@ export default defineConfig({
         displace: resolve(__dirname, 'displace/index.html'),
         audio: resolve(__dirname, 'audio/index.html'),
         'reaction-diffusion': resolve(__dirname, 'reaction-diffusion/index.html'),
+        scribble: resolve(__dirname, 'scribble/index.html'),
       },
     },
   },
