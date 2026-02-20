@@ -9,6 +9,7 @@ uniform float u_circleSize;
 uniform float u_contrast;
 uniform float u_jitter;
 uniform float u_ellipse;    // 1.0 = circle, >1 = elongated along edges
+uniform float u_strokeWeight;
 uniform vec3 u_bgColor;
 
 #include "/lygia/generative/random.glsl"
@@ -101,7 +102,7 @@ void main() {
     float cellPx = 40.0 / u_density;
 
     float aa = 1.2;
-    float strokeWidth = 2.5;
+    float strokeWidth = u_strokeWeight;
     const int NUM_CIRCLES = 5;
 
     // Compute gradient ONCE per pixel at multiple scales (12 texture reads)
@@ -115,9 +116,9 @@ void main() {
     // In completely flat areas (no edge detected at any scale), stays circular
     float ratio = mix(1.0, u_ellipse, edgeStrength);
 
-    // Search +-2 cells (25 cells × 5 circles = 125 iterations, 25 texture reads)
-    for (int dy = -2; dy <= 2; dy++) {
-        for (int dx = -2; dx <= 2; dx++) {
+    // Search +-3 cells (49 cells × 5 circles, 49 texture reads for luminance)
+    for (int dy = -3; dy <= 3; dy++) {
+        for (int dx = -3; dx <= 3; dx++) {
             vec2 cellID = floor(pixel / cellPx) + vec2(float(dx), float(dy));
             vec2 cellOrigin = cellID * cellPx;
             vec2 cellCenter = cellOrigin + cellPx * 0.5;
@@ -153,7 +154,7 @@ void main() {
 
                 vec2 center = cellCenter + baseOffset + animOffset;
 
-                float baseRadius = darkness * cellPx * (0.6 + seedVec.x * 0.8) * u_circleSize;
+                float baseRadius = darkness * cellPx * (1.0 + seedVec.x * 1.5) * u_circleSize;
                 float rWobble = sin(u_time * (1.5 + seed * 2.0) + kf * 1.7) * cellPx * 0.06 * u_jitter;
                 float radius = max(baseRadius + rWobble, 2.0);
 

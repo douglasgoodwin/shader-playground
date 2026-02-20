@@ -13,7 +13,7 @@ export class CanvasRecorder {
         this.startTime = 0
         this.frameCount = 0
         this.fps = options.fps || 60
-        this.bitrate = options.bitrate || 8_000_000 // 8 Mbps
+        this.bitrate = options.bitrate || 30_000_000 // 30 Mbps — high for fine detail
         this.onStateChange = options.onStateChange || (() => {})
 
         // Check WebCodecs support
@@ -62,7 +62,9 @@ export class CanvasRecorder {
             width: encodedWidth,
             height: encodedHeight,
             bitrate: this.bitrate,
+            bitrateMode: 'constant', // avoid starving complex frames
             framerate: this.fps,
+            latencyMode: 'quality', // prioritize quality over encode speed
             hardwareAcceleration: 'prefer-hardware',
         }
 
@@ -105,8 +107,8 @@ export class CanvasRecorder {
                     duration: 1_000_000 / this.fps,
                 })
 
-                // Request keyframe every 2 seconds
-                const keyFrame = this.frameCount % (this.fps * 2) === 0
+                // Request keyframe every 1 second (helps preserve fine detail)
+                const keyFrame = this.frameCount % this.fps === 0
                 this.videoEncoder.encode(frame, { keyFrame })
                 frame.close()
                 bitmap.close()

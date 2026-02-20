@@ -14,8 +14,8 @@
     <button id="record-btn" title="Record video (R)"></button>
 
     <div id="controls" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:100;">
-      <button data-scheme="red" class="active" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">1</span> Red</button>
-      <button data-scheme="cyan" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">2</span> Cyan</button>
+      <button data-effect="circles" class="active" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">1</span> Circles</button>
+      <button data-effect="lines" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">2</span> Lines</button>
     </div>
 
     <div id="image-controls" style="position:fixed; bottom:100px; right:20px; z-index:1000;">
@@ -46,6 +46,10 @@
       <label>
         <span>Jitter</span>
         <input type="range" id="jitter" min="0" max="2" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Stroke</span>
+        <input type="range" id="strokeWeight" min="0.5" max="6" step="0.1" value="2.5">
       </label>
       <label>
         <span>Ellipse</span>

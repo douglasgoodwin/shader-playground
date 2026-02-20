@@ -3,6 +3,7 @@ import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 import scribbleShader from './shaders/scribble.glsl'
+import linesShader from './shaders/scribble-lines.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })
@@ -12,54 +13,72 @@ if (!gl) {
     throw new Error('WebGL not supported')
 }
 
-const program = createProgram(gl, vertexShader, scribbleShader)
-if (!program) {
-    throw new Error('Failed to create shader program')
+// Shaders
+const shaders = {
+    circles: scribbleShader,
+    lines: linesShader,
 }
 
-gl.useProgram(program)
-createFullscreenQuad(gl, program)
+// Create programs and uniform locations for each shader
+const programs = {}
+const allUniforms = {}
 
-// Uniform locations
-const uniforms = {
-    resolution: gl.getUniformLocation(program, 'u_resolution'),
-    time: gl.getUniformLocation(program, 'u_time'),
-    texture: gl.getUniformLocation(program, 'u_texture'),
-    textureSize: gl.getUniformLocation(program, 'u_textureSize'),
-    density: gl.getUniformLocation(program, 'u_density'),
-    circleSize: gl.getUniformLocation(program, 'u_circleSize'),
-    contrast: gl.getUniformLocation(program, 'u_contrast'),
-    jitter: gl.getUniformLocation(program, 'u_jitter'),
-    ellipse: gl.getUniformLocation(program, 'u_ellipse'),
-    bgColor: gl.getUniformLocation(program, 'u_bgColor'),
+const uniformNames = [
+    'u_resolution', 'u_time', 'u_texture', 'u_textureSize',
+    'u_density', 'u_circleSize', 'u_contrast', 'u_jitter',
+    'u_ellipse', 'u_strokeWeight', 'u_bgColor',
+]
+
+for (const [name, fragmentShader] of Object.entries(shaders)) {
+    const prog = createProgram(gl, vertexShader, fragmentShader)
+    if (prog) {
+        programs[name] = prog
+        const locs = {}
+        for (const u of uniformNames) {
+            locs[u] = gl.getUniformLocation(prog, u)
+        }
+        allUniforms[name] = locs
+    }
 }
 
-// Sliders
-const sliders = new SliderManager({
-    density:    { selector: '#density',    default: 1.0 },
-    circleSize: { selector: '#circleSize', default: 1.0 },
-    contrast:   { selector: '#contrast',   default: 1.5 },
-    jitter:     { selector: '#jitter',     default: 1.0 },
-    ellipse:    { selector: '#ellipse',    default: 1.0 },
-})
+let currentEffect = 'circles'
+let currentProgram = programs[currentEffect]
+gl.useProgram(currentProgram)
+createFullscreenQuad(gl, currentProgram)
 
-// Color schemes
-const schemes = {
-    red:  [0.9, 0.05, 0.05],
-    cyan: [0.05, 0.9, 0.9],
-}
-let bgColor = schemes.red
+function switchEffect(name) {
+    if (!programs[name]) return
+    currentEffect = name
+    currentProgram = programs[name]
+    gl.useProgram(currentProgram)
+    createFullscreenQuad(gl, currentProgram)
 
-function switchScheme(name) {
-    bgColor = schemes[name]
+    const u = allUniforms[currentEffect]
+    if (u['u_resolution']) {
+        gl.uniform2f(u['u_resolution'], canvas.width, canvas.height)
+    }
+
     document.querySelectorAll('#controls button').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.scheme === name)
+        btn.classList.toggle('active', btn.dataset.effect === name)
     })
 }
 
 document.querySelectorAll('#controls button').forEach(btn => {
-    btn.addEventListener('click', () => switchScheme(btn.dataset.scheme))
+    btn.addEventListener('click', () => switchEffect(btn.dataset.effect))
 })
+
+// Sliders
+const sliders = new SliderManager({
+    density:      { selector: '#density',      default: 1.0 },
+    circleSize:   { selector: '#circleSize',   default: 1.0 },
+    contrast:     { selector: '#contrast',     default: 1.5 },
+    jitter:       { selector: '#jitter',       default: 1.0 },
+    ellipse:      { selector: '#ellipse',      default: 1.0 },
+    strokeWeight: { selector: '#strokeWeight', default: 2.5 },
+})
+
+// Background color (red for both effects)
+const bgColor = [0.9, 0.05, 0.05]
 
 // Recording
 const recorder = setupRecording(canvas)
@@ -68,7 +87,7 @@ const recorder = setupRecording(canvas)
 let imageTexture = null
 let textureSize = { width: 1, height: 1 }
 let hasTexture = false
-let videoElement = null // non-null when source is a playing video
+let videoElement = null
 
 // UI elements
 const dropZone = document.querySelector('#drop-zone')
@@ -172,7 +191,7 @@ function loadImageUrl(url) {
     img.src = url
 }
 
-// Event listeners — image loading (same pattern as warps)
+// Event listeners — image loading
 dropZone.addEventListener('click', () => fileInput.click())
 
 dropZone.addEventListener('dragover', (e) => {
@@ -205,8 +224,8 @@ urlInput.addEventListener('keydown', (e) => {
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT') return
-    if (e.key === '1') switchScheme('red')
-    if (e.key === '2') switchScheme('cyan')
+    if (e.key === '1') switchEffect('circles')
+    if (e.key === '2') switchEffect('lines')
     if (e.key === 'r' || e.key === 'R') recorder.toggle()
 })
 
@@ -215,7 +234,11 @@ function resize() {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     gl.viewport(0, 0, canvas.width, canvas.height)
-    gl.uniform2f(uniforms.resolution, canvas.width, canvas.height)
+
+    const u = allUniforms[currentEffect]
+    if (u['u_resolution']) {
+        gl.uniform2f(u['u_resolution'], canvas.width, canvas.height)
+    }
 }
 
 window.addEventListener('resize', resize)
@@ -224,22 +247,30 @@ resize()
 // Render loop
 function render(time) {
     const t = time * 0.001
+    const u = allUniforms[currentEffect]
 
-    gl.uniform1f(uniforms.time, t)
-    gl.uniform3f(uniforms.bgColor, bgColor[0], bgColor[1], bgColor[2])
-    sliders.applyUniforms(gl, uniforms)
+    gl.uniform1f(u['u_time'], t)
+    gl.uniform3f(u['u_bgColor'], bgColor[0], bgColor[1], bgColor[2])
+
+    // Apply sliders via uniform names
+    const params = sliders.params
+    if (u['u_density'])      gl.uniform1f(u['u_density'], params.density)
+    if (u['u_circleSize'])   gl.uniform1f(u['u_circleSize'], params.circleSize)
+    if (u['u_contrast'])     gl.uniform1f(u['u_contrast'], params.contrast)
+    if (u['u_jitter'])       gl.uniform1f(u['u_jitter'], params.jitter)
+    if (u['u_ellipse'])      gl.uniform1f(u['u_ellipse'], params.ellipse)
+    if (u['u_strokeWeight']) gl.uniform1f(u['u_strokeWeight'], params.strokeWeight)
 
     if (hasTexture && imageTexture) {
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, imageTexture)
 
-        // Re-upload texture from video each frame
         if (videoElement && videoElement.readyState >= 2) {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement)
         }
 
-        gl.uniform1i(uniforms.texture, 0)
-        gl.uniform2f(uniforms.textureSize, textureSize.width, textureSize.height)
+        gl.uniform1i(u['u_texture'], 0)
+        gl.uniform2f(u['u_textureSize'], textureSize.width, textureSize.height)
     }
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
