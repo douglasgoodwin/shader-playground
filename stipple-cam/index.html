@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stipple - Hodgin Style</title>
+    <title>Stipple Cam</title>
   </head>
   <body>
     <canvas id="canvas"></canvas>
@@ -13,27 +13,8 @@
     </nav>
     <button id="record-btn" title="Record video (R)"></button>
 
-    <div id="mode-selector">
-      <button data-mode="video" class="active"><span class="key">1</span> Video</button>
-      <button data-mode="image"><span class="key">2</span> Image</button>
-    </div>
-
-    <div id="video-controls" class="mode-controls">
-      <div class="drop-zone" id="video-drop-zone">
-        <p>Drop a video here or click to select</p>
-        <input type="file" id="video-file-input" accept="video/*" />
-      </div>
-    </div>
-
-    <div id="image-controls" class="mode-controls">
-      <div class="drop-zone" id="drop-zone">
-        <p>Drop an image here or click to select</p>
-        <input type="file" id="file-input" accept="image/*" />
-      </div>
-      <div class="url-input">
-        <input type="text" id="url-input" placeholder="Or paste image URL..." />
-        <button id="load-url">Load</button>
-      </div>
+    <div id="webcam-status" class="hidden">
+      <p>Requesting webcam access...</p>
     </div>
 
     <div id="sliders">
@@ -59,8 +40,6 @@
       </label>
     </div>
 
-    <div id="loading" class="hidden">Loading...</div>
-
-    <script type="module" src="/src/stipple.js"></script>
+    <script type="module" src="/src/stipple-cam.js"></script>
   </body>
 </html>

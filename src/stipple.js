@@ -50,14 +50,16 @@ const recorder = setupRecording(canvas, { keyboardShortcut: null })
 let videoTexture = null
 let videoElement = null
 let videoSize = { width: 640, height: 480 }
-let currentMode = 'webcam'
-let webcamReady = false
+let currentMode = 'video'
+let videoReady = false
 let imageLoaded = false
 
 // UI Elements
 const modeSelector = document.querySelector('#mode-selector')
+const videoControls = document.querySelector('#video-controls')
 const imageControls = document.querySelector('#image-controls')
-const webcamStatus = document.querySelector('#webcam-status')
+const videoDropZone = document.querySelector('#video-drop-zone')
+const videoFileInput = document.querySelector('#video-file-input')
 const dropZone = document.querySelector('#drop-zone')
 const fileInput = document.querySelector('#file-input')
 const urlInput = document.querySelector('#url-input')
@@ -78,43 +80,36 @@ function createVideoTexture() {
     return videoTexture
 }
 
-// Initialize webcam
-async function initWebcam() {
-    webcamStatus.classList.remove('hidden')
+// Load a video file and use it as the texture source
+function loadVideoFile(file) {
+    loadingEl.classList.remove('hidden')
 
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                facingMode: 'user'
-            }
-        })
+    const url = URL.createObjectURL(file)
+    const video = document.createElement('video')
+    video.src = url
+    video.loop = true
+    video.muted = true
+    video.playsInline = true
 
-        videoElement = document.createElement('video')
-        videoElement.srcObject = stream
-        videoElement.playsInline = true
-        videoElement.muted = true
-
-        await videoElement.play()
-
-        videoSize.width = videoElement.videoWidth
-        videoSize.height = videoElement.videoHeight
-
+    video.addEventListener('loadeddata', () => {
+        videoElement = video
+        videoSize = { width: video.videoWidth, height: video.videoHeight }
         createVideoTexture()
-        webcamReady = true
-        webcamStatus.classList.add('hidden')
+        videoReady = true
+        loadingEl.classList.add('hidden')
+        video.play()
+    })
 
-        console.log('Webcam initialized:', videoSize.width, 'x', videoSize.height)
-    } catch (err) {
-        console.error('Webcam error:', err)
-        webcamStatus.innerHTML = '<p>Could not access webcam. Try image mode instead.</p>'
-    }
+    video.addEventListener('error', () => {
+        alert('Failed to load video')
+        loadingEl.classList.add('hidden')
+        URL.revokeObjectURL(url)
+    })
 }
 
-// Update video texture from webcam
+// Update video texture from playing video
 function updateVideoTexture() {
-    if (!webcamReady || !videoElement || videoElement.readyState < 2) return
+    if (!videoReady || !videoElement || videoElement.readyState < 2) return
 
     gl.bindTexture(gl.TEXTURE_2D, videoTexture)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement)
@@ -185,20 +180,14 @@ function switchMode(mode) {
         btn.classList.toggle('active', btn.dataset.mode === mode)
     })
 
-    if (mode === 'webcam') {
+    if (mode === 'video') {
+        videoControls.style.display = 'flex'
         imageControls.style.display = 'none'
-        webcamStatus.classList.remove('hidden')
-        if (!webcamReady) {
-            initWebcam()
-        } else {
-            webcamStatus.classList.add('hidden')
-        }
     } else {
+        videoControls.style.display = 'none'
         imageControls.style.display = 'flex'
-        webcamStatus.classList.add('hidden')
         if (!imageLoaded) {
             imageControls.classList.remove('loaded')
-            // Load a default portrait image
             loadImageFromURL('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/800px-Golde33443.jpg')
         }
     }
@@ -209,6 +198,31 @@ modeSelector.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => switchMode(btn.dataset.mode))
 })
 
+// Video file input
+videoFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0]
+    if (file) loadVideoFile(file)
+})
+
+videoDropZone.addEventListener('click', () => videoFileInput.click())
+
+videoDropZone.addEventListener('dragover', (e) => {
+    e.preventDefault()
+    videoDropZone.classList.add('dragover')
+})
+
+videoDropZone.addEventListener('dragleave', () => {
+    videoDropZone.classList.remove('dragover')
+})
+
+videoDropZone.addEventListener('drop', (e) => {
+    e.preventDefault()
+    videoDropZone.classList.remove('dragover')
+    const file = e.dataTransfer.files[0]
+    if (file) loadVideoFile(file)
+})
+
+// Image file input
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]
     if (file) loadImageFromFile(file)
@@ -240,7 +254,7 @@ urlInput.addEventListener('keypress', (e) => {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    if (e.key === '1') switchMode('webcam')
+    if (e.key === '1') switchMode('video')
     if (e.key === '2') switchMode('image')
     if (e.key === 'l' || e.key === 'L') {
         const newValue = !sliders.get('showLines')
@@ -267,19 +281,19 @@ window.addEventListener('resize', resize)
 resize()
 
 // Initialize
-switchMode('webcam')
+switchMode('video')
 
 // Render loop
 function render(time) {
     const t = time * 0.001
 
-    // Update video texture if in webcam mode
-    if (currentMode === 'webcam' && webcamReady) {
+    // Update video texture if in video mode
+    if (currentMode === 'video' && videoReady) {
         updateVideoTexture()
     }
 
     // Only render if we have a video source
-    if ((currentMode === 'webcam' && webcamReady) || (currentMode === 'image' && imageLoaded)) {
+    if ((currentMode === 'video' && videoReady) || (currentMode === 'image' && imageLoaded)) {
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, videoTexture)
         gl.uniform1i(uniforms.video, 0)
