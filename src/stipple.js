@@ -46,20 +46,19 @@ const sliders = new SliderManager({
 // Recording
 const recorder = setupRecording(canvas, { keyboardShortcut: null })
 
-// Video/image texture
+// Texture state
 let videoTexture = null
 let videoElement = null
 let videoSize = { width: 640, height: 480 }
-let currentMode = 'video'
-let videoReady = false
-let imageLoaded = false
+let currentMode = 'webcam'
+let hasTexture = false
+let webcamReady = false
+let webcamElement = null
 
 // UI Elements
 const modeSelector = document.querySelector('#mode-selector')
-const videoControls = document.querySelector('#video-controls')
-const imageControls = document.querySelector('#image-controls')
-const videoDropZone = document.querySelector('#video-drop-zone')
-const videoFileInput = document.querySelector('#video-file-input')
+const uploadControls = document.querySelector('#upload-controls')
+const webcamStatus = document.querySelector('#webcam-status')
 const dropZone = document.querySelector('#drop-zone')
 const fileInput = document.querySelector('#file-input')
 const urlInput = document.querySelector('#url-input')
@@ -80,6 +79,46 @@ function createVideoTexture() {
     return videoTexture
 }
 
+// Initialize webcam
+async function initWebcam() {
+    webcamStatus.classList.remove('hidden')
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                facingMode: 'user'
+            }
+        })
+
+        webcamElement = document.createElement('video')
+        webcamElement.srcObject = stream
+        webcamElement.playsInline = true
+        webcamElement.muted = true
+
+        await webcamElement.play()
+
+        videoSize.width = webcamElement.videoWidth
+        videoSize.height = webcamElement.videoHeight
+
+        createVideoTexture()
+        webcamReady = true
+        webcamStatus.classList.add('hidden')
+    } catch (err) {
+        console.error('Webcam error:', err)
+        webcamStatus.innerHTML = '<p>Could not access webcam.</p>'
+    }
+}
+
+// Update texture from webcam
+function updateWebcamTexture() {
+    if (!webcamReady || !webcamElement || webcamElement.readyState < 2) return
+
+    gl.bindTexture(gl.TEXTURE_2D, videoTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, webcamElement)
+}
+
 // Load a video file and use it as the texture source
 function loadVideoFile(file) {
     loadingEl.classList.remove('hidden')
@@ -95,8 +134,9 @@ function loadVideoFile(file) {
         videoElement = video
         videoSize = { width: video.videoWidth, height: video.videoHeight }
         createVideoTexture()
-        videoReady = true
+        hasTexture = true
         loadingEl.classList.add('hidden')
+        uploadControls.classList.add('loaded')
         video.play()
     })
 
@@ -107,24 +147,33 @@ function loadVideoFile(file) {
     })
 }
 
-// Update video texture from playing video
-function updateVideoTexture() {
-    if (!videoReady || !videoElement || videoElement.readyState < 2) return
-
+// Create texture from image (static)
+function createTextureFromImage(image) {
+    videoElement = null
+    createVideoTexture()
     gl.bindTexture(gl.TEXTURE_2D, videoTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+
+    videoSize.width = image.width
+    videoSize.height = image.height
+    hasTexture = true
+    uploadControls.classList.add('loaded')
 }
 
-// Load image from file
-function loadImageFromFile(file) {
+// Load file (image or video)
+function loadFile(file) {
+    if (file.type.startsWith('video/')) {
+        loadVideoFile(file)
+        return
+    }
     if (!file.type.startsWith('image/')) {
-        alert('Please select an image file')
+        alert('Please select an image or video file')
         return
     }
 
     loadingEl.classList.remove('hidden')
-
     const reader = new FileReader()
+
     reader.onload = (e) => {
         const img = new Image()
         img.onload = () => {
@@ -137,6 +186,7 @@ function loadImageFromFile(file) {
         }
         img.src = e.target.result
     }
+
     reader.readAsDataURL(file)
 }
 
@@ -159,19 +209,6 @@ function loadImageFromURL(url) {
     img.src = url
 }
 
-// Create texture from image
-function createTextureFromImage(image) {
-    createVideoTexture()
-    gl.bindTexture(gl.TEXTURE_2D, videoTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-
-    videoSize.width = image.width
-    videoSize.height = image.height
-    imageLoaded = true
-
-    imageControls.classList.add('loaded')
-}
-
 // Mode switching
 function switchMode(mode) {
     currentMode = mode
@@ -180,15 +217,17 @@ function switchMode(mode) {
         btn.classList.toggle('active', btn.dataset.mode === mode)
     })
 
-    if (mode === 'video') {
-        videoControls.style.display = 'flex'
-        imageControls.style.display = 'none'
-    } else {
-        videoControls.style.display = 'none'
-        imageControls.style.display = 'flex'
-        if (!imageLoaded) {
-            imageControls.classList.remove('loaded')
-            loadImageFromURL('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Golde33443.jpg/800px-Golde33443.jpg')
+    uploadControls.style.display = 'none'
+    webcamStatus.classList.add('hidden')
+
+    if (mode === 'webcam') {
+        if (!webcamReady) {
+            initWebcam()
+        }
+    } else if (mode === 'upload') {
+        uploadControls.style.display = 'flex'
+        if (!hasTexture) {
+            uploadControls.classList.remove('loaded')
         }
     }
 }
@@ -198,34 +237,9 @@ modeSelector.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => switchMode(btn.dataset.mode))
 })
 
-// Video file input
-videoFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0]
-    if (file) loadVideoFile(file)
-})
-
-videoDropZone.addEventListener('click', () => videoFileInput.click())
-
-videoDropZone.addEventListener('dragover', (e) => {
-    e.preventDefault()
-    videoDropZone.classList.add('dragover')
-})
-
-videoDropZone.addEventListener('dragleave', () => {
-    videoDropZone.classList.remove('dragover')
-})
-
-videoDropZone.addEventListener('drop', (e) => {
-    e.preventDefault()
-    videoDropZone.classList.remove('dragover')
-    const file = e.dataTransfer.files[0]
-    if (file) loadVideoFile(file)
-})
-
-// Image file input
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0]
-    if (file) loadImageFromFile(file)
+    if (file) loadFile(file)
 })
 
 dropZone.addEventListener('click', () => fileInput.click())
@@ -243,7 +257,7 @@ dropZone.addEventListener('drop', (e) => {
     e.preventDefault()
     dropZone.classList.remove('dragover')
     const file = e.dataTransfer.files[0]
-    if (file) loadImageFromFile(file)
+    if (file) loadFile(file)
 })
 
 loadUrlBtn.addEventListener('click', () => loadImageFromURL(urlInput.value))
@@ -254,8 +268,8 @@ urlInput.addEventListener('keypress', (e) => {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    if (e.key === '1') switchMode('video')
-    if (e.key === '2') switchMode('image')
+    if (e.key === '1') switchMode('webcam')
+    if (e.key === '2') switchMode('upload')
     if (e.key === 'l' || e.key === 'L') {
         const newValue = !sliders.get('showLines')
         sliders.set('showLines', newValue)
@@ -281,19 +295,22 @@ window.addEventListener('resize', resize)
 resize()
 
 // Initialize
-switchMode('video')
+switchMode('webcam')
 
 // Render loop
 function render(time) {
     const t = time * 0.001
 
-    // Update video texture if in video mode
-    if (currentMode === 'video' && videoReady) {
-        updateVideoTexture()
+    // Update texture from live sources
+    if (currentMode === 'webcam' && webcamReady) {
+        updateWebcamTexture()
+    } else if (currentMode === 'upload' && videoElement && videoElement.readyState >= 2) {
+        gl.bindTexture(gl.TEXTURE_2D, videoTexture)
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoElement)
     }
 
-    // Only render if we have a video source
-    if ((currentMode === 'video' && videoReady) || (currentMode === 'image' && imageLoaded)) {
+    // Only render if we have a source
+    if ((currentMode === 'webcam' && webcamReady) || (currentMode === 'upload' && hasTexture)) {
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, videoTexture)
         gl.uniform1i(uniforms.video, 0)

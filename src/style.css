@@ -353,7 +353,7 @@ body:has(#drop-zone) #controls {
   margin-right: 4px;
 }
 
-#image-controls {
+#upload-controls {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -366,14 +366,74 @@ body:has(#drop-zone) #controls {
   transition: opacity 0.3s;
 }
 
-#image-controls.loaded {
+#upload-controls.loaded {
   opacity: 0;
   pointer-events: none;
 }
 
-#image-controls.loaded:hover {
+#upload-controls.loaded:hover {
   opacity: 1;
   pointer-events: auto;
+}
+
+#upload-controls .drop-zone {
+  padding: 40px 60px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#upload-controls .drop-zone:hover,
+#upload-controls .drop-zone.dragover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(50, 50, 80, 0.6);
+  color: white;
+}
+
+#upload-controls .drop-zone input {
+  display: none;
+}
+
+#upload-controls .url-input {
+  display: flex;
+  gap: 8px;
+}
+
+#upload-controls .url-input input {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 13px;
+  width: 240px;
+}
+
+#upload-controls .url-input input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+#upload-controls .url-input button {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#upload-controls .url-input button:hover {
+  background: rgba(50, 50, 80, 0.6);
+  color: white;
 }
 
 /* Checkbox styling for sliders */

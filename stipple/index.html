@@ -14,26 +14,23 @@
     <button id="record-btn" title="Record video (R)"></button>
 
     <div id="mode-selector">
-      <button data-mode="video" class="active"><span class="key">1</span> Video</button>
-      <button data-mode="image"><span class="key">2</span> Image</button>
+      <button data-mode="webcam" class="active"><span class="key">1</span> Webcam</button>
+      <button data-mode="upload"><span class="key">2</span> Upload</button>
     </div>
 
-    <div id="video-controls" class="mode-controls">
-      <div class="drop-zone" id="video-drop-zone">
-        <p>Drop a video here or click to select</p>
-        <input type="file" id="video-file-input" accept="video/*" />
-      </div>
-    </div>
-
-    <div id="image-controls" class="mode-controls">
+    <div id="upload-controls" class="mode-controls">
       <div class="drop-zone" id="drop-zone">
-        <p>Drop an image here or click to select</p>
-        <input type="file" id="file-input" accept="image/*" />
+        <p>Drop image or video<br><span style="font-size:11px; opacity:0.6;">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" />
       </div>
       <div class="url-input">
         <input type="text" id="url-input" placeholder="Or paste image URL..." />
         <button id="load-url">Load</button>
       </div>
+    </div>
+
+    <div id="webcam-status" class="hidden">
+      <p>Requesting webcam access...</p>
     </div>
 
     <div id="sliders">
