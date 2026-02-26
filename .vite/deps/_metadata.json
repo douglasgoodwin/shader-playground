@@ -1,0 +1,15 @@
+{
+  "hash": "00680ff4",
+  "configHash": "f1491616",
+  "lockfileHash": "809fe048",
+  "browserHash": "f08f0455",
+  "optimized": {
+    "mp4-muxer": {
+      "src": "../../node_modules/mp4-muxer/build/mp4-muxer.mjs",
+      "file": "mp4-muxer.js",
+      "fileHash": "53a24012",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}
