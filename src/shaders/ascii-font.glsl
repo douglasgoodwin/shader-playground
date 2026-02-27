@@ -100,11 +100,11 @@ int findBestChar(vec3 sampleA, vec3 sampleB) {
 // Wave pattern - horizontal bands with wavy edges
 float wavePattern(vec2 uv, float t) {
     float y = uv.y;
-    float wave1 = sin(uv.x * 6.0 + t) * 0.06;
-    float wave2 = sin(uv.x * 3.0 - t * 0.7) * 0.04;
-    float wave3 = sin(uv.x * 10.0 + t * 1.5) * 0.015;
+    float wave1 = sin(uv.x * 6.0 + t) * 0.6;
+    float wave2 = sin(uv.x * 3.0 - t * 0.7) * 0.4;
+    float wave3 = sin(uv.x * 10.0 + t * 1.5) * 0.15;
     y += wave1 + wave2 + wave3;
-    return fract(y * 5.0);
+    return fract(y * 4.0);
 }
 
 void main() {
