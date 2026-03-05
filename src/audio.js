@@ -22,7 +22,7 @@ const shaders = {
 
 const audioUniforms = [
     'u_resolution', 'u_time', 'u_mouse', 'u_speed', 'u_intensity',
-    'u_audioFreq', 'u_audioWave', 'u_audioEnergy', 'u_bassEnergy',
+    'u_audioFreq', 'u_audioWave', 'u_audioEnergy', 'u_bassEnergy', 'u_midEnergy', 'u_trebleEnergy',
 ]
 
 const programs = {}
@@ -242,6 +242,8 @@ function render(time) {
     sliders.applyUniforms(gl, u)
     gl.uniform1f(u['u_audioEnergy'], audioEngine.isPlaying ? audioEngine.getEnergy() : 0.0)
     gl.uniform1f(u['u_bassEnergy'], audioEngine.isPlaying ? audioEngine.getBassEnergy() : 0.0)
+    gl.uniform1f(u['u_midEnergy'], audioEngine.isPlaying ? audioEngine.getMidEnergy() : 0.0)
+    gl.uniform1f(u['u_trebleEnergy'], audioEngine.isPlaying ? audioEngine.getTrebleEnergy() : 0.0)
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)

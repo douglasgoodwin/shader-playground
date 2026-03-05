@@ -368,6 +368,28 @@ export class AudioEngine {
         return sum / (bassCount * 255)
     }
 
+    getMidEnergy() {
+        if (!this._freqData) return 0
+        this.analyser.getByteFrequencyData(this._freqData)
+        let sum = 0
+        // Bins 32-128 ≈ mid frequencies
+        for (let i = 32; i < 128; i++) {
+            sum += this._freqData[i]
+        }
+        return sum / (96 * 255)
+    }
+
+    getTrebleEnergy() {
+        if (!this._freqData) return 0
+        this.analyser.getByteFrequencyData(this._freqData)
+        let sum = 0
+        // Bins 128-512 ≈ treble frequencies
+        for (let i = 128; i < this._freqData.length; i++) {
+            sum += this._freqData[i]
+        }
+        return sum / (384 * 255)
+    }
+
     updateTextures(gl, freqTex, waveTex) {
         if (!this.analyser || !this._freqData) return
 
