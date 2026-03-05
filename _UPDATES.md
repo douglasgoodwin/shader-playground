@@ -4,7 +4,7 @@ Below is the **common command‑line workflow** (GitHub, branch named `main`):
 
 1. Add the original repository as `upstream` (one‑time setup):  
    ```bash
-   git remote add upstream git@github.com:ORIGINAL_OWNER/ORIGINAL_REPO.git
+   git remote add upstream https://github.com/douglasgoodwin/shader-playground.git
    git fetch upstream
    ```
    This tells your local clone where to get changes from the source repository.[3][1]
