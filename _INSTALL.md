@@ -1,4 +1,4 @@
-update
+update sodayumi
 This is a clean, repeatable sequence you can follow to set up and run the project locally with everything installed in the project folder.
 
 ### 0. Setting up Node.js on macOS
