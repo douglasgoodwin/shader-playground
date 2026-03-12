@@ -25,6 +25,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/warps/** - Image warping effects
 - **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/audio/** - Audio-reactive raymarched terrain
+- **/fluid/** - Fluid simulations (Navier-Stokes, pool water, ferrofluid)
 - **/reaction-diffusion/** - Gray-Scott simulation on a twisted torus
 - **/opart/** - Bridget Riley-inspired optical illusions
 - **/docs/** - Course notes and reference materials
@@ -46,7 +47,8 @@ particles/               ← GPU particle sims (boids, ragdoll, lenia)
 reaction-diffusion/      ← Gray-Scott simulation (sim, torus shaders)
 scribble/                ← artistic rendering (scribble, scribble-lines, stipple)
 tiles/                   ← tiling patterns (voronoi, hexgrid, tiles, varitiles)
-warps/                   ← image warping (drape, flowheart, mercury)
+fluid/                   ← fluid simulations (Navier-Stokes sim/transport/display, poolwater, ferrofluid)
+warps/                   ← image warping (drape, flowheart, mercury, vcr)
 whitney/                 ← Whitney-inspired generative art (lapis, permutations, matrix, atom, etc.)
 ```
 
@@ -339,6 +341,39 @@ Different feed/kill combinations produce different patterns:
 - Default (f=0.023, k=0.054): spots and mitosis
 - Higher feed: stripes and maze-like patterns
 - Lower kill: coral/branching growth
+
+## Fluid
+
+Three fluid simulation effects:
+
+| Effect | Description |
+|--------|-------------|
+| Navier-Stokes | Momentum-balanced fluid simulation with image/video input — drag to stir, drop an image to warp it like a Newtonian fluid |
+| Pool Water | Caustic light patterns through animated water surface |
+| Ferrofluid | Gray-Scott reaction-diffusion rendered as dark liquid metal with metallic highlights and oil-slick iridescence |
+
+### Techniques
+
+**Navier-Stokes:**
+- **Ping-pong simulation** — 512×512 velocity/density field updated each frame via fragment shader
+- **Transport mapping** — Second ping-pong pass advects UV coordinates by the velocity field, then a display shader samples the source image through warped UVs
+- **Mouse interaction** — Click and drag to inject force into the velocity field
+- **Image seeding** — Uploaded images initialize the velocity field from pixel color
+- **Scalable obstacles** — Two circular obstacles at center with adjustable size (0 = hidden, 2 = double)
+
+**Ferrofluid:**
+- **Gray-Scott reaction-diffusion** — Two-chemical system (A + 2B → 3B) with diffusion, feed, and kill rates controlling pattern formation
+- **9-point weighted Laplacian** — Cardinal + diagonal neighbors for isotropic diffusion
+- **8 sim steps per frame** — Fast pattern evolution
+- **Metallic rendering** — Gradient-based fake specular highlights, oil-slick iridescence from gradient angle, Fresnel-like rim lighting
+- **Mouse injection** — Click to seed chemical B, spawning new spike patterns
+- **Spacebar** resets the simulation
+
+### Controls
+
+- **Navier-Stokes**: Viscosity, Force, Obstacle size sliders; image/video upload
+- **Pool Water**: Speed, Detail, Scale sliders
+- **Ferrofluid**: Feed rate, Kill rate (control pattern type — spots, worms, maze), Metallic highlight intensity
 
 ## Exercises
 
