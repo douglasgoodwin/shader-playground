@@ -52,6 +52,7 @@ const simUniforms = {
     frame: gl.getUniformLocation(simProgram, 'u_frame'),
     viscosity: gl.getUniformLocation(simProgram, 'u_viscosity'),
     speed: gl.getUniformLocation(simProgram, 'u_speed'),
+    obstacleSize: gl.getUniformLocation(simProgram, 'u_obstacleSize'),
 }
 
 const transportUniforms = {
@@ -248,6 +249,7 @@ const media = createMediaLoader(gl, {
 const sliders = new SliderManager({
     viscosity: { selector: '#viscosity', default: 1.2 },
     force: { selector: '#force', default: 1.0 },
+    obstacleSize: { selector: '#obstacle-size', default: 1.0 },
     speed: { selector: '#speed', default: 0.5 },
     density: { selector: '#density', default: 1 },
     harmonics: { selector: '#harmonics', default: 1 },
@@ -404,6 +406,7 @@ function renderNavierStokes() {
     gl.uniform1i(simUniforms.frame, frameCount)
     gl.uniform1f(simUniforms.viscosity, sliders.get('viscosity'))
     gl.uniform1f(simUniforms.speed, sliders.get('force'))
+    gl.uniform1f(simUniforms.obstacleSize, sliders.get('obstacleSize'))
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
     simRead = simWrite

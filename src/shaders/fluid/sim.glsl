@@ -10,6 +10,7 @@ uniform float u_mouseDown;
 uniform int u_frame;
 uniform float u_viscosity;
 uniform float u_speed;
+uniform float u_obstacleSize;
 
 #define DT 0.5
 #define C 3.5
@@ -21,9 +22,9 @@ uniform float u_speed;
 float shape(vec2 pos) {
     vec2 center = u_resolution * 0.5;
     vec2 pos0 = center + vec2(-90.0, 0.0);
-    float r0 = 30.0 + 10.0 * sin(float(u_frame) * 0.02);
+    float r0 = (30.0 + 10.0 * sin(float(u_frame) * 0.02)) * u_obstacleSize;
     vec2 pos1 = center + vec2(90.0, 0.0);
-    float r1 = 50.0;
+    float r1 = 50.0 * u_obstacleSize;
     float s0 = length(pos - pos0) - r0;
     float s1 = length(pos - pos1) - r1;
     return clamp(-min(s0, s1), 0.0, 1.0);
