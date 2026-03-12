@@ -1,0 +1,51 @@
+@import './common.css';
+
+#sliders label.hidden {
+  display: none;
+}
+
+#upload-panel {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+#upload-panel.hidden {
+  display: none;
+}
+
+#drop-zone {
+  padding: 8px 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s;
+}
+
+#drop-zone:hover, #drop-zone.dragover {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 18px;
+  z-index: 200;
+}
+
+#loading.hidden {
+  display: none;
+}

@@ -1,9 +1,11 @@
-// C minor pentatonic scale frequencies (C2 region up through several octaves)
-const C_MINOR_PENTA = [
-    65.41, 77.78, 87.31, 98.0, 116.54,   // C2 Eb2 F2 G2 Bb2
-    130.81, 155.56, 174.61, 196.0, 233.08, // C3 Eb3 F3 G3 Bb3
-    261.63, 311.13, 349.23, 392.0, 466.16, // C4 Eb4 F4 G4 Bb4
-    523.25, 622.25, 698.46,                 // C5 Eb5 F5
+import * as Tone from 'tone'
+
+// Notes extracted from recorded session — D-centered modal set across octaves 2-4
+// Most frequent: D, C, G, Eb, A, E (loosely D Dorian)
+const NOTES = [
+    'C2', 'D2', 'Eb2', 'F2', 'G2', 'A2',
+    'C3', 'D3', 'Eb3', 'E3', 'F3', 'G3', 'A3',
+    'C4', 'Ab4', 'G4',
 ]
 
 export class AudioEngine {
@@ -14,24 +16,20 @@ export class AudioEngine {
         this.isPlaying = false
         this.isMicActive = false
 
-        // Synth nodes
-        this._droneCarrier = null
-        this._droneModulator = null
-        this._droneModGain = null
-        this._droneLFO = null
-        this._droneLFOGain = null
-        this._droneGain = null
-        this._arpInterval = null
-        this._arpGain = null
+        // Tone.js synth
+        this._synth = null
+        this._reverb = null
+        this._synthGain = null
+        this._noteLoop = null
 
         // Analysis buffers
         this._freqData = null
         this._waveData = null
 
         // Parameters
-        this._tempo = 120
+        this._tempo = 108
         this._modDepth = 0.5
-        this._arpIndex = 0
+        this._noteIndex = 0
 
         // Mic
         this._micStream = null
@@ -48,25 +46,24 @@ export class AudioEngine {
         this._fileName = ''
     }
 
-    start() {
+    async start() {
         if (this.isPlaying) return
 
-        this.ctx = new AudioContext()
+        await Tone.start()
+        this.ctx = Tone.getContext().rawContext
         this.analyser = this.ctx.createAnalyser()
         this.analyser.fftSize = 1024
         this.analyser.smoothingTimeConstant = 0.8
 
-        this._freqData = new Uint8Array(this.analyser.frequencyBinCount) // 512
-        this._waveData = new Uint8Array(this.analyser.fftSize) // 1024
+        this._freqData = new Uint8Array(this.analyser.frequencyBinCount)
+        this._waveData = new Uint8Array(this.analyser.fftSize)
 
         this.masterGain = this.ctx.createGain()
         this.masterGain.gain.value = 0.4
         this.masterGain.connect(this.analyser)
         this.analyser.connect(this.ctx.destination)
 
-        this._startDrone()
-        this._startArp()
-
+        this._startSynth()
         this.isPlaying = true
     }
 
@@ -75,136 +72,89 @@ export class AudioEngine {
         this._stopSynth()
         this.stopFile()
         this.disableMic()
-        if (this.ctx) {
-            this.ctx.close()
-            this.ctx = null
-        }
+        Tone.getTransport().stop()
+        Tone.getTransport().cancel()
         this.isPlaying = false
     }
 
+    _startSynth() {
+        // FM synth tuned to match recorded session — short soft notes, D modal
+        this._synth = new Tone.PolySynth(Tone.FMSynth, {
+            maxPolyphony: 4,
+            voice: Tone.FMSynth,
+            options: {
+                harmonicity: 2,
+                modulationIndex: this._modDepth * 3,
+                oscillator: { type: 'sine' },
+                modulation: { type: 'triangle' },
+                envelope: {
+                    attack: 0.05,
+                    decay: 0.25,
+                    sustain: 0.3,
+                    release: 0.8,
+                },
+                modulationEnvelope: {
+                    attack: 0.1,
+                    decay: 0.2,
+                    sustain: 0.2,
+                    release: 0.8,
+                },
+            },
+        })
+
+        this._reverb = new Tone.Reverb({ decay: 4, wet: 0.4 })
+
+        // Route Tone.js output through raw Web Audio masterGain → analyser
+        this._synthGain = Tone.getContext().createGain()
+        this._synthGain.gain.value = 0.3
+
+        this._synth.connect(this._reverb)
+        Tone.connect(this._reverb, this._synthGain)
+        this._synthGain.connect(this.masterGain)
+
+        // Disconnect Tone.js from its default destination so we don't double-output
+        Tone.getDestination().volume.value = -Infinity
+
+        this._noteIndex = 0
+
+        // ~0.43s between onsets matching the recording
+        this._noteLoop = new Tone.Loop((time) => {
+            // Walk sequentially with frequent random jumps (matching free/modal feel)
+            if (Math.random() < 0.35) {
+                this._noteIndex = Math.floor(Math.random() * NOTES.length)
+            } else {
+                // Step by 1-3 notes, sometimes backwards
+                const step = Math.random() < 0.2 ? -1 : (Math.random() < 0.5 ? 1 : 2)
+                this._noteIndex = ((this._noteIndex + step) % NOTES.length + NOTES.length) % NOTES.length
+            }
+            const note = NOTES[this._noteIndex]
+            // ~0.3-0.5s duration matching recording's avg note sustain
+            this._synth.triggerAttackRelease(note, 0.3 + Math.random() * 0.2, time, 0.25 + Math.random() * 0.15)
+        }, 0.43)
+
+        Tone.getTransport().bpm.value = this._tempo
+        Tone.getTransport().start()
+        this._noteLoop.start(0)
+    }
+
     _stopSynth() {
-        this._stopDrone()
-        this._stopArp()
-    }
-
-    _startDrone() {
-        const ctx = this.ctx
-
-        // Carrier: sine at C2 (~65Hz)
-        this._droneCarrier = ctx.createOscillator()
-        this._droneCarrier.type = 'sine'
-        this._droneCarrier.frequency.value = 65.41
-
-        // Modulator: sine
-        this._droneModulator = ctx.createOscillator()
-        this._droneModulator.type = 'sine'
-        this._droneModulator.frequency.value = 65.41 * 1.5 // fifth ratio
-
-        // Mod depth gain
-        this._droneModGain = ctx.createGain()
-        this._droneModGain.gain.value = 50 * this._modDepth
-
-        // LFO sweeps mod depth slowly
-        this._droneLFO = ctx.createOscillator()
-        this._droneLFO.type = 'sine'
-        this._droneLFO.frequency.value = 0.1
-
-        this._droneLFOGain = ctx.createGain()
-        this._droneLFOGain.gain.value = 40 * this._modDepth
-
-        // Drone output gain
-        this._droneGain = ctx.createGain()
-        this._droneGain.gain.value = 0.3
-
-        // Connections: modulator → modGain → carrier.frequency
-        this._droneModulator.connect(this._droneModGain)
-        this._droneModGain.connect(this._droneCarrier.frequency)
-
-        // LFO → LFOGain → modGain.gain (sweeps FM depth)
-        this._droneLFO.connect(this._droneLFOGain)
-        this._droneLFOGain.connect(this._droneModGain.gain)
-
-        // Carrier → droneGain → master
-        this._droneCarrier.connect(this._droneGain)
-        this._droneGain.connect(this.masterGain)
-
-        this._droneCarrier.start()
-        this._droneModulator.start()
-        this._droneLFO.start()
-    }
-
-    _stopDrone() {
-        if (this._droneCarrier) { this._droneCarrier.stop(); this._droneCarrier = null }
-        if (this._droneModulator) { this._droneModulator.stop(); this._droneModulator = null }
-        if (this._droneLFO) { this._droneLFO.stop(); this._droneLFO = null }
-        if (this._droneGain) { this._droneGain.disconnect(); this._droneGain = null }
-    }
-
-    _startArp() {
-        const ctx = this.ctx
-
-        this._arpGain = ctx.createGain()
-        this._arpGain.gain.value = 0.25
-        this._arpGain.connect(this.masterGain)
-
-        this._arpIndex = 0
-        this._scheduleArp()
-    }
-
-    _scheduleArp() {
-        const intervalMs = (60 / this._tempo) * 1000 / 2 // eighth notes
-        this._arpInterval = setInterval(() => {
-            // 30% beat skip for rhythm
-            if (Math.random() < 0.3) return
-            this._playArpNote()
-        }, intervalMs)
-    }
-
-    _playArpNote() {
-        if (!this.ctx || !this._arpGain) return
-        const ctx = this.ctx
-        const now = ctx.currentTime
-
-        const freq = C_MINOR_PENTA[this._arpIndex % C_MINOR_PENTA.length]
-        this._arpIndex++
-
-        // FM bell: carrier + modulator at ratio 2.0
-        const carrier = ctx.createOscillator()
-        carrier.type = 'sine'
-        carrier.frequency.value = freq
-
-        const modulator = ctx.createOscillator()
-        modulator.type = 'sine'
-        modulator.frequency.value = freq * 2.0 // bell ratio
-
-        const modGain = ctx.createGain()
-        modGain.gain.value = freq * this._modDepth * 2.0
-
-        const noteGain = ctx.createGain()
-        // Attack 10ms, decay 200ms
-        noteGain.gain.setValueAtTime(0, now)
-        noteGain.gain.linearRampToValueAtTime(0.6, now + 0.01)
-        noteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.21)
-
-        modulator.connect(modGain)
-        modGain.connect(carrier.frequency)
-        carrier.connect(noteGain)
-        noteGain.connect(this._arpGain)
-
-        carrier.start(now)
-        modulator.start(now)
-        carrier.stop(now + 0.25)
-        modulator.stop(now + 0.25)
-    }
-
-    _stopArp() {
-        if (this._arpInterval) {
-            clearInterval(this._arpInterval)
-            this._arpInterval = null
+        if (this._noteLoop) {
+            this._noteLoop.stop()
+            this._noteLoop.dispose()
+            this._noteLoop = null
         }
-        if (this._arpGain) {
-            this._arpGain.disconnect()
-            this._arpGain = null
+        if (this._synth) {
+            this._synth.releaseAll()
+            this._synth.dispose()
+            this._synth = null
+        }
+        if (this._reverb) {
+            this._reverb.dispose()
+            this._reverb = null
+        }
+        if (this._synthGain) {
+            this._synthGain.disconnect()
+            this._synthGain = null
         }
     }
 
@@ -235,39 +185,31 @@ export class AudioEngine {
         }
         this.isMicActive = false
 
-        // Restart synth if still playing (but not if file is active)
         if (!this.isFileActive && this.ctx && this.ctx.state !== 'closed') {
-            this._startDrone()
-            this._startArp()
+            this._startSynth()
         }
     }
 
     setTempo(bpm) {
         this._tempo = bpm
-        // Restart arp with new tempo
-        if (this._arpInterval) {
-            this._stopArp()
-            this._arpGain = this.ctx.createGain()
-            this._arpGain.gain.value = 0.25
-            this._arpGain.connect(this.masterGain)
-            this._scheduleArp()
+        Tone.getTransport().bpm.value = bpm
+        // Scale interval: baseline 0.43s at 108 BPM
+        if (this._noteLoop) {
+            this._noteLoop.interval = 0.43 * (108 / bpm)
         }
     }
 
     setModDepth(value) {
         this._modDepth = value
-        // Update drone FM depth
-        if (this._droneModGain) {
-            this._droneModGain.gain.value = 50 * value
-        }
-        if (this._droneLFOGain) {
-            this._droneLFOGain.gain.value = 40 * value
+        if (this._synth) {
+            this._synth.set({
+                modulationIndex: value * 3,
+            })
         }
     }
 
     async loadFile(file) {
         if (!this.ctx) return
-        // Decode first so a bad file doesn't leave silence
         let buffer
         try {
             const arrayBuffer = await file.arrayBuffer()
@@ -277,10 +219,8 @@ export class AudioEngine {
             return
         }
 
-        // Stop other sources
         this._stopSynth()
         this.disableMic()
-        // Stop previous file if any
         this._teardownFile()
 
         this._fileBuffer = buffer
@@ -339,10 +279,8 @@ export class AudioEngine {
         this._filePauseOffset = 0
         this.isFileActive = false
 
-        // Restart synth if engine is still running
         if (this.ctx && this.ctx.state !== 'closed') {
-            this._startDrone()
-            this._startArp()
+            this._startSynth()
         }
     }
 
@@ -360,12 +298,31 @@ export class AudioEngine {
         if (!this._freqData) return 0
         this.analyser.getByteFrequencyData(this._freqData)
         let sum = 0
-        // First 32 bins ≈ bass frequencies
         const bassCount = 32
         for (let i = 0; i < bassCount; i++) {
             sum += this._freqData[i]
         }
         return sum / (bassCount * 255)
+    }
+
+    getMidEnergy() {
+        if (!this._freqData) return 0
+        this.analyser.getByteFrequencyData(this._freqData)
+        let sum = 0
+        for (let i = 32; i < 128; i++) {
+            sum += this._freqData[i]
+        }
+        return sum / (96 * 255)
+    }
+
+    getTrebleEnergy() {
+        if (!this._freqData) return 0
+        this.analyser.getByteFrequencyData(this._freqData)
+        let sum = 0
+        for (let i = 128; i < this._freqData.length; i++) {
+            sum += this._freqData[i]
+        }
+        return sum / (384 * 255)
     }
 
     updateTextures(gl, freqTex, waveTex) {
@@ -374,7 +331,6 @@ export class AudioEngine {
         this.analyser.getByteFrequencyData(this._freqData)
         this.analyser.getByteTimeDomainData(this._waveData)
 
-        // Upload frequency data as 512x1 LUMINANCE texture
         gl.bindTexture(gl.TEXTURE_2D, freqTex)
         gl.texImage2D(
             gl.TEXTURE_2D, 0, gl.LUMINANCE,
@@ -382,7 +338,6 @@ export class AudioEngine {
             gl.LUMINANCE, gl.UNSIGNED_BYTE, this._freqData
         )
 
-        // Upload waveform data as 1024x1 LUMINANCE texture
         gl.bindTexture(gl.TEXTURE_2D, waveTex)
         gl.texImage2D(
             gl.TEXTURE_2D, 0, gl.LUMINANCE,

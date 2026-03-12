@@ -8,6 +8,8 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ## Structure
 
+### Pages
+
 - **/** - Landing page with animated color field
 - **/playground/** - Interactive shader effects with parameter controls
 - **/geometries/** - Raymarched 3D geometry explorations
@@ -15,6 +17,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/glyphs/** - ASCII art rendering and symbol morphing
 - **/tiles/** - Voronoi, hexgrid, and tiling patterns
 - **/stipple/** - Hodgin-style stippling for webcam/images
+- **/scribble/** - Scribbled line art rendering of images
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
 - **/landscape/** - Raymarched terrain with lightning storms
@@ -25,6 +28,27 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/reaction-diffusion/** - Gray-Scott simulation on a twisted torus
 - **/opart/** - Bridget Riley-inspired optical illusions
 - **/docs/** - Course notes and reference materials
+
+### Shader Sources (`src/shaders/`)
+
+```
+vertex.glsl              ← shared fullscreen quad vertex shader
+audio/                   ← audio-reactive shaders (landscape, sphere)
+characters/              ← animated creatures (frightened, stickfolk)
+displace/                ← vertex displacement & video effects (terrain, twist, timeslice)
+effects/                 ← 2D playground effects (ripple, plasma, warp, kaleidoscope, noise, drive, firefly, phyllotaxis, colorfield)
+exercises/               ← learning exercises (ex1–ex11, challenges)
+geometries/              ← raymarched 3D SDFs (mandelbulb, gyroid, bust, still life, etc.)
+glyphs/                  ← ASCII art & symbol rendering (ascii, ascii-image, ascii-font, ascii-geometry, glyphs)
+landscape/               ← terrain scenes (lightning, sand)
+opart/                   ← optical illusions (cylinder, vasarely)
+particles/               ← GPU particle sims (boids, ragdoll, lenia)
+reaction-diffusion/      ← Gray-Scott simulation (sim, torus shaders)
+scribble/                ← artistic rendering (scribble, scribble-lines, stipple)
+tiles/                   ← tiling patterns (voronoi, hexgrid, tiles, varitiles)
+warps/                   ← image warping (drape, flowheart, mercury)
+whitney/                 ← Whitney-inspired generative art (lapis, permutations, matrix, atom, etc.)
+```
 
 ## Playground Effects
 

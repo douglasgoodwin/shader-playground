@@ -22,6 +22,7 @@ export default defineConfig({
         audio: resolve(__dirname, 'audio/index.html'),
         'reaction-diffusion': resolve(__dirname, 'reaction-diffusion/index.html'),
         scribble: resolve(__dirname, 'scribble/index.html'),
+        fluid: resolve(__dirname, 'fluid/index.html'),
       },
     },
   },

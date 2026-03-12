@@ -2,11 +2,11 @@ import './style.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
-import asciiImageShader from './shaders/ascii-image.glsl'
-import asciiPlatonicShader from './shaders/ascii.glsl'
-import asciiCubeShader from './shaders/ascii-geometry.glsl'
-import asciiFontShader from './shaders/ascii-font.glsl'
-import glyphsShader from './shaders/glyphs.glsl'
+import asciiImageShader from './shaders/glyphs/ascii-image.glsl'
+import asciiPlatonicShader from './shaders/glyphs/ascii.glsl'
+import asciiCubeShader from './shaders/glyphs/ascii-geometry.glsl'
+import asciiFontShader from './shaders/glyphs/ascii-font.glsl'
+import glyphsShader from './shaders/glyphs/glyphs.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })

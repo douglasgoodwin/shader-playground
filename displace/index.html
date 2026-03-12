@@ -15,19 +15,21 @@
     <button id="record-btn" title="Record video (R)"></button>
     <div id="controls">
       <button data-effect="terrain" class="active"><span class="key">1</span> Terrain</button>
+      <button data-effect="twist"><span class="key">2</span> Twist</button>
+      <button data-effect="timeslice"><span class="key">3</span> Time Slice</button>
     </div>
     <div id="image-controls" style="position:fixed; bottom:100px; right:20px; z-index:1000;">
       <div id="drop-zone" style="width:200px; padding:24px; border:2px dashed rgba(255,255,255,0.5); border-radius:12px; background:rgba(0,0,0,0.7); color:white; text-align:center; cursor:pointer; font-family:system-ui,sans-serif;">
-        <p>Drop image here<br><span style="font-size:11px; opacity:0.6;">or click to browse</span></p>
-        <input type="file" id="file-input" accept="image/*" style="display:none;" />
+        <p>Drop image/video here<br><span style="font-size:11px; opacity:0.6;">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" style="display:none;" />
       </div>
       <div class="url-row" style="display:flex; gap:8px; margin-top:12px;">
-        <input type="text" id="url-input" placeholder="Or paste image URL..." style="flex:1; padding:8px; border:1px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(0,0,0,0.7); color:white; font-size:12px;" />
+        <input type="text" id="url-input" placeholder="Or paste media URL..." style="flex:1; padding:8px; border:1px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(0,0,0,0.7); color:white; font-size:12px;" />
         <button id="load-url" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:8px; background:rgba(0,0,0,0.7); color:white; cursor:pointer;">Load</button>
       </div>
       <div id="loading" class="hidden">Loading...</div>
     </div>
-    <div id="sliders">
+    <div id="sliders" data-effect="terrain">
       <label>
         <span>Displacement</span>
         <input type="range" id="displacement" min="0" max="1" step="0.01" value="0.4">
@@ -39,6 +41,22 @@
       <label>
         <span>Speed</span>
         <input type="range" id="speed" min="0" max="2" step="0.05" value="0.3">
+      </label>
+    </div>
+    <div id="twist-sliders" class="sliders-panel" data-effect="twist" style="display:none;">
+      <label>
+        <span>Twist Speed</span>
+        <input type="range" id="twistSpeed" min="0" max="5" step="0.1" value="1.0">
+      </label>
+      <label>
+        <span>Twist Amount</span>
+        <input type="range" id="twistAmount" min="0" max="10" step="0.1" value="3.0">
+      </label>
+    </div>
+    <div id="timeslice-sliders" class="sliders-panel" data-effect="timeslice" style="display:none;">
+      <label>
+        <span>Time Depth</span>
+        <input type="range" id="timeDepth" min="1" max="64" step="1" value="48">
       </label>
     </div>
     <script type="module" src="/src/displace.js"></script>

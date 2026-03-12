@@ -21,6 +21,7 @@
     "lygia": "^1.4.1",
     "mp4-muxer": "^5.2.2",
     "three": "^0.182.0",
+    "tone": "^15.1.22",
     "vite-plugin-glsl": "^1.5.5"
   },
   "description": "Research and experiments for a CalArts course in vibecoding shaders.",

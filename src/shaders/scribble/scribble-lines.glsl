@@ -20,17 +20,18 @@ float sampleLuminance(vec2 uv) {
     float texAspect = u_textureSize.x / u_textureSize.y;
 
     vec2 texUV = uv;
+    // Cover mode: fill canvas, crop excess
     if (canvasAspect > texAspect) {
+        // Canvas wider than texture → fill width, crop height
         float scale = texAspect / canvasAspect;
-        texUV.x = (uv.x - 0.5) / scale + 0.5;
+        texUV.y = (uv.y - 0.5) * scale + 0.5;
     } else {
+        // Canvas taller than texture → fill height, crop sides
         float scale = canvasAspect / texAspect;
-        texUV.y = (uv.y - 0.5) / scale + 0.5;
+        texUV.x = (uv.x - 0.5) * scale + 0.5;
     }
 
-    if (texUV.x < 0.0 || texUV.x > 1.0 || texUV.y < 0.0 || texUV.y > 1.0) {
-        return 1.0;
-    }
+    texUV = clamp(texUV, 0.0, 1.0);
 
     texUV.y = 1.0 - texUV.y;
 

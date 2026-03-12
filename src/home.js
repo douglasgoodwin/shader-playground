@@ -2,7 +2,7 @@ import './home.css'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { setupRecording } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
-import colorfieldShader from './shaders/colorfield.glsl'
+import colorfieldShader from './shaders/effects/colorfield.glsl'
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true })

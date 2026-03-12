@@ -22,7 +22,7 @@ const shaders = {
 
 const audioUniforms = [
     'u_resolution', 'u_time', 'u_mouse', 'u_speed', 'u_intensity',
-    'u_audioFreq', 'u_audioWave', 'u_audioEnergy', 'u_bassEnergy',
+    'u_audioFreq', 'u_audioWave', 'u_audioEnergy', 'u_bassEnergy', 'u_midEnergy', 'u_trebleEnergy',
 ]
 
 const programs = {}
@@ -124,17 +124,17 @@ const fileNameSpan = document.querySelector('#file-name')
 const tempoLabel = tempoSlider.closest('label')
 const fmDepthLabel = fmDepthSlider.closest('label')
 
-startBtn.addEventListener('click', () => {
-    audioEngine.start()
+startBtn.addEventListener('click', async () => {
+    await audioEngine.start()
     startBtn.classList.add('hidden')
 })
 
-micBtn.addEventListener('click', () => {
+micBtn.addEventListener('click', async () => {
     if (audioEngine.isMicActive) {
         audioEngine.disableMic()
         micBtn.classList.remove('active')
     } else {
-        if (!audioEngine.isPlaying) audioEngine.start()
+        if (!audioEngine.isPlaying) await audioEngine.start()
         audioEngine.enableMic()
         micBtn.classList.add('active')
         updateFileUI()
@@ -164,8 +164,8 @@ function updateFileUI() {
     }
 }
 
-fileUploadBtn.addEventListener('click', () => {
-    if (!audioEngine.isPlaying) audioEngine.start()
+fileUploadBtn.addEventListener('click', async () => {
+    if (!audioEngine.isPlaying) await audioEngine.start()
     fileInput.click()
 })
 
@@ -173,7 +173,7 @@ fileInput.addEventListener('change', async () => {
     const file = fileInput.files[0]
     if (!file) return
     if (!audioEngine.isPlaying) {
-        audioEngine.start()
+        await audioEngine.start()
         startBtn.classList.add('hidden')
     }
     await audioEngine.loadFile(file)
@@ -242,6 +242,8 @@ function render(time) {
     sliders.applyUniforms(gl, u)
     gl.uniform1f(u['u_audioEnergy'], audioEngine.isPlaying ? audioEngine.getEnergy() : 0.0)
     gl.uniform1f(u['u_bassEnergy'], audioEngine.isPlaying ? audioEngine.getBassEnergy() : 0.0)
+    gl.uniform1f(u['u_midEnergy'], audioEngine.isPlaying ? audioEngine.getMidEnergy() : 0.0)
+    gl.uniform1f(u['u_trebleEnergy'], audioEngine.isPlaying ? audioEngine.getTrebleEnergy() : 0.0)
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
     requestAnimationFrame(render)

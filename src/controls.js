@@ -123,11 +123,15 @@ export class MouseTracker {
         this._canvas = canvas
         this._x = 0
         this._y = 0
+        this._isDown = false
 
         canvas.addEventListener('mousemove', (e) => {
             this._x = e.clientX
             this._y = canvas.height - e.clientY
         })
+
+        canvas.addEventListener('mousedown', () => { this._isDown = true })
+        window.addEventListener('mouseup', () => { this._isDown = false })
     }
 
     get x() {
@@ -136,6 +140,10 @@ export class MouseTracker {
 
     get y() {
         return this._y
+    }
+
+    get isDown() {
+        return this._isDown
     }
 
     applyUniform(gl, location) {

@@ -26,12 +26,9 @@ export class CanvasRecorder {
     async start() {
         if (this.recording || !this.supported) return
 
-        const width = this.canvas.width
-        const height = this.canvas.height
-
-        // Ensure dimensions are even (required for H.264)
-        const encodedWidth = width % 2 === 0 ? width : width - 1
-        const encodedHeight = height % 2 === 0 ? height : height - 1
+        // Always record at 1080p regardless of canvas size
+        const encodedWidth = 1920
+        const encodedHeight = 1080
 
         // Create muxer with ArrayBuffer target
         this.target = new ArrayBufferTarget()
