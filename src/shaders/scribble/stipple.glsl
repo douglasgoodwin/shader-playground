@@ -34,9 +34,6 @@ float sampleLuminance(vec2 uv) {
         return 0.5;
     }
 
-    // Flip Y for webcam (mirrored)
-    videoUV.y = 1.0 - videoUV.y;
-
     vec3 color = texture2D(u_video, videoUV).rgb;
     // Luminance formula
     float lum = dot(color, vec3(0.299, 0.587, 0.114));

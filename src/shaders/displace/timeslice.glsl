@@ -23,7 +23,7 @@ void main() {
 
     // Capture mode: render video into tile FBO (flip Y for GL convention)
     if (u_mode == 0) {
-        gl_FragColor = texture2D(u_texture, vec2(uv.x, 1.0 - uv.y));
+        gl_FragColor = texture2D(u_texture, uv);
         return;
     }
 
@@ -48,9 +48,7 @@ void main() {
     float tile0 = mod(u_writePtr - d0 + u_tileCount, u_tileCount);
     float tile1 = mod(u_writePtr - d1 + u_tileCount, u_tileCount);
 
-    // Sample same spatial position from different temporal tiles
-    // Flip uv.y within tile to undo the capture flip
-    vec2 sampleUV = vec2(uv.x, 1.0 - uv.y);
+    vec2 sampleUV = uv;
     vec4 c0 = sampleTile(tile0, sampleUV);
     vec4 c1 = sampleTile(tile1, sampleUV);
 

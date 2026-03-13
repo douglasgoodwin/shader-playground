@@ -9,9 +9,6 @@ uniform int u_hasTexture;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;
-    // Flip Y so top of screen = top of video
-    uv.y = 1.0 - uv.y;
-
     if (u_hasTexture == 0) {
         // Show a placeholder grid pattern when no video/image loaded
         vec2 grid = fract(uv * 20.0);

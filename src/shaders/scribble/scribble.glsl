@@ -33,9 +33,6 @@ float sampleLuminance(vec2 uv) {
 
     texUV = clamp(texUV, 0.0, 1.0);
 
-    // Flip Y — WebGL textures have origin at bottom-left, images at top-left
-    texUV.y = 1.0 - texUV.y;
-
     vec3 color = texture2D(u_texture, texUV).rgb;
     float lum = dot(color, vec3(0.299, 0.587, 0.114));
 
@@ -130,9 +127,8 @@ void main() {
 
             if (darkness < 0.08) continue;
 
-            // Per-cell angle: use gradient direction with random fallback
-            float fallbackAngle = random(cellID + 99.0) * 3.14159;
-            float angle = mix(fallbackAngle, gradAngle, edgeStrength);
+            // All ellipses horizontal (parallel to bottom of frame)
+            float angle = 1.5708;
 
             float circleCount = darkness * float(NUM_CIRCLES);
 

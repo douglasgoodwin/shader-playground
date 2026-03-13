@@ -73,7 +73,7 @@ vec3 proceduralTexture(vec2 uv) {
 vec3 sampleTexture(vec2 uv) {
     uv = clamp(uv, 0.0, 1.0);
     if (u_hasTexture == 1) {
-        return texture2D(u_texture, vec2(uv.x, 1.0 - uv.y)).rgb;
+        return texture2D(u_texture, uv).rgb;
     } else {
         return proceduralTexture(uv);
     }

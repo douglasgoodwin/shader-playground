@@ -33,8 +33,6 @@ float sampleLuminance(vec2 uv) {
 
     texUV = clamp(texUV, 0.0, 1.0);
 
-    texUV.y = 1.0 - texUV.y;
-
     vec3 color = texture2D(u_texture, texUV).rgb;
     float lum = dot(color, vec3(0.299, 0.587, 0.114));
 
