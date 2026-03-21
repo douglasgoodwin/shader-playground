@@ -16,6 +16,9 @@
     <div id="controls" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:100;">
       <button data-effect="circles" class="active" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">1</span> Circles</button>
       <button data-effect="lines" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">2</span> Lines</button>
+      <button data-effect="flowfield" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">3</span> Flowfield</button>
+      <button data-effect="curl" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">4</span> Curl</button>
+      <button data-effect="points" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">5</span> Points</button>
     </div>
 
     <div id="image-controls" style="position:fixed; bottom:100px; right:20px; z-index:1000;">
@@ -54,6 +57,10 @@
       <label>
         <span>Ellipse</span>
         <input type="range" id="ellipse" min="1" max="4" step="0.1" value="1">
+      </label>
+      <label>
+        <span>Neighbor</span>
+        <input type="range" id="neighbor" min="1" max="50" step="1" value="1">
       </label>
     </div>
 
