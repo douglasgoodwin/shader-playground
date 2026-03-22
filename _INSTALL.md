@@ -1,5 +1,7 @@
 These steps will help you download, install, and run the shader-playground project on your own computer. The process is mostly the same on macOS and Windows: install Node.js, download the project, install its dependencies, and start the local development server. Once the server is running, you can open the project in your browser and begin working locally.
 
+## Step 0: Open the Terminal App on OSX, Powershell on Windows, or a ZSH terminal window on Linux. 
+
 ## First, **install Node.js** if you do not already have it.
 
 ### On macOS, one good option is nvm:
