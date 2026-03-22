@@ -1,88 +1,123 @@
-This is a clean, repeatable sequence you can follow to set up and run the project locally with everything installed in the project folder.
+These steps will help you download, install, and run the shader-playground project on your own computer. The process is mostly the same on macOS and Windows: install Node.js, download the project, install its dependencies, and start the local development server. Once the server is running, you can open the project in your browser and begin working locally.
 
-### 0. Setting up Node.js on macOS
+## First, **install Node.js** if you do not already have it.
 
-If you don't have Node.js installed, use nvm (Node Version Manager):
+### On macOS, one good option is nvm:
 
-**Install nvm:**
-
-```bash
+```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 ```
 
-**Configure your shell** by adding these lines to `~/.zshrc` (or `~/.bashrc` if using bash):
+### Then **add this to your ~/.zshrc**:
 
-```bash
+```
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 ```
 
-**Reload your shell and install Node:**
+### Reload your shell and **install Node**:
 
-```bash
+```
 source ~/.zshrc
 nvm install --lts
 ```
 
-**If nvm installs the wrong versions**, reinstall with:
+On Windows, install Node.js from the official Node.js website using the standard installer. After installation, open PowerShell or Command Prompt and make sure these work:
 
-```bash
-nvm install --reinstall-packages-from=node node
-nvm current
+```
+node -v
 npm -v
 ```
 
-### 1. Download the source code
+## Next, **download the project code**.
 
-Option A – Git (recommended, though you will need to install `git`):
 
-```sh
-mkdir ~/_CODE ;
-cd ~/_CODE ;
-git clone https://github.com/douglasgoodwin/shader-playground.git ;
+
+### Option 1: Download with Git
+
+
+
+#### On macOS or Linux:
+
+```
+mkdir -p ~/_CODE
+cd ~/_CODE
+git clone https://github.com/douglasgoodwin/shader-playground.git
 cd shader-playground
 ```
 
-Option B – ZIP download:
+#### On Windows PowerShell:
 
-1. Visit `https://github.com/douglasgoodwin/shader-playground` in a browser and download the ZIP.  
-2. Unzip it somewhere under your home directory (for example `~/_CODE/shader-playground`).  
-3. In Terminal:
+```
+mkdir $HOME\_CODE
+cd $HOME\_CODE
+git clone https://github.com/douglasgoodwin/shader-playground.git
+cd shader-playground
+```
 
-```sh
+### Option 2: Download the ZIP
+
+Go to the project page on GitHub and download the ZIP file. Unzip it somewhere convenient, then open a terminal in the unzipped shader-playground folder.
+
+
+
+### For example:
+
+#### On macOS:
+
+- unzip into something like ~/_CODE/shader-playground
+- then in Terminal:
+
+```
 cd ~/_CODE/shader-playground
 ```
 
-Now `pwd` should end with `shader-playground`.
+#### On Windows:
 
-### 2. Install Node dependencies locally
+- unzip into something like C:\Users\YourName\_CODE\shader-playground
+- then in PowerShell:
 
-From inside `shader-playground`:
+```
+cd $HOME\_CODE\shader-playground
+```
 
-```sh
+### Once you are inside the shader-playground folder, install the dependencies:
+
+```
 npm install
 ```
 
-- This reads `package.json` and `package-lock.json` and installs everything into `./node_modules` in this directory.[1][2]
-- Nothing is installed globally; no admin access is needed.[3][4]
+### Then start the local development server:
 
-(If installation errors mention missing Node/npm, you need **some** Node in PATH—Herd, nvm, or lab setup—but it doesn’t matter which for this project.)
-
-
-### 3. Run the dev server (Vite)
-
-Still in `shader-playground`:
-
-```sh
+```
 npm run dev
 ```
 
-- This runs the `dev` script from `package.json`, which calls `vite` from `./node_modules/.bin`.[8][9]
-- A URL often [http://localhost:5173/](http://localhost:5173/) will be printed; open it in your browser to see the shader playground.[8]
+## Open the local URL shown in the terminal, usually:
 
-To stop the dev server, hit `Ctrl+C` in the terminal.
+```
+http://localhost:5173/
+```
 
+To stop the server later, press Ctrl+C.
+
+
+## Here is the short version:
+
+1. Install Node.js.
+2. Download or clone shader-playground.
+3. Open a terminal in that folder.
+4. Run:
+
+```
+npm install
+npm run dev
+```
+
+
+
+1. Open the local URL printed in the terminal.
 
 
 **Sources**
