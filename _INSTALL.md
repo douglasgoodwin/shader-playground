@@ -83,45 +83,9 @@ npm run dev
 
 To stop the dev server, hit `Ctrl+C` in the terminal.
 
-### 4. Run build and preview
 
-Build a production bundle:
 
-```sh
-npm run build
-```
-
-Preview the built site locally:
-
-```sh
-npm run preview
-```
-
-These scripts call `vite build` and `vite preview` from the local `node_modules` as well.[10][11]
-
-### 6. Run the linter
-
-```sh
-npm run lint
-```
-
-This runs `eslint src` using the local ESLint and the `eslint.config.js` you created.[9][5]
-
-### 7. Verify everything is local to the project
-
-From inside `shader-playground`:
-
-```sh
-npm root
-ls node_modules/.bin | grep -E 'vite|eslint'
-```
-
-- `npm root` should print a path ending in `shader-playground/node_modules`.[12]
-- The `ls` command should show `vite` and `eslint` in `node_modules/.bin`, confirming tools are installed only for this project.
-
-If you like, run through these steps now and paste any command output that doesn’t match what you expect.
-
-Sources
+**Sources**
 [1] Downloading and installing packages locally - npm Docs https://docs.npmjs.com/downloading-and-installing-packages-locally/
 [2] package.json - npm Docs https://docs.npmjs.com/cli/v9/configuring-npm/package-json/
 [3] Folders - npm Docs https://docs.npmjs.com/cli/v8/configuring-npm/folders
