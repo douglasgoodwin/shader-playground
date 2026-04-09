@@ -1,16 +1,17 @@
 // Shared media loader for image/video texture upload
 // Used by warps, displace, and fluid pages
 
-export function createMediaLoader(gl, { onLoad } = {}) {
+export function createMediaLoader(gl, { onLoad, selectors } = {}) {
     let texture = null
     let videoSource = null
     let hasMedia = false
 
-    const loadingEl = document.querySelector('#loading')
-    const dropZone = document.querySelector('#drop-zone')
-    const fileInput = document.querySelector('#file-input')
-    const urlInput = document.querySelector('#url-input')
-    const loadUrlBtn = document.querySelector('#load-url')
+    const sel = selectors || {}
+    const loadingEl = document.querySelector(sel.loading || '#loading')
+    const dropZone = document.querySelector(sel.dropZone || '#drop-zone')
+    const fileInput = document.querySelector(sel.fileInput || '#file-input')
+    const urlInput = document.querySelector(sel.urlInput || '#url-input')
+    const loadUrlBtn = document.querySelector(sel.loadUrl || '#load-url')
 
     function initTexture() {
         if (texture) gl.deleteTexture(texture)
