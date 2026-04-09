@@ -7,12 +7,22 @@ varying vec3 vViewDir;
 
 void main() {
     vUv = uv;
-    vNormal = normalize(normalMatrix * normal);
     vPosition = position;
 
-    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+    // Apply instance transform when using InstancedMesh
+    #ifdef USE_INSTANCING
+        vec4 localPos = instanceMatrix * vec4(position, 1.0);
+        vec3 transformedNormal = mat3(instanceMatrix) * normal;
+    #else
+        vec4 localPos = vec4(position, 1.0);
+        vec3 transformedNormal = normal;
+    #endif
+
+    vNormal = normalize(normalMatrix * transformedNormal);
+
+    vec4 worldPos = modelMatrix * localPos;
     vWorldPosition = worldPos.xyz;
     vViewDir = normalize(cameraPosition - worldPos.xyz);
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * worldPos;
 }

@@ -1,6 +1,7 @@
 import './threejs.css'
 import * as THREE from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import blobVert from './shaders/threejs/blob.vert'
 import blobFrag from './shaders/threejs/blob.frag'
 import sculptureVert from './shaders/threejs/sculpture.vert'
@@ -19,7 +20,7 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 const scene = new THREE.Scene()
 scene.background = new THREE.Color(0x111111)
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100)
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 4
 
 const uniforms = {
@@ -42,58 +43,128 @@ const textureMaterials = {
 }
 
 let activeTexture = 'marble'
+let instanceCount = 1
 
 // --- Pieces ---
 const pieces = {}
 let activePiece = null
-let sculptureObj = null
+const objPieces = new Set(['sculpture', 'venus'])
+
+// Store normalized geometries for instancing
+const objGeometries = {}
+// Currently displayed instanced group
+let activeInstanceGroup = null
 
 // Blob
 const blobMaterial = makeMat(blobVert, blobFrag)
 pieces.blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 64), blobMaterial)
 
-// Sculpture — loaded async
+// Helper: load an OBJ, normalize its geometry, register as a piece
 const loader = new OBJLoader()
-loader.load('/objs/atelier-louvre-head-of-woman.obj', (obj) => {
-    obj.traverse((child) => {
-        if (child.isMesh) {
-            child.material = textureMaterials[activeTexture]
-            if (!child.geometry.attributes.normal) {
-                child.geometry.computeVertexNormals()
+function loadOBJ(url, pieceName) {
+    loader.load(url, (obj) => {
+        // Collect and merge all mesh geometries
+        const geometries = []
+        obj.traverse((child) => {
+            if (child.isMesh) {
+                const geo = child.geometry.clone()
+                if (!geo.attributes.normal) geo.computeVertexNormals()
+                geometries.push(geo)
             }
-        }
+        })
+
+        const merged = geometries.length > 1 ? mergeGeometries(geometries) : geometries[0]
+
+        // Center and normalize to fit in a ~3-unit box
+        merged.computeBoundingBox()
+        const box = merged.boundingBox
+        const center = box.getCenter(new THREE.Vector3())
+        const size = box.getSize(new THREE.Vector3())
+        const scale = 3.0 / Math.max(size.x, size.y, size.z)
+        merged.translate(-center.x, -center.y, -center.z)
+        merged.scale(scale, scale, scale)
+
+        objGeometries[pieceName] = merged
+
+        if (activePiece === pieceName) showPiece(pieceName)
     })
+}
 
-    const box = new THREE.Box3().setFromObject(obj)
-    const center = box.getCenter(new THREE.Vector3())
-    const size = box.getSize(new THREE.Vector3())
-    const scale = 3.0 / Math.max(size.x, size.y, size.z)
-    obj.scale.setScalar(scale)
-    obj.position.sub(center.multiplyScalar(scale))
+loadOBJ('/objs/atelier-louvre-head-of-woman.obj', 'sculpture')
+loadOBJ('/lowpoly_venusdemilo.obj', 'venus')
 
-    sculptureObj = obj
-    pieces.sculpture = obj
+// Build an InstancedMesh (or plain Mesh for count=1) with random placements
+function buildInstances(pieceName, count) {
+    const geo = objGeometries[pieceName]
+    if (!geo) return null
 
-    if (activePiece === 'sculpture') showPiece('sculpture')
-})
-
-function applySculptureMaterial() {
-    if (!sculptureObj) return
     const mat = textureMaterials[activeTexture]
-    sculptureObj.traverse((child) => {
-        if (child.isMesh) child.material = mat
-    })
+
+    if (count === 1) {
+        return new THREE.Mesh(geo, mat)
+    }
+
+    const instanced = new THREE.InstancedMesh(geo, mat, count)
+    const dummy = new THREE.Object3D()
+
+    // Spread radius scales with count so they don't all pile up
+    const spread = 2 + Math.pow(count, 0.45) * 1.8
+    const modelScale = Math.max(0.3, 1.0 - count * 0.0005)
+
+    for (let i = 0; i < count; i++) {
+        dummy.position.set(
+            (Math.random() - 0.5) * spread * 2,
+            (Math.random() - 0.5) * spread * 2,
+            (Math.random() - 0.5) * spread * 2,
+        )
+        dummy.rotation.set(
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2,
+            Math.random() * Math.PI * 2,
+        )
+        const s = modelScale * (0.5 + Math.random() * 0.5)
+        dummy.scale.setScalar(s)
+        dummy.updateMatrix()
+        instanced.setMatrixAt(i, dummy.matrix)
+    }
+
+    instanced.instanceMatrix.needsUpdate = true
+    return instanced
 }
 
 // --- Piece switching ---
 const textureSelect = document.getElementById('texture-select')
 const textureDropdown = document.getElementById('texture')
+const copiesDropdown = document.getElementById('copies')
+
+function clearActiveGroup() {
+    if (activeInstanceGroup) {
+        scene.remove(activeInstanceGroup)
+        activeInstanceGroup = null
+    }
+    // Also remove blob if present
+    scene.remove(pieces.blob)
+}
 
 function showPiece(name) {
     activePiece = name
-    Object.values(pieces).forEach((p) => scene.remove(p))
-    if (pieces[name]) scene.add(pieces[name])
-    textureSelect.style.display = name === 'sculpture' ? '' : 'none'
+    clearActiveGroup()
+
+    if (objPieces.has(name)) {
+        textureSelect.style.display = ''
+        const group = buildInstances(name, instanceCount)
+        if (group) {
+            activeInstanceGroup = group
+            scene.add(group)
+        }
+    } else {
+        textureSelect.style.display = 'none'
+        if (pieces[name]) scene.add(pieces[name])
+    }
+}
+
+function rebuildCurrentPiece() {
+    if (objPieces.has(activePiece)) showPiece(activePiece)
 }
 
 showPiece('blob')
@@ -111,13 +182,24 @@ buttons.forEach((btn) => {
 // Texture dropdown
 textureDropdown.addEventListener('change', () => {
     activeTexture = textureDropdown.value
-    applySculptureMaterial()
+    rebuildCurrentPiece()
+})
+
+// Copies dropdown
+copiesDropdown.addEventListener('change', () => {
+    instanceCount = parseInt(copiesDropdown.value, 10)
+    // Pull camera back for larger counts
+    if (instanceCount > 1) {
+        camera.position.z = Math.max(camera.position.z, 4 + Math.pow(instanceCount, 0.45) * 2)
+    }
+    rebuildCurrentPiece()
 })
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') buttons[0]?.click()
     if (e.key === '2') buttons[1]?.click()
+    if (e.key === '3') buttons[2]?.click()
 })
 
 // --- Mouse orbit + zoom ---
@@ -141,7 +223,7 @@ window.addEventListener('mousemove', (e) => {
 
 canvas.addEventListener('wheel', (e) => {
     camera.position.z += e.deltaY * 0.005
-    camera.position.z = Math.max(1, Math.min(10, camera.position.z))
+    camera.position.z = Math.max(1, Math.min(200, camera.position.z))
 })
 
 window.addEventListener('resize', () => {
@@ -155,10 +237,11 @@ function animate(time) {
     uniforms.u_time.value = time * 0.001
     if (!isDragging) rotationY += 0.003
 
-    const current = pieces[activePiece]
-    if (current) {
-        current.rotation.y = rotationY
-        current.rotation.x = rotationX
+    // Rotate the whole group or single piece
+    const target = activeInstanceGroup || pieces[activePiece]
+    if (target) {
+        target.rotation.y = rotationY
+        target.rotation.x = rotationX
     }
 
     renderer.render(scene, camera)

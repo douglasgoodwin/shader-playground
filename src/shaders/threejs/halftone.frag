@@ -25,13 +25,13 @@ void main() {
 
     // Dot size based on darkness (darker = bigger dots)
     float dotSize = (1.0 - intensity) * 1.1;
-    float dot = 1.0 - smoothstep(dotSize - 0.15, dotSize + 0.15, dist);
+    float halftone = 1.0 - smoothstep(dotSize - 0.15, dotSize + 0.15, dist);
 
     // Ink color — warm black
     vec3 inkColor = vec3(0.12, 0.10, 0.08);
     vec3 paperColor = vec3(0.95, 0.92, 0.87);
 
-    vec3 color = mix(paperColor, inkColor, dot);
+    vec3 color = mix(paperColor, inkColor, halftone);
 
     // Subtle edge outline
     float edge = pow(1.0 - abs(dot(v, n)), 3.0);
