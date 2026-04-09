@@ -24,6 +24,7 @@ export default defineConfig({
         scribble: resolve(__dirname, 'scribble/index.html'),
         fluid: resolve(__dirname, 'fluid/index.html'),
         lic: resolve(__dirname, 'lic/index.html'),
+        threejs: resolve(__dirname, 'threejs/index.html'),
       },
     },
   },

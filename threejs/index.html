@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Three.js</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Three.js</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-piece="blob" class="active"><span class="key">1</span> Blob</button>
+      <button data-piece="sculpture"><span class="key">2</span> Sculpture</button>
+    </div>
+    <div id="texture-select" style="display:none">
+      <label>
+        <span>Texture</span>
+        <select id="texture">
+          <option value="marble">Marble + Iridescence</option>
+          <option value="bronze">Bronze Patina</option>
+          <option value="hologram">Hologram</option>
+          <option value="contour">Contour Lines</option>
+          <option value="halftone">Halftone</option>
+          <option value="xray">X-Ray</option>
+        </select>
+      </label>
+    </div>
+    <script type="module" src="/src/threejs.js"></script>
+  </body>
+</html>
