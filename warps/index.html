@@ -19,6 +19,8 @@
       <button data-effect="mercury"><span class="key">3</span> Mercury</button>
       <button data-effect="vcr"><span class="key">4</span> VCR</button>
       <button data-effect="refract"><span class="key">5</span> Refract</button>
+      <button data-effect="ripple"><span class="key">6</span> Ripple</button>
+      <button data-effect="warp"><span class="key">7</span> Warp</button>
     </div>
     <div id="image-controls" style="position:fixed; bottom:100px; right:20px; z-index:1000;">
       <div id="drop-zone" style="width:200px; padding:24px; border:2px dashed rgba(255,255,255,0.5); border-radius:12px; background:rgba(0,0,0,0.7); color:white; text-align:center; cursor:pointer; font-family:system-ui,sans-serif;">
@@ -55,6 +57,14 @@
       <label>
         <span>Speed</span>
         <input type="range" id="speed" min="0" max="2" step="0.1" value="0.5">
+      </label>
+      <label>
+        <span>Intensity</span>
+        <input type="range" id="intensity" min="0.1" max="3" step="0.1" value="0.7">
+      </label>
+      <label>
+        <span>Scale</span>
+        <input type="range" id="scale" min="0.2" max="3" step="0.1" value="1">
       </label>
     </div>
     <script type="module" src="/src/warps.js"></script>

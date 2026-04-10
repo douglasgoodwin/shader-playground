@@ -26,9 +26,10 @@ export class CanvasRecorder {
     async start() {
         if (this.recording || !this.supported) return
 
-        // Always record at 1080p regardless of canvas size
-        const encodedWidth = 1920
+        // Record at 1080p height, preserving canvas aspect ratio
+        const aspect = this.canvas.width / this.canvas.height
         const encodedHeight = 1080
+        const encodedWidth = Math.round(encodedHeight * aspect / 2) * 2 // keep even for H.264
 
         // Create muxer with ArrayBuffer target
         this.target = new ArrayBufferTarget()

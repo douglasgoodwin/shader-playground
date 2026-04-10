@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fur</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Fur</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-effect="shells" class="active"><span class="key">1</span> Shells</button>
+      <button data-effect="prairie"><span class="key">2</span> Prairie</button>
+      <button data-effect="creature"><span class="key">3</span> Creature</button>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Wind</span>
+        <input type="range" id="wind" min="0" max="2" step="0.05" value="0.8">
+      </label>
+      <label>
+        <span>Gravity</span>
+        <input type="range" id="gravity" min="0" max="1.5" step="0.05" value="0.4">
+      </label>
+      <label>
+        <span>Density</span>
+        <input type="range" id="density" min="0.1" max="2" step="0.05" value="1">
+      </label>
+      <label>
+        <span>Length</span>
+        <input type="range" id="furLength" min="0.1" max="2" step="0.05" value="1">
+      </label>
+    </div>
+    <script type="module" src="/src/fur.js"></script>
+  </body>
+</html>

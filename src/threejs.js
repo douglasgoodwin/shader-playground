@@ -1,4 +1,5 @@
 import './threejs.css'
+import { setupRecording } from './controls.js'
 import * as THREE from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
@@ -13,7 +14,7 @@ import halftoneFrag from './shaders/threejs/halftone.frag'
 import xrayFrag from './shaders/threejs/xray.frag'
 
 const canvas = document.getElementById('canvas')
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setSize(window.innerWidth, window.innerHeight)
 
@@ -195,11 +196,15 @@ copiesDropdown.addEventListener('change', () => {
     rebuildCurrentPiece()
 })
 
+// Recording
+const recorder = setupRecording(canvas)
+
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') buttons[0]?.click()
     if (e.key === '2') buttons[1]?.click()
     if (e.key === '3') buttons[2]?.click()
+    if (e.key === 'r' || e.key === 'R') recorder.toggle()
 })
 
 // --- Mouse orbit + zoom ---

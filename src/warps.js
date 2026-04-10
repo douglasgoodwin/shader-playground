@@ -6,6 +6,8 @@ import flowheartShader from './shaders/warps/flowheart.glsl'
 import mercuryShader from './shaders/warps/mercury.glsl'
 import vcrShader from './shaders/warps/vcr.glsl'
 import refractShader from './shaders/warps/refract.glsl'
+import rippleShader from './shaders/effects/ripple.glsl'
+import warpShader from './shaders/effects/warp.glsl'
 
 let textureSize = { width: 1, height: 1 }
 
@@ -19,18 +21,22 @@ const page = createShaderPage({
         mercury: mercuryShader,
         vcr: vcrShader,
         refract: refractShader,
+        ripple: rippleShader,
+        warp: warpShader,
     },
     uniforms: [
         'resolution', 'time', 'mouse',
         'texture', 'textureSize', 'hasTexture',
         'bgTexture', 'hasBgTexture',
-        'deform', 'geometry', 'speed',
+        'deform', 'geometry', 'speed', 'intensity', 'scale',
     ],
     defaultEffect: 'drape',
     sliders: {
         deform:   { selector: '#deform',   default: 0.5 },
         geometry: { selector: '#geometry', default: 1 },
         speed:    { selector: '#speed',    default: 0.5 },
+        intensity: { selector: '#intensity', default: 0.7 },
+        scale:     { selector: '#scale',     default: 1 },
     },
     onRender({ gl, u, current }) {
         // Inner texture (TEXTURE0)

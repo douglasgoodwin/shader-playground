@@ -8,7 +8,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        playground: resolve(__dirname, 'playground/index.html'),
         whitney: resolve(__dirname, 'whitney/index.html'),
         geometries: resolve(__dirname, 'geometries/index.html'),
         glyphs: resolve(__dirname, 'glyphs/index.html'),
@@ -25,6 +24,8 @@ export default defineConfig({
         fluid: resolve(__dirname, 'fluid/index.html'),
         lic: resolve(__dirname, 'lic/index.html'),
         threejs: resolve(__dirname, 'threejs/index.html'),
+        fur: resolve(__dirname, 'fur/index.html'),
+        spike: resolve(__dirname, 'spike/index.html'),
       },
     },
   },
