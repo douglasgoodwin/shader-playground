@@ -74,3 +74,65 @@
 #model-loading.hidden {
     display: none;
 }
+
+#audio-panel {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    z-index: 1000;
+    font-family: system-ui, sans-serif;
+}
+
+#audio-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+}
+
+#level-track {
+    width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#level-meter {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2a6, #e82);
+    border-radius: 4px;
+    transition: width 0.05s;
+}
+
+#audio-status {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    text-align: center;
+    margin-top: 6px;
+}
+
+#webcam-panel {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    z-index: 1000;
+}
+
+#webcam-preview {
+    width: 200px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: black;
+    transform: scaleX(-1);
+}
+
+#face-status {
+    color: rgba(255, 255, 255, 0.6);
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    text-align: center;
+    margin-top: 6px;
+}
