@@ -202,9 +202,6 @@ function render(time) {
         }
     }
 
-    // Ensure viewport matches canvas (recorder may resize it)
-    gl.viewport(0, 0, canvas.width, canvas.height)
-
     // Bind textures: slot 0 = current (being zoomed), slot 1 = next (sharp)
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, currentTex())

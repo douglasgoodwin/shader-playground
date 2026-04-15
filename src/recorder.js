@@ -30,14 +30,15 @@ export class CanvasRecorder {
         this.originalWidth = this.canvas.width
         this.originalHeight = this.canvas.height
 
-        // Set canvas to render at true 1080p during recording
-        const aspect = this.originalWidth / this.originalHeight
+        // Always record at 1920x1080
+        const encodedWidth = 1920
         const encodedHeight = 1080
-        const encodedWidth = Math.round(encodedHeight * aspect / 2) * 2
 
-        // Resize the canvas drawing buffer to 1080p so shaders render at full resolution
+        // Resize the canvas drawing buffer so shaders render at recording resolution
         this.canvas.width = encodedWidth
-        this.canvas.height = encodedHeight // keep even for H.264
+        this.canvas.height = encodedHeight
+        const gl = this.canvas.getContext('webgl')
+        if (gl) gl.viewport(0, 0, encodedWidth, encodedHeight)
 
         // Create muxer with ArrayBuffer target
         this.target = new ArrayBufferTarget()
@@ -144,11 +145,13 @@ export class CanvasRecorder {
             }
         }
 
-        // Restore original canvas dimensions
+        // Restore original canvas dimensions and trigger resize so pages
+        // update their viewport and uniforms
         if (this.originalWidth && this.originalHeight) {
             this.canvas.width = this.originalWidth
             this.canvas.height = this.originalHeight
         }
+        window.dispatchEvent(new Event('resize'))
 
         if (this.muxer) {
             this.muxer.finalize()

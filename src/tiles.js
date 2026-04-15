@@ -3,7 +3,6 @@ import { createShaderPage } from './shader-page.js'
 import voronoiShader from './shaders/tiles/voronoi.glsl'
 import hexgridShader from './shaders/tiles/hexgrid.glsl'
 import tilesShader from './shaders/tiles/tiles.glsl'
-import varitilesShader from './shaders/tiles/varitiles.glsl'
 import plasmaShader from './shaders/effects/plasma.glsl'
 import kaleidoscopeShader from './shaders/effects/kaleidoscope.glsl'
 import phyllotaxisShader from './shaders/effects/phyllotaxis.glsl'
@@ -15,7 +14,6 @@ createShaderPage({
         voronoi: voronoiShader,
         hexgrid: hexgridShader,
         tiles: tilesShader,
-        varitiles: varitilesShader,
         plasma: plasmaShader,
         kaleidoscope: kaleidoscopeShader,
         phyllotaxis: phyllotaxisShader,

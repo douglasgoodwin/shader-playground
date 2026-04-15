@@ -11,61 +11,80 @@ This project explores real-time GLSL shader programming through interactive visu
 ### Pages
 
 - **/** - Landing page with animated color field
-- **/playground/** - Interactive shader effects with parameter controls
-- **/geometries/** - Raymarched 3D geometry explorations
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
+- **/geometries/** - Raymarched 3D geometry explorations
 - **/glyphs/** - ASCII art rendering and symbol morphing
-- **/tiles/** - Voronoi, hexgrid, and tiling patterns
 - **/stipple/** - Hodgin-style stippling for webcam/images
-- **/scribble/** - Scribbled line art rendering of images
+- **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
+- **/warps/** - Image warping effects
+- **/tiles/** - Voronoi, hexgrid, tiling, and op art
 - **/landscape/** - Raymarched terrain with lightning storms
 - **/displace/** - Vertex displacement with image textures
-- **/warps/** - Image warping effects
-- **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/audio/** - Audio-reactive raymarched terrain
-- **/fluid/** - Fluid simulations (Navier-Stokes, pool water, ferrofluid)
 - **/reaction-diffusion/** - Gray-Scott simulation on a twisted torus
-- **/opart/** - Bridget Riley-inspired optical illusions
-- **/docs/** - Course notes and reference materials
+- **/fluid/** - Fluid simulations (Navier-Stokes, pool water, ferrofluid)
+- **/scribble/** - Scribbled line art rendering of images
+- **/lic/** - Line integral convolution painterly flow
+- **/threejs/** - 3D shader experiments with Three.js
+- **/fur/** - Shell-method fur with wind and gravity
+- **/spike/** - Deforming shader textures on 3D model
+- **/zoom/** - Google Maps-style zoom and crossfade
 
 ### Shader Sources (`src/shaders/`)
 
+Each section has a matching shader directory: `src/shaders/<section>/`. To add a shader
+to a section, create a `.glsl` file in the corresponding directory, then import it in
+the section's JS file (`src/<section>.js`) and add a button to its HTML
+(`<section>/index.html`).
+
 ```
 vertex.glsl              ← shared fullscreen quad vertex shader
+effects/                 ← shared 2D effects used by multiple pages (ripple, plasma,
+                           warp, kaleidoscope, noise, drive, firefly, phyllotaxis, colorfield)
 audio/                   ← audio-reactive shaders (landscape, sphere)
 characters/              ← animated creatures (frightened, stickfolk)
 displace/                ← vertex displacement & video effects (terrain, twist, timeslice)
-effects/                 ← 2D playground effects (ripple, plasma, warp, kaleidoscope, noise, drive, firefly, phyllotaxis, colorfield)
 exercises/               ← learning exercises (ex1–ex11, challenges)
+fluid/                   ← fluid simulations (Navier-Stokes sim/transport/display, poolwater, ferrofluid)
+fur/                     ← shell-method fur rendering
 geometries/              ← raymarched 3D SDFs (mandelbulb, gyroid, bust, still life, etc.)
 glyphs/                  ← ASCII art & symbol rendering (ascii, ascii-image, ascii-font, ascii-geometry, glyphs)
 landscape/               ← terrain scenes (lightning, sand)
-opart/                   ← optical illusions (cylinder, vasarely)
+lic/                     ← line integral convolution painterly flow
+opart/                   ← optical illusions (cylinder, vasarely) — displayed on the Tiles page
 particles/               ← GPU particle sims (boids, ragdoll, lenia)
 reaction-diffusion/      ← Gray-Scott simulation (sim, torus shaders)
 scribble/                ← artistic rendering (scribble, scribble-lines, stipple)
-tiles/                   ← tiling patterns (voronoi, hexgrid, tiles, varitiles)
-fluid/                   ← fluid simulations (Navier-Stokes sim/transport/display, poolwater, ferrofluid)
+spike/                   ← deforming shader textures on 3D model
+threejs/                 ← Three.js shader experiments
+tiles/                   ← tiling patterns (voronoi, hexgrid, tiles)
 warps/                   ← image warping (drape, flowheart, mercury, vcr)
 whitney/                 ← Whitney-inspired generative art (lapis, permutations, matrix, atom, etc.)
+zoom/                    ← Google Maps-style zoom crossfade
 ```
 
-## Playground Effects
+#### Adding a new shader to an existing section
 
-8 shader effects exploring 2D patterns and simulations:
+1. Create `src/shaders/<section>/my-shader.glsl`
+2. Import it in `src/<section>.js`:
+   ```js
+   import myShader from './shaders/<section>/my-shader.glsl'
+   ```
+3. Add it to the `shaders` object passed to `createShaderPage()`
+4. Add a button in `<section>/index.html`:
+   ```html
+   <button data-piece="my-shader"><span class="key">N</span> My Shader</button>
+   ```
 
-| Effect | Description |
-|--------|-------------|
-| Ripple | Concentric waves from center |
-| Plasma | Classic demoscene color cycling |
-| Warp | Distorted UV coordinates |
-| Kaleidoscope | Radial symmetry reflections |
-| Noise | Fractal noise on a sphere ("boiling methane sea") |
-| Drive | Rainy night driving with bokeh lights |
-| Firefly | Particle fireflies with blinking |
-| Phyllotaxis | Golden angle (137.5°) seed arrangement pattern |
+Most sections use the `createShaderPage()` helper from `src/shader-page.js`, which
+handles GL setup, uniform binding, keyboard shortcuts, and the render loop. The
+standard uniforms available in every shader are:
+- `u_resolution` — canvas size in pixels
+- `u_time` — elapsed time in seconds
+- `u_mouse` — mouse position in pixels
+- `u_speed`, `u_intensity`, `u_scale` — slider values (names vary by section)
 
 ## Geometries
 
@@ -143,14 +162,18 @@ This allows ASCII characters to follow contours and edges, not just represent ov
 
 ## Tiles
 
-4 tiling and cellular pattern effects:
+8 tiling, cellular, and op art effects:
 
 | Effect | Description |
 |--------|-------------|
 | Voronoi | Cellular noise pattern |
 | HexGrid | Hexagonal tiling |
 | Tiles | Geometric tile patterns with rotation |
-| Varitiles | Grid of tiles with per-cell random shape, rotation, color, and scale |
+| Plasma | Classic demoscene color cycling |
+| Kaleidoscope | Radial symmetry reflections |
+| Phyllotaxis | Golden angle (137.5°) seed arrangement pattern |
+| Cylinder | Bridget Riley-inspired 3D cylinder with scrolling stripes |
+| Vasarely | Victor Vasarely-inspired sphere with circles and diamonds |
 
 ## Stipple Renderer
 
@@ -464,6 +487,16 @@ All shader pages support MP4 video recording:
 npm install
 npm run dev
 ```
+
+### Smoke Test
+
+After refactoring or adding shaders, run a production build to catch broken imports and missing files:
+
+```bash
+npm run build
+```
+
+The Lygia duplicate-include warnings are expected and harmless (`#ifndef` guards prevent issues at runtime).
 
 ## Resources
 
