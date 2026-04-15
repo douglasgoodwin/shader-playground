@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 /objs
+/memory
 /_class/spring-2026-vibecoding-with-ai-fvea-688-01-fvea-488-01-export.imscc.zip
 /orbit_frames
 /.claude
