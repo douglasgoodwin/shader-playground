@@ -95,7 +95,7 @@ const modelLoader = createModelLoader({
 })
 
 // Load default model
-modelLoader.loadUrl('/threejs/printreadyspike.obj')
+modelLoader.loadUrl('/threejs/Alnus_Pollen.obj')
 
 // --- Face tracker ---
 const webcamPreview = document.getElementById('webcam-preview')
