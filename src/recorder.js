@@ -26,10 +26,18 @@ export class CanvasRecorder {
     async start() {
         if (this.recording || !this.supported) return
 
-        // Record at 1080p height, preserving canvas aspect ratio
-        const aspect = this.canvas.width / this.canvas.height
+        // Save original canvas dimensions so we can restore after recording
+        this.originalWidth = this.canvas.width
+        this.originalHeight = this.canvas.height
+
+        // Set canvas to render at true 1080p during recording
+        const aspect = this.originalWidth / this.originalHeight
         const encodedHeight = 1080
-        const encodedWidth = Math.round(encodedHeight * aspect / 2) * 2 // keep even for H.264
+        const encodedWidth = Math.round(encodedHeight * aspect / 2) * 2
+
+        // Resize the canvas drawing buffer to 1080p so shaders render at full resolution
+        this.canvas.width = encodedWidth
+        this.canvas.height = encodedHeight // keep even for H.264
 
         // Create muxer with ArrayBuffer target
         this.target = new ArrayBufferTarget()
@@ -56,7 +64,7 @@ export class CanvasRecorder {
 
         // Configure encoder - try hardware acceleration first
         const config = {
-            codec: 'avc1.640028', // H.264 High Profile Level 4.0
+            codec: 'avc1.640033', // H.264 High Profile Level 5.1 (supports wider resolutions)
             width: encodedWidth,
             height: encodedHeight,
             bitrate: this.bitrate,
@@ -94,11 +102,8 @@ export class CanvasRecorder {
         if (!this.recording || !this.videoEncoder) return
 
         try {
-            // Create a bitmap from the canvas
-            createImageBitmap(this.canvas, {
-                resizeWidth: this.encodedWidth,
-                resizeHeight: this.encodedHeight,
-            }).then((bitmap) => {
+            // Create a bitmap from the canvas (already rendering at 1080p, no resize needed)
+            createImageBitmap(this.canvas).then((bitmap) => {
                 const timestamp = (this.frameCount * 1_000_000) / this.fps // microseconds
                 const frame = new VideoFrame(bitmap, {
                     timestamp,
@@ -137,6 +142,12 @@ export class CanvasRecorder {
             } catch (e) {
                 console.error('Encoder flush error:', e)
             }
+        }
+
+        // Restore original canvas dimensions
+        if (this.originalWidth && this.originalHeight) {
+            this.canvas.width = this.originalWidth
+            this.canvas.height = this.originalHeight
         }
 
         if (this.muxer) {

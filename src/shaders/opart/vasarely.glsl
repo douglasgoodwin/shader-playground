@@ -7,8 +7,8 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec2 u_mouse;
 uniform float u_speed;
-uniform float u_density;
-uniform float u_harmonics;
+uniform float u_intensity;
+uniform float u_scale;
 
 #define PI 3.14159265359
 
@@ -74,8 +74,8 @@ void main() {
     }
 
     // Sphere parameters
-    float sphereRadius = 0.4 * u_harmonics * breathe;
-    float bulgeStrength = 0.8 * u_density;
+    float sphereRadius = 0.4 * u_scale * breathe;
+    float bulgeStrength = 0.8 * u_intensity;
 
     // Apply spherical distortion
     vec2 distorted = sphereDistort(p, center, bulgeStrength, sphereRadius);
@@ -84,7 +84,7 @@ void main() {
     float depth = sphereDepth(p, center, sphereRadius);
 
     // Grid parameters
-    float gridSize = 12.0 * u_density;
+    float gridSize = 12.0 * u_intensity;
     vec2 gridUV = distorted * gridSize;
 
     // Cell coordinates

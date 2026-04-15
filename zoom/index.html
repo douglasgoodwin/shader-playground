@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zoom Crossfade</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">Zoom Crossfade</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-source="video" class="active"><span class="key">1</span> Video</button>
+      <button data-source="webcam"><span class="key">2</span> Webcam</button>
+    </div>
+    <div id="media-controls" style="display:none;">
+      <div id="drop-zone">
+        <p>Drop video here<br><span style="font-size:11px; opacity:0.6;">or click to browse</span></p>
+        <input type="file" id="file-input" accept="video/*" style="display:none;" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Or paste video URL..." />
+        <button id="load-url">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+    </div>
+    <div id="hint">Click anywhere to zoom</div>
+    <script type="module" src="/src/zoom.js"></script>
+  </body>
+</html>

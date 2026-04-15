@@ -7,6 +7,8 @@ import varitilesShader from './shaders/tiles/varitiles.glsl'
 import plasmaShader from './shaders/effects/plasma.glsl'
 import kaleidoscopeShader from './shaders/effects/kaleidoscope.glsl'
 import phyllotaxisShader from './shaders/effects/phyllotaxis.glsl'
+import cylinderShader from './shaders/opart/cylinder.glsl'
+import vasarelyShader from './shaders/opart/vasarely.glsl'
 
 createShaderPage({
     shaders: {
@@ -17,6 +19,8 @@ createShaderPage({
         plasma: plasmaShader,
         kaleidoscope: kaleidoscopeShader,
         phyllotaxis: phyllotaxisShader,
+        cylinder: cylinderShader,
+        vasarely: vasarelyShader,
     },
     uniforms: ['resolution', 'time', 'mouse', 'speed', 'intensity', 'scale'],
     defaultEffect: 'voronoi',

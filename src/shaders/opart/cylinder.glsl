@@ -7,8 +7,8 @@ uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec2 u_mouse;
 uniform float u_speed;
-uniform float u_density;
-uniform float u_harmonics;
+uniform float u_intensity;
+uniform float u_scale;
 
 void main() {
     vec2 u = gl_FragCoord.xy / u_resolution.xy;
@@ -23,7 +23,7 @@ void main() {
                                           1.0 - abs(u.y - 0.25)));
 
     // Horizontal stripes that scroll
-    float stripeCount = 7.0 * u_harmonics;
+    float stripeCount = 7.0 * u_scale;
     float f = fract(x * stripeCount + t * 0.14);
 
     // The magic: creates the 3D cylinder illusion
@@ -33,14 +33,14 @@ void main() {
     float bw = pattern > 0.2 ? 1.0 : 0.0;
 
     // Base color with intensity control
-    vec3 color = vec3(bw) * u_density;
+    vec3 color = vec3(bw) * u_intensity;
 
     // Subtle cool tint
     color *= vec3(0.95, 0.95, 1.0);
 
     // Mouse glow effect
     float mouseDist = distance(u, mouse);
-    color += 0.15 * u_density / (mouseDist + 0.3) * vec3(0.3, 0.5, 1.0);
+    color += 0.15 * u_intensity / (mouseDist + 0.3) * vec3(0.3, 0.5, 1.0);
 
     gl_FragColor = vec4(color, 1.0);
 }

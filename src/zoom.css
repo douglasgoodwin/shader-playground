@@ -13,6 +13,7 @@ body {
   display: block;
   width: 100vw;
   height: 100vh;
+  cursor: pointer;
 }
 
 #nav {
@@ -98,62 +99,76 @@ body {
   margin-right: 4px;
 }
 
-#sliders {
+#hint {
   position: fixed;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  gap: 24px;
-  padding: 12px 20px;
+  padding: 10px 24px;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  border-radius: 20px;
   backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
   z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.5s;
 }
 
-#sliders label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: rgba(255, 255, 255, 0.7);
+#hint.hidden {
+  opacity: 0;
+}
+
+.hidden { display: none !important; }
+
+#media-controls {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 1000;
+}
+
+#drop-zone {
+  width: 200px;
+  padding: 24px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  cursor: pointer;
   font-family: system-ui, sans-serif;
+}
+
+#drop-zone.dragover {
+  border-color: rgba(150, 170, 220, 0.8);
+  background: rgba(100, 120, 180, 0.3);
+}
+
+.url-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.url-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
   font-size: 12px;
 }
 
-#sliders input[type="range"] {
-  width: 100px;
-  height: 4px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  outline: none;
-}
-
-#sliders input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  background: rgba(200, 210, 255, 0.9);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.1s;
-}
-
-#sliders input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-#sliders input[type="range"]::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  background: rgba(200, 210, 255, 0.9);
-  border: none;
-  border-radius: 50%;
+.url-row button {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
   cursor: pointer;
 }
 
