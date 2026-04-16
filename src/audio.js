@@ -1,4 +1,5 @@
 import './audio.css'
+import './source-link.js'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import { AudioEngine } from './audio-engine.js'

@@ -1,4 +1,5 @@
 import './exercises.css'
+import './source-link.js'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'

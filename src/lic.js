@@ -1,4 +1,5 @@
 import './style.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import { createMediaLoader } from './media-loader.js'
 import licShader from './shaders/lic/lic.glsl'

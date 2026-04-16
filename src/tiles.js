@@ -1,4 +1,5 @@
 import './tiles.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import voronoiShader from './shaders/tiles/voronoi.glsl'
 import hexgridShader from './shaders/tiles/hexgrid.glsl'

@@ -1,4 +1,5 @@
 import './fur.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import shellsShader from './shaders/fur/shells.glsl'
 import prairieShader from './shaders/fur/prairie.glsl'

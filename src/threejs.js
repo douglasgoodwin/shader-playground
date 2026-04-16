@@ -1,4 +1,5 @@
 import './threejs.css'
+import './source-link.js'
 import { setupRecording } from './controls.js'
 import * as THREE from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'

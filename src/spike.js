@@ -1,4 +1,5 @@
 import './spike.css'
+import './source-link.js'
 import * as THREE from 'three'
 import { setupRecording } from './controls.js'
 import { createModelLoader } from './model-loader.js'

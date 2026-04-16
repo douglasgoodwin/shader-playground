@@ -1,4 +1,5 @@
 import './warps.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import { createMediaLoader } from './media-loader.js'
 import drapeShader from './shaders/warps/drape.glsl'

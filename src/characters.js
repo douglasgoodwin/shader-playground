@@ -1,4 +1,5 @@
 import './characters.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import frightenedShader from './shaders/characters/frightened.glsl'
 import stickfolkShader from './shaders/characters/stickfolk.glsl'

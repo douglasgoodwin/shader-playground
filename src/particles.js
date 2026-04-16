@@ -1,4 +1,5 @@
 import './particles.css'
+import './source-link.js'
 import { createProgram } from './webgl.js'
 import { setupRecording, MouseTracker, SliderManager } from './controls.js'
 

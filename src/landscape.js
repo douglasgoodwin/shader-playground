@@ -1,4 +1,5 @@
 import './landscape.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import lightningShader from './shaders/landscape/lightning.glsl'
 import sandShader from './shaders/landscape/sand.glsl'

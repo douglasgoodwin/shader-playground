@@ -1,4 +1,5 @@
 import './style.css'
+import './source-link.js'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'

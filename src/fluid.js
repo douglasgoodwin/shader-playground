@@ -1,4 +1,5 @@
 import './fluid.css'
+import './source-link.js'
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
 import { createMediaLoader } from './media-loader.js'

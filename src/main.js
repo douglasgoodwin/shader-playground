@@ -1,4 +1,5 @@
 import './style.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import rippleShader from './shaders/effects/ripple.glsl'
 import plasmaShader from './shaders/effects/plasma.glsl'

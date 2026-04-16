@@ -1,4 +1,5 @@
 import './whitney.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import lapisShader from './shaders/whitney/lapis.glsl'
 import permutationsShader from './shaders/whitney/permutations.glsl'

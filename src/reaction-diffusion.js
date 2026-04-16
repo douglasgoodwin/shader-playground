@@ -1,4 +1,5 @@
 import './reaction-diffusion.css'
+import './source-link.js'
 import { createProgram, perspective, lookAt, mat4Multiply } from './webgl.js'
 import { setupRecording, SliderManager } from './controls.js'
 

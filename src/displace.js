@@ -1,4 +1,5 @@
 import './displace.css'
+import './source-link.js'
 import { createProgram, createFullscreenQuad, perspective, lookAt, mat4Multiply } from './webgl.js'
 import { setupRecording } from './controls.js'
 import { createMediaLoader } from './media-loader.js'

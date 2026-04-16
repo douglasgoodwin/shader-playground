@@ -19,6 +19,9 @@ body {
   position: fixed;
   top: 20px;
   left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   z-index: 100;
 }
 
@@ -42,7 +45,6 @@ body {
   border-color: rgba(150, 170, 220, 0.5);
   color: white;
 }
-
 #controls {
   position: fixed;
   top: 20px;

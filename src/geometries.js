@@ -1,4 +1,5 @@
 import './geometries.css'
+import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import gyroidShader from './shaders/geometries/gyroid.glsl'
 import penroseShader from './shaders/geometries/penrose.glsl'
