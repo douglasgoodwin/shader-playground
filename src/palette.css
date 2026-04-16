@@ -1,0 +1,134 @@
+@import './common.css';
+
+#image-controls {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+#drop-zone {
+  width: 200px;
+  padding: 24px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#drop-zone:hover,
+#drop-zone.dragover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#drop-zone .small {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+#drop-zone input {
+  display: none;
+}
+
+.url-row {
+  display: flex;
+  gap: 8px;
+}
+
+.url-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+
+.url-row input:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.url-row button {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.url-row button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+#loading {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#duotone-colors {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 24px;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+#duotone-colors label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+}
+
+#duotone-colors input[type="color"] {
+  width: 36px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+#duotone-colors input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+#duotone-colors input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+}

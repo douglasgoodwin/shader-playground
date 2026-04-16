@@ -99,6 +99,8 @@ export default defineConfig({
         fur: resolve(__dirname, 'fur/index.html'),
         spike: resolve(__dirname, 'spike/index.html'),
         zoom: resolve(__dirname, 'zoom/index.html'),
+        palette: resolve(__dirname, 'palette/index.html'),
+        kaleidoscope: resolve(__dirname, 'kaleidoscope/index.html'),
       },
     },
   },
