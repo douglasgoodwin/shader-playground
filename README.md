@@ -31,6 +31,8 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/fur/** - Shell-method fur with wind and gravity
 - **/spike/** - Deforming shader textures on 3D model
 - **/zoom/** - Google Maps-style zoom and crossfade
+- **/palette/** - Color remapping with RISO, pastel, thermal, duotone, posterize
+- **/kaleidoscope/** - Video kaleidoscope with configurable reflections
 
 ### Shader Sources (`src/shaders/`)
 
@@ -58,11 +60,14 @@ particles/               ← GPU particle sims (boids, ragdoll, lenia)
 reaction-diffusion/      ← Gray-Scott simulation (sim, torus shaders)
 scribble/                ← artistic rendering (scribble, scribble-lines, stipple)
 spike/                   ← deforming shader textures on 3D model
-threejs/                 ← Three.js shader experiments
+threejs/                 ← Three.js shader experiments (marble, bronze, hologram, contour,
+                           halftone, xray, iridescent, wireframe, lava, ceramic)
 tiles/                   ← tiling patterns (voronoi, hexgrid, tiles)
-warps/                   ← image warping (drape, flowheart, mercury, vcr)
+warps/                   ← image warping (drape, flowheart, mercury, vcr, refract)
 whitney/                 ← Whitney-inspired generative art (lapis, permutations, matrix, atom, etc.)
 zoom/                    ← Google Maps-style zoom crossfade
+palette/                 ← color remapping (riso, pastel, thermal, duotone, posterize)
+kaleidoscope/            ← video kaleidoscope (classic, tunnel, fractal)
 ```
 
 #### Adding a new shader to an existing section
@@ -473,6 +478,55 @@ These nine exercises cover the core toolkit used in professional shader code:
 After completing these exercises, you'll be able to read and understand most advanced Shadertoy shaders.
 
 **Coming soon**: Voronoi, lighting, shadows, the sand ripple pattern
+
+## Palette
+
+Color remapping effects that remap image/video colors through artistic palettes.
+
+| Effect | Description |
+|--------|-------------|
+| RISO | Risograph printing simulation — CMYK halftone separation with overprint blending (Y 0°, M 75°, C 15°, K 45°) |
+| Pastel | Luminance mapped through a 5-stop pastel gradient (pink, lavender, mint, cream, baby blue) with hue preservation |
+| Thermal | Infrared camera palette — luminance mapped through black → blue → purple → red → orange → yellow → white |
+| Duotone | Two-color gradient mapping with native color pickers for shadow and highlight |
+| Posterize | Quantize to N discrete color levels with 4×4 Bayer matrix ordered dithering |
+
+### Controls
+
+- **Intensity** — Effect strength (ink spread for RISO, contrast for thermal/duotone, dither amount for posterize)
+- **Scale** — Dot size for RISO, color spread for pastel, level count for posterize
+- **Shadow/Highlight** color pickers (duotone only)
+
+## Kaleidoscope
+
+Video kaleidoscope with configurable reflections — drop an image or video and see it transformed through angular symmetry.
+
+| Effect | Description |
+|--------|-------------|
+| Classic | Standard angular kaleidoscope with mirrored segments and slow rotation |
+| Tunnel | Kaleidoscope mapped onto a radial tunnel that scrolls inward over time |
+| Fractal | Iterative fold-based kaleidoscope with drifting offsets and recursive symmetry |
+
+### Controls
+
+- **Segments** — Number of angular reflections (2–24)
+- **Zoom** — How much of the source image is visible
+- **Speed** — Rotation/scroll animation speed
+
+## Three.js
+
+3D shader experiments with custom materials on geometry and OBJ models.
+
+| Piece | Description |
+|-------|-------------|
+| Blob | Morphing icosahedron with sine-wave vertex displacement |
+| Torus | Donut shape with the same blob deformation material |
+| Sculpture | OBJ model with selectable shader materials |
+| Venus | Low-poly Venus de Milo with selectable materials |
+
+10 shader materials available for OBJ models: Marble + Iridescence, Bronze Patina, Hologram, Contour Lines, Halftone, X-Ray, Iridescent (thin-film), Wireframe (glowing grid), Lava (molten cracks), Ceramic (glazed porcelain).
+
+Supports drag-and-drop OBJ loading for custom models, instancing (1–1000 copies), and mouse orbit + zoom.
 
 ## Recording
 
