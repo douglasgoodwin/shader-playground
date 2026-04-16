@@ -45,3 +45,79 @@
 #texture-select select:focus {
   border-color: rgba(150, 170, 220, 0.6);
 }
+
+#model-controls {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+
+#model-drop-zone {
+  width: 200px;
+  padding: 24px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#model-drop-zone:hover,
+#model-drop-zone.dragover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#model-drop-zone .small {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+#model-drop-zone input[type="file"] {
+  display: none;
+}
+
+#model-controls .url-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#model-url-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+}
+
+#model-load-url {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  cursor: pointer;
+}
+
+#model-load-url:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#model-loading {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+#model-loading.hidden {
+  display: none;
+}

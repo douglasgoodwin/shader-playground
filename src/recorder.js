@@ -37,7 +37,8 @@ export class CanvasRecorder {
         // Resize the canvas drawing buffer so shaders render at recording resolution
         this.canvas.width = encodedWidth
         this.canvas.height = encodedHeight
-        const gl = this.canvas.getContext('webgl')
+        // Update viewport on whichever GL context the canvas already has
+        const gl = this.canvas.getContext('webgl2') || this.canvas.getContext('webgl')
         if (gl) gl.viewport(0, 0, encodedWidth, encodedHeight)
 
         // Create muxer with ArrayBuffer target

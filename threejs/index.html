@@ -15,8 +15,20 @@
     <button id="record-btn" title="Record video (R)"></button>
     <div id="controls">
       <button data-piece="blob" class="active"><span class="key">1</span> Blob</button>
-      <button data-piece="sculpture"><span class="key">2</span> Sculpture</button>
-      <button data-piece="venus"><span class="key">3</span> Venus</button>
+      <button data-piece="torus"><span class="key">2</span> Torus</button>
+      <button data-piece="sculpture"><span class="key">3</span> Sculpture</button>
+      <button data-piece="venus"><span class="key">4</span> Venus</button>
+    </div>
+    <div id="model-controls">
+      <div id="model-drop-zone">
+        <p>Drop OBJ here<br><span class="small">or click to browse</span></p>
+        <input type="file" id="model-file-input" accept=".obj" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="model-url-input" placeholder="Or paste OBJ URL..." />
+        <button id="model-load-url">Load</button>
+      </div>
+      <div id="model-loading" class="hidden">Loading...</div>
     </div>
     <div id="texture-select" style="display:none">
       <label>
@@ -28,6 +40,10 @@
           <option value="contour">Contour Lines</option>
           <option value="halftone">Halftone</option>
           <option value="xray">X-Ray</option>
+          <option value="iridescent">Iridescent</option>
+          <option value="wireframe">Wireframe</option>
+          <option value="lava">Lava</option>
+          <option value="ceramic">Ceramic</option>
         </select>
       </label>
       <label>

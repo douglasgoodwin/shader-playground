@@ -1,6 +1,7 @@
 import './threejs.css'
 import './source-link.js'
 import { setupRecording } from './controls.js'
+import { createModelLoader } from './model-loader.js'
 import * as THREE from 'three'
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
@@ -13,6 +14,10 @@ import hologramFrag from './shaders/threejs/hologram.frag'
 import contourFrag from './shaders/threejs/contour.frag'
 import halftoneFrag from './shaders/threejs/halftone.frag'
 import xrayFrag from './shaders/threejs/xray.frag'
+import iridescentFrag from './shaders/threejs/iridescent.frag'
+import wireframeFrag from './shaders/threejs/wireframe.frag'
+import lavaFrag from './shaders/threejs/lava.frag'
+import ceramicFrag from './shaders/threejs/ceramic.frag'
 
 const canvas = document.getElementById('canvas')
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true })
@@ -41,7 +46,11 @@ const textureMaterials = {
     hologram: makeMat(sculptureVert, hologramFrag, { transparent: true, side: THREE.DoubleSide }),
     contour:  makeMat(sculptureVert, contourFrag),
     halftone: makeMat(sculptureVert, halftoneFrag),
-    xray:     makeMat(sculptureVert, xrayFrag, { transparent: true, side: THREE.DoubleSide }),
+    xray:       makeMat(sculptureVert, xrayFrag, { transparent: true, side: THREE.DoubleSide }),
+    iridescent: makeMat(sculptureVert, iridescentFrag),
+    wireframe:  makeMat(sculptureVert, wireframeFrag),
+    lava:       makeMat(sculptureVert, lavaFrag),
+    ceramic:    makeMat(sculptureVert, ceramicFrag),
 }
 
 let activeTexture = 'marble'
@@ -60,6 +69,9 @@ let activeInstanceGroup = null
 // Blob
 const blobMaterial = makeMat(blobVert, blobFrag)
 pieces.blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 64), blobMaterial)
+
+// Torus
+pieces.torus = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.4, 64, 128), blobMaterial)
 
 // Helper: load an OBJ, normalize its geometry, register as a piece
 const loader = new OBJLoader()
@@ -94,6 +106,17 @@ function loadOBJ(url, pieceName) {
 
 loadOBJ('/objs/atelier-louvre-head-of-woman.obj', 'sculpture')
 loadOBJ('/lowpoly_venusdemilo.obj', 'venus')
+
+// --- User OBJ upload ---
+const modelLoader = createModelLoader({
+    onLoad: (geometry) => {
+        objGeometries.custom = geometry
+        objPieces.add('custom')
+        showPiece('custom')
+        // Highlight the custom button if it exists, dim the built-in ones
+        document.querySelectorAll('#controls button').forEach(b => b.classList.remove('active'))
+    },
+})
 
 // Build an InstancedMesh (or plain Mesh for count=1) with random placements
 function buildInstances(pieceName, count) {
@@ -215,6 +238,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === '1') buttons[0]?.click()
     if (e.key === '2') buttons[1]?.click()
     if (e.key === '3') buttons[2]?.click()
+    if (e.key === '4') buttons[3]?.click()
     if (e.key === 'r' || e.key === 'R') recorder.toggle()
 })
 
