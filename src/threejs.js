@@ -198,7 +198,17 @@ copiesDropdown.addEventListener('change', () => {
 })
 
 // Recording
-const recorder = setupRecording(canvas)
+const recorder = setupRecording(canvas, {
+    onStateChange(recording) {
+        if (recording) {
+            renderer.setPixelRatio(1)
+            renderer.setSize(canvas.width, canvas.height, false)
+            camera.aspect = canvas.width / canvas.height
+            camera.updateProjectionMatrix()
+            uniforms.u_resolution.value.set(canvas.width, canvas.height)
+        }
+    },
+})
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
@@ -233,9 +243,11 @@ canvas.addEventListener('wheel', (e) => {
 })
 
 window.addEventListener('resize', () => {
+    if (recorder.isRecording()) return
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(window.innerWidth, window.innerHeight)
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
     uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight)
 })
 

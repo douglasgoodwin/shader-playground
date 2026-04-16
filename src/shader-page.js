@@ -112,6 +112,7 @@ export function createShaderPage({
         const t = time * 0.001
         const u = uniforms[current]
 
+        if (u.resolution) gl.uniform2f(u.resolution, canvas.width, canvas.height)
         gl.uniform1f(u.time, t)
         mouse.applyUniform(gl, u.mouse)
         if (sliderMgr) sliderMgr.applyUniforms(gl, u)

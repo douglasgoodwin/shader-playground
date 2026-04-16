@@ -52,6 +52,19 @@ vec3 fallbackPattern(vec2 uv) {
     return col * 0.8;
 }
 
+// Cover-fit: scale UVs so texture fills canvas without letterboxing
+vec2 coverUV(vec2 uv, vec2 texSize, vec2 screenSize) {
+    float screenAspect = screenSize.x / screenSize.y;
+    float texAspect = texSize.x / texSize.y;
+    vec2 scale = vec2(1.0);
+    if (texAspect > screenAspect) {
+        scale.x = screenAspect / texAspect;
+    } else {
+        scale.y = texAspect / screenAspect;
+    }
+    return (uv - 0.5) * scale + 0.5;
+}
+
 vec3 getVideo(vec2 uv) {
     vec2 look = uv;
     float window = 1.0 / (1.0 + 20.0 * (look.y - mod(u_time / 4.0, 1.0)) * (look.y - mod(u_time / 4.0, 1.0)));
@@ -61,7 +74,7 @@ vec3 getVideo(vec2 uv) {
     look.y = mod(look.y + vShift, 1.0);
 
     if (u_hasTexture == 1) {
-        return texture2D(u_texture, look).rgb;
+        return texture2D(u_texture, coverUV(look, u_textureSize, u_resolution)).rgb;
     }
     return fallbackPattern(look);
 }

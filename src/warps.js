@@ -11,6 +11,7 @@ import rippleShader from './shaders/effects/ripple.glsl'
 import warpShader from './shaders/effects/warp.glsl'
 
 let textureSize = { width: 1, height: 1 }
+let bgTextureSize = { width: 1, height: 1 }
 
 const bgControls = document.getElementById('bg-controls')
 const imageControls = document.getElementById('image-controls')
@@ -28,7 +29,7 @@ const page = createShaderPage({
     uniforms: [
         'resolution', 'time', 'mouse',
         'texture', 'textureSize', 'hasTexture',
-        'bgTexture', 'hasBgTexture',
+        'bgTexture', 'bgTextureSize', 'hasBgTexture',
         'deform', 'geometry', 'speed', 'intensity', 'scale',
     ],
     defaultEffect: 'drape',
@@ -58,6 +59,7 @@ const page = createShaderPage({
                 bgMedia.updateVideoFrame()
                 gl.bindTexture(gl.TEXTURE_2D, bgMedia.texture)
                 gl.uniform1i(u.bgTexture, 1)
+                gl.uniform2f(u.bgTextureSize, bgTextureSize.width, bgTextureSize.height)
             }
         }
     },
@@ -80,7 +82,7 @@ const media = createMediaLoader(page.gl, {
 })
 
 const bgMedia = createMediaLoader(page.gl, {
-    onLoad: () => {},
+    onLoad: (source, size) => { bgTextureSize = size },
     selectors: {
         loading: '#bg-loading',
         dropZone: '#bg-drop-zone',

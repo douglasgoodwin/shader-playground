@@ -6,6 +6,7 @@ uniform vec2 u_mouse;
 uniform sampler2D u_texture;
 uniform sampler2D u_bgTexture;
 uniform vec2 u_textureSize;
+uniform vec2 u_bgTextureSize;
 uniform float u_deform;
 uniform float u_geometry;
 uniform float u_speed;
@@ -88,6 +89,19 @@ float raymarch(vec3 ro, vec3 rd) {
     return -1.0;
 }
 
+// Cover-fit: scale UVs so texture fills canvas without letterboxing
+vec2 coverUV(vec2 uv, vec2 texSize, vec2 screenSize) {
+    float screenAspect = screenSize.x / screenSize.y;
+    float texAspect = texSize.x / texSize.y;
+    vec2 scale = vec2(1.0);
+    if (texAspect > screenAspect) {
+        scale.x = screenAspect / texAspect;
+    } else {
+        scale.y = texAspect / screenAspect;
+    }
+    return (uv - 0.5) * scale + 0.5;
+}
+
 // Procedural fallbacks
 vec3 proceduralInner(vec2 uv) {
     float t = u_time * u_speed * 0.5;
@@ -109,7 +123,7 @@ vec3 proceduralBg(vec2 uv) {
 vec3 sampleInner(vec2 uv) {
     uv = clamp(uv, 0.0, 1.0);
     if (u_hasTexture == 1) {
-        return texture2D(u_texture, uv).rgb;
+        return texture2D(u_texture, coverUV(uv, u_textureSize, u_resolution)).rgb;
     }
     return proceduralInner(uv);
 }
@@ -118,7 +132,7 @@ vec3 sampleInner(vec2 uv) {
 vec3 sampleBg(vec2 uv) {
     uv = clamp(uv, 0.0, 1.0);
     if (u_hasBgTexture == 1) {
-        return texture2D(u_bgTexture, uv).rgb;
+        return texture2D(u_bgTexture, coverUV(uv, u_bgTextureSize, u_resolution)).rgb;
     }
     return proceduralBg(uv);
 }

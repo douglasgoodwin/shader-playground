@@ -92,11 +92,13 @@ export function setupRecording(canvas, options = {}) {
     const keyboardShortcut = options.keyboardShortcut ?? 'r'
 
     const recordBtn = document.querySelector(buttonSelector)
+    const userCallback = options.onStateChange
     const recorder = new CanvasRecorder(canvas, {
         onStateChange: (recording) => {
             if (recordBtn) {
                 recordBtn.classList.toggle('recording', recording)
             }
+            if (userCallback) userCallback(recording)
         }
     })
 

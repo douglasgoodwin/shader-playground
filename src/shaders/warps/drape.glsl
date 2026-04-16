@@ -83,13 +83,25 @@ vec3 proceduralTexture(vec2 uv) {
     return col;
 }
 
+// Cover-fit: scale UVs so texture fills canvas without letterboxing
+vec2 coverUV(vec2 uv, vec2 texSize, vec2 screenSize) {
+    float screenAspect = screenSize.x / screenSize.y;
+    float texAspect = texSize.x / texSize.y;
+    vec2 scale = vec2(1.0);
+    if (texAspect > screenAspect) {
+        scale.x = screenAspect / texAspect;
+    } else {
+        scale.y = texAspect / screenAspect;
+    }
+    return (uv - 0.5) * scale + 0.5;
+}
+
 // Sample texture (image or procedural)
 vec3 sampleTexture(vec2 uv) {
-    // Clamp UV to 0-1 range (no tiling)
     uv = clamp(uv, 0.0, 1.0);
 
     if (u_hasTexture == 1) {
-        return texture2D(u_texture, uv).rgb;
+        return texture2D(u_texture, coverUV(uv, u_textureSize, u_resolution)).rgb;
     } else {
         return proceduralTexture(uv);
     }

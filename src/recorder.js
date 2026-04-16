@@ -52,10 +52,13 @@ export class CanvasRecorder {
             fastStart: 'in-memory',
         })
 
-        // Create video encoder
+        // Create video encoder — capture muxer ref so late frames
+        // from a previous session can't write to a new muxer
+        const muxer = this.muxer
         this.videoEncoder = new VideoEncoder({
             output: (chunk, meta) => {
-                this.muxer.addVideoChunk(chunk, meta)
+                if (this.muxer !== muxer) return // stale session
+                muxer.addVideoChunk(chunk, meta)
             },
             error: (e) => {
                 console.error('VideoEncoder error:', e)
@@ -102,31 +105,30 @@ export class CanvasRecorder {
     captureFrame() {
         if (!this.recording || !this.videoEncoder) return
 
-        try {
-            // Create a bitmap from the canvas (already rendering at 1080p, no resize needed)
-            createImageBitmap(this.canvas).then((bitmap) => {
-                const timestamp = (this.frameCount * 1_000_000) / this.fps // microseconds
-                const frame = new VideoFrame(bitmap, {
-                    timestamp,
-                    duration: 1_000_000 / this.fps,
-                })
+        createImageBitmap(this.canvas).then((bitmap) => {
+            // Encoder may have closed while the bitmap was being created
+            if (!this.recording) { bitmap.close(); return }
 
-                // Request keyframe every 1 second (helps preserve fine detail)
+            const timestamp = (this.frameCount * 1_000_000) / this.fps
+            const frame = new VideoFrame(bitmap, {
+                timestamp,
+                duration: 1_000_000 / this.fps,
+            })
+            bitmap.close()
+
+            try {
                 const keyFrame = this.frameCount % this.fps === 0
                 this.videoEncoder.encode(frame, { keyFrame })
-                frame.close()
-                bitmap.close()
                 this.frameCount++
-            }).catch((e) => {
-                console.error('Frame capture error:', e)
-            })
-        } catch (e) {
-            console.error('Frame capture error:', e)
-        }
+            } finally {
+                frame.close()
+            }
+        }).catch(() => {})
     }
 
     async stop() {
-        if (!this.recording) return
+        if (!this.recording || this._stopping) return
+        this._stopping = true
 
         this.recording = false
         this.onStateChange(false)
@@ -157,6 +159,8 @@ export class CanvasRecorder {
             this.muxer.finalize()
             this.saveRecording()
         }
+
+        this._stopping = false
     }
 
     toggle() {

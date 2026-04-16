@@ -33,7 +33,19 @@ scene.background = new THREE.Color(0x111111)
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
 camera.position.z = 5
 
-const recorder = setupRecording(canvas)
+const recorder = setupRecording(canvas, {
+    onStateChange(recording) {
+        if (recording) {
+            // Sync Three.js renderer to the recorder's 1920x1080 canvas
+            renderer.setPixelRatio(1)
+            renderer.setSize(canvas.width, canvas.height, false)
+            camera.aspect = canvas.width / canvas.height
+            camera.updateProjectionMatrix()
+            uniforms.u_resolution.value.set(canvas.width, canvas.height)
+        }
+        // stop() already fires resize which restores everything
+    },
+})
 
 // --- Shared uniforms ---
 const uniforms = {
@@ -212,9 +224,11 @@ canvas.addEventListener('wheel', (e) => {
 
 // --- Resize ---
 window.addEventListener('resize', () => {
+    if (recorder.isRecording()) return
+    renderer.setPixelRatio(window.devicePixelRatio)
+    renderer.setSize(window.innerWidth, window.innerHeight)
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
     uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight)
 })
 
