@@ -167,8 +167,8 @@ function clearActiveGroup() {
         scene.remove(activeInstanceGroup)
         activeInstanceGroup = null
     }
-    // Also remove blob if present
-    scene.remove(pieces.blob)
+    // Remove all non-OBJ pieces
+    for (const p of Object.values(pieces)) scene.remove(p)
 }
 
 function showPiece(name) {
