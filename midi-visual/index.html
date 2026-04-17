@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIDI Visual</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/" class="back">Home</a>
+      <span class="title">MIDI Visual</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="controls">
+      <button data-effect="kaleidoscope" class="active"><span class="key">1</span> Classic</button>
+      <button data-effect="tunnel"><span class="key">2</span> Tunnel</button>
+      <button data-effect="fractal"><span class="key">3</span> Fractal</button>
+    </div>
+
+    <!-- Transport bar -->
+    <div id="transport">
+      <button id="play-btn" disabled>&#x25B6;</button>
+      <span id="time-display">0:00.0</span>
+      <span id="bpm-display"></span>
+      <span id="midi-status"></span>
+    </div>
+
+    <!-- Two upload panels side by side -->
+    <div id="upload-panels">
+      <div class="upload-panel" id="midi-panel">
+        <div class="panel-label">MIDI</div>
+        <div id="midi-drop-zone" class="drop-zone">
+          <p>Drop .mid file<br><span class="small">or click to browse</span></p>
+          <input type="file" id="midi-file-input" accept=".mid,.midi" />
+        </div>
+        <div class="url-row">
+          <input type="text" id="midi-url-input" placeholder="MIDI URL..." />
+          <button id="midi-load-url">Load</button>
+        </div>
+      </div>
+      <div class="upload-panel" id="video-panel">
+        <div class="panel-label">Video</div>
+        <div id="video-drop-zone" class="drop-zone">
+          <p>Drop video/image<br><span class="small">or click to browse</span></p>
+          <input type="file" id="video-file-input" accept="image/*,video/*" />
+        </div>
+        <div class="url-row">
+          <input type="text" id="video-url-input" placeholder="Video URL..." />
+          <button id="video-load-url">Load</button>
+        </div>
+        <div id="video-loading" class="hidden">Loading...</div>
+      </div>
+    </div>
+
+    <div id="sliders">
+      <label>
+        <span>Segments</span>
+        <input type="range" id="segments" min="2" max="24" step="1" value="6">
+        <input type="checkbox" id="react-segments" checked title="MIDI reactive">
+      </label>
+      <label>
+        <span>Zoom</span>
+        <input type="range" id="zoom" min="0.2" max="3" step="0.05" value="1">
+        <input type="checkbox" id="react-zoom" checked title="MIDI reactive">
+      </label>
+      <label>
+        <span>Speed</span>
+        <input type="range" id="speed" min="0" max="3" step="0.1" value="0.5">
+        <input type="checkbox" id="react-speed" checked title="MIDI reactive">
+      </label>
+      <label>
+        <span>Reactivity</span>
+        <input type="range" id="reactivity" min="0" max="1" step="0.05" value="0.7">
+      </label>
+    </div>
+    <script type="module" src="/src/midi-visual.js"></script>
+  </body>
+</html>

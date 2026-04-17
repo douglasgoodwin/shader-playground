@@ -101,6 +101,7 @@ export default defineConfig({
         zoom: resolve(__dirname, 'zoom/index.html'),
         palette: resolve(__dirname, 'palette/index.html'),
         kaleidoscope: resolve(__dirname, 'kaleidoscope/index.html'),
+        'midi-visual': resolve(__dirname, 'midi-visual/index.html'),
       },
     },
   },

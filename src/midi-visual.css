@@ -1,0 +1,180 @@
+@import './common.css';
+
+/* Transport bar */
+#transport {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+
+#play-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#play-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#play-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+#play-btn.playing {
+  border-color: rgba(100, 200, 100, 0.6);
+  background: rgba(100, 200, 100, 0.15);
+}
+
+#time-display {
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  min-width: 60px;
+}
+
+#bpm-display {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+}
+
+#midi-status {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+}
+
+/* Upload panels — side by side in bottom right */
+#upload-panels {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  display: flex;
+  gap: 16px;
+  z-index: 100;
+}
+
+.upload-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+.drop-zone {
+  width: 180px;
+  padding: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.drop-zone .small {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.drop-zone input {
+  display: none;
+}
+
+.url-row {
+  display: flex;
+  gap: 6px;
+}
+
+.url-row input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+
+.url-row input:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.url-row button {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+.url-row button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+#video-loading {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  text-align: center;
+}
+
+#sliders input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: rgba(100, 200, 100, 0.8);
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.hidden {
+  display: none !important;
+}
