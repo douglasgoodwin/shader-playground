@@ -83,6 +83,8 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         playground: resolve(__dirname, 'playground/index.html'),
         whitney: resolve(__dirname, 'whitney/index.html'),
+        characters: resolve(__dirname, 'characters/index.html'),
+        warps: resolve(__dirname, 'warps/index.html'),
         geometries: resolve(__dirname, 'geometries/index.html'),
         glyphs: resolve(__dirname, 'glyphs/index.html'),
         stipple: resolve(__dirname, 'stipple/index.html'),
