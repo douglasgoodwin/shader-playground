@@ -112,6 +112,10 @@ export function createShaderPage({
         const t = time * 0.001
         const u = uniforms[current]
 
+        // Keep viewport synced to canvas — the recorder resizes the canvas
+        // without going through the window-resize path, so syncing here lets
+        // rendering self-correct the following frame.
+        gl.viewport(0, 0, canvas.width, canvas.height)
         if (u.resolution) gl.uniform2f(u.resolution, canvas.width, canvas.height)
         gl.uniform1f(u.time, t)
         mouse.applyUniform(gl, u.mouse)

@@ -1,0 +1,427 @@
+/* Queue (onboarding) page */
+
+body.queue {
+    margin: 0;
+    padding: 0;
+}
+
+.queue-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    background: var(--paper);
+    padding: 14px 40px;
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.queue-topbar a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.queue-topbar a:hover { color: var(--accent); }
+
+.queue-topbar-right a { margin-left: 24px; }
+
+/* Stops */
+
+.queue-stop {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 120px 40px;
+    min-height: 70vh;
+    border-bottom: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 32px;
+}
+
+.queue-stop:last-child {
+    border-bottom: 0;
+}
+
+.queue-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+}
+
+.queue-heading {
+    font-family: var(--sans);
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.032em;
+    margin: 0;
+    color: var(--ink);
+}
+
+.queue-body {
+    max-width: 62ch;
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ink);
+}
+
+.queue-body p {
+    margin: 0 0 1.2em;
+}
+
+.queue-body p:last-child { margin-bottom: 0; }
+
+/* Stop 01 — Arrival */
+
+.queue-hero {
+    min-height: 92vh;
+    padding-top: 160px;
+    padding-bottom: 80px;
+    justify-content: center;
+}
+
+.queue-hero-title {
+    font-family: var(--sans);
+    font-size: 104px;
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin: 0;
+    color: var(--ink);
+}
+
+.queue-hero-sub {
+    font-family: var(--sans);
+    font-size: 21px;
+    font-weight: 300;
+    line-height: 1.35;
+    color: var(--ink-soft);
+    max-width: 54ch;
+    margin: 0;
+}
+
+/* Stop 02 — Names */
+
+.queue-names {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--ink);
+}
+
+.queue-names li {
+    padding: 16px 0;
+    border-top: 1px solid var(--rule-hair);
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    column-gap: 24px;
+}
+
+.queue-names li:last-child {
+    border-bottom: 1px solid var(--rule-hair);
+}
+
+.queue-names-cat {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+/* Stop 03 — Student voices */
+
+.queue-voices {
+    margin-top: 32px;
+    padding-top: 40px;
+    border-top: 1px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    max-width: 860px;
+}
+
+.queue-voices-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+}
+
+.queue-quote {
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--accent);
+    padding-left: 24px;
+    max-width: 54ch;
+}
+
+.queue-quote p {
+    font-family: var(--sans);
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 300;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.queue-voices-attr {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule-hair);
+}
+
+/* Small aside at the end of a stop */
+
+.queue-aside {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 8px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule-hair);
+    max-width: 62ch;
+}
+
+.queue-aside a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+}
+
+.queue-aside a:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+}
+
+/* Stop 04 — Stack */
+
+.queue-stack {
+    font-family: var(--mono);
+    font-size: 18px;
+    line-height: 1.55;
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 28px 32px;
+    margin: 0;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+    max-width: 640px;
+}
+
+/* Stop 05 — Data flow */
+
+.queue-flow {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+    max-width: 680px;
+}
+
+.queue-flow-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    column-gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule-hair);
+    font-family: var(--sans);
+}
+
+.queue-flow-row:last-child {
+    border-bottom: 1px solid var(--ink);
+}
+
+.queue-flow dt {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+}
+
+.queue-flow dd {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+}
+
+/* Stop 06 — Triptych */
+
+.queue-triptych {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.queue-tile {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.queue-tile .widget {
+    margin: 0;
+    gap: 10px;
+}
+
+.queue-tile .widget-canvas {
+    aspect-ratio: 1 / 1;
+}
+
+.queue-tile .widget-control {
+    grid-template-columns: 84px 1fr 40px;
+    gap: 10px;
+    font-size: 11px;
+}
+
+.queue-tile .widget-control-label,
+.queue-tile .widget-control-value {
+    font-size: 11px;
+}
+
+.queue-tile figcaption {
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+}
+
+.queue-tile .widget-caption {
+    display: none;
+}
+
+/* Stop 07 — Board */
+
+.queue-board {
+    min-height: 86vh;
+}
+
+.queue-fork {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 8px;
+}
+
+.queue-door {
+    display: flex;
+    flex-direction: column;
+    padding: 40px 36px 36px;
+    border: 1px solid var(--ink);
+    text-decoration: none;
+    color: var(--ink);
+    transition: background 0.15s, color 0.15s;
+    min-height: 280px;
+}
+
+.queue-door:hover {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.queue-door:hover .queue-door-num,
+.queue-door:hover .queue-door-title,
+.queue-door:hover .queue-door-desc,
+.queue-door:hover .queue-door-cta {
+    color: var(--paper);
+}
+
+.queue-door-num {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 16px;
+}
+
+.queue-door-title {
+    font-family: var(--sans);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+}
+
+.queue-door-desc {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    flex: 1;
+}
+
+.queue-door-cta {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-top: auto;
+}
+
+.queue-colophon {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 48px 0 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule-hair);
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .queue-topbar { padding: 12px 22px; }
+    .queue-stop { padding: 80px 22px; min-height: 60vh; }
+    .queue-hero { padding-top: 96px; }
+    .queue-hero-title { font-size: 68px; letter-spacing: -0.035em; }
+    .queue-hero-sub { font-size: 18px; }
+    .queue-heading { font-size: 40px; }
+    .queue-body { font-size: 16px; }
+    .queue-names li { grid-template-columns: 1fr; row-gap: 4px; }
+    .queue-stack { font-size: 14px; padding: 20px 22px; }
+    .queue-flow-row { grid-template-columns: 1fr; row-gap: 4px; }
+
+    .queue-triptych { grid-template-columns: 1fr; gap: 28px; }
+    .queue-tile .widget-canvas { aspect-ratio: 4 / 3; }
+
+    .queue-fork { grid-template-columns: 1fr; gap: 20px; }
+    .queue-door { min-height: 200px; padding: 28px 24px; }
+    .queue-door-title { font-size: 26px; }
+
+    .queue-voices { padding-top: 28px; }
+    .queue-quote p { font-size: 18px; }
+    .queue-quote { padding-left: 16px; }
+}

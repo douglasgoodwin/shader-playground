@@ -55,3 +55,43 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+#topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 14px 28px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#topnav a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+#topnav a:hover {
+  color: #cc6a4a;
+}
+
+#topnav a.current {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+#topnav .topnav-right a {
+  margin-left: 24px;
+}

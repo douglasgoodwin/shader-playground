@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Pixel — Shader Playground Classroom</title>
+    <meta name="description" content="Chapter 1 of the Shader Playground classroom. Build a shader from first principles: solid color, position, distance, threshold, and shape." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <a href="/learn/">Classroom</a>
+        </header>
+
+        <div class="chapter-number">Chapter 01 — The Classroom</div>
+        <h1>The Pixel</h1>
+        <p class="subtitle">A shader, from the first line of code to a shape you can move.</p>
+
+        <p>A <em>shader</em> is a small program that the graphics card runs in parallel, once for every pixel on the screen. When you paint a wall, you move a brush across it. A shader paints every pixel at once, in a fraction of a millisecond.</p>
+
+        <p>The kind we will work with is called a <strong>fragment shader</strong>. Its job is to answer one question: <em>given this pixel, what color should it be?</em> We can answer with a constant, a gradient, the result of a formula &mdash; any rule we like. The fragment shader runs that rule once per pixel, and the image appears.</p>
+
+        <p>Let's start with the simplest possible rule.</p>
+
+        <h2 data-num="01">One color</h2>
+
+        <p>Here is a shader that gives every pixel the same color. There is no geometry, no math, no trick. Just a fixed answer. Move the sliders to change the answer.</p>
+
+        <figure class="widget" id="w-solid"></figure>
+
+        <p>The color comes out as three numbers — a red amount, a green amount, a blue amount — each between 0 and 1. Inside the shader this is a single line:</p>
+
+        <pre data-widget="w-solid"><code>gl_FragColor = vec4(u_red, u_green, u_blue, 1.0);</code></pre>
+
+        <p><code>gl_FragColor</code> is the shader's output. The name is built into the language. Whatever we assign to it is the color that pixel will be. The fourth number, the <code>1.0</code>, is the alpha channel; we can leave it alone for now.</p>
+
+        <p>One thing worth noticing: this rule doesn't use the pixel's position. Every pixel gets the same color because every pixel runs the same rule with the same inputs. If we want to draw anything more interesting than a flat wash, we need each pixel to know where it is.</p>
+
+        <h2 data-num="02">Position as color</h2>
+
+        <p>Every fragment shader has a built-in variable called <code>gl_FragCoord</code>. It holds the pixel's coordinates on the screen, in pixels: zero at the bottom-left corner, larger values up and to the right.</p>
+
+        <p>If we divide those coordinates by the canvas size, we get a value between 0 and 1 across the image. Conventionally that's called <code>uv</code>. We can feed <code>uv.x</code> into red and <code>uv.y</code> into green, just to see what happens:</p>
+
+        <pre><code>vec2 uv = gl_FragCoord.xy / u_resolution;
+gl_FragColor = vec4(uv.x, uv.y, 0.0, 1.0);</code></pre>
+
+        <figure class="widget" id="w-position"></figure>
+
+        <p>Bottom-left is black: <code>uv</code> is <code>(0, 0)</code>, so there's no red and no green. The bottom-right has full red. The top-left has full green. And the top-right, where both are full, is yellow — because red plus green, in light, makes yellow.</p>
+
+        <p>We didn't draw anything. We just told each pixel to look at its own coordinates and convert them, directly, into a color. That's the whole technique, and nearly everything else in this chapter is a variation on it.</p>
+
+        <h2 data-num="03">Distance from the center</h2>
+
+        <p>Let's ask a more useful question. For each pixel, how far away is it from the middle of the canvas?</p>
+
+        <p>We center the coordinates first &mdash; subtracting <code>0.5</code> from <code>uv</code> puts the origin in the middle &mdash; and then we take the length of that vector. <code>length(p)</code> is the Pythagorean distance from <code>(0, 0)</code> to the point <code>p</code>:</p>
+
+        <pre data-widget="w-distance"><code>vec2 p = (gl_FragCoord.xy - 0.5 * u_resolution) / min(u_resolution.x, u_resolution.y);
+float d = length(p);
+gl_FragColor = vec4(vec3(d * u_scale), 1.0);</code></pre>
+
+        <figure class="widget" id="w-distance"></figure>
+
+        <p>What we have now is not a solid disk but a <em>distance field</em>: a grayscale picture where every pixel's brightness tells us how far it is from a point. This is the trick that almost everything else in shader graphics is built on. Once we have a distance at every pixel, we can ask questions about it.</p>
+
+        <h2 data-num="04">A threshold</h2>
+
+        <p>The question we want to ask next is: <em>is this pixel close enough to the center to be part of a shape?</em></p>
+
+        <p>GLSL has a function called <code>step(edge, x)</code>. It returns 0 if <code>x</code> is below <code>edge</code>, and 1 if it's above. We pass our distance into it, compare it to <code>u_radius</code>, and flip the result so that <em>inside</em> is white:</p>
+
+        <pre data-widget="w-step"><code>float circle = 1.0 - step(u_radius, d);</code></pre>
+
+        <figure class="widget" id="w-step"></figure>
+
+        <p>We've made a circle. Move the slider and it grows. What we actually did, though, is more general: we took a continuous field of numbers (the distance) and turned it into a binary mask (inside or outside) by comparing it against a threshold. The same trick makes rectangles, stars, letterforms, lens flares, anything with an edge.</p>
+
+        <p>But the edge of this circle is sharp to the point of being jagged. On a screen made of square pixels, a hard threshold can only be as smooth as the grid allows.</p>
+
+        <h2 data-num="05">A softer edge</h2>
+
+        <p>GLSL has a cousin of <code>step</code> called <code>smoothstep(edgeA, edgeB, x)</code>. Instead of a single threshold, it takes two. Values of <code>x</code> below <code>edgeA</code> return 0; above <code>edgeB</code> they return 1; between the two, <code>smoothstep</code> smoothly interpolates. The result is a soft transition instead of a hard one:</p>
+
+        <pre data-widget="w-smooth"><code>float circle = 1.0 - smoothstep(u_radius - u_softness, u_radius + u_softness, d);</code></pre>
+
+        <figure class="widget" id="w-smooth"></figure>
+
+        <p>The <code>u_softness</code> slider sets the width of the transition band. At zero it behaves like <code>step</code>. Turn it up and the circle becomes a soft blob. In practice, shader authors almost never use plain <code>step</code> for edges &mdash; <code>smoothstep</code> with a small softness (often as small as one pixel) gives an anti-aliased edge for free.</p>
+
+        <h2 data-num="06">A shape you can move</h2>
+
+        <p>So far our circle has lived in the middle of the canvas. That's a choice we baked into the math — the <code>-0.5</code> that centered the coordinates. Nothing is stopping us from pulling that offset out into a parameter and giving it to the shader as a number we can change:</p>
+
+        <pre data-widget="w-movable"><code>vec2 center = vec2(u_cx, u_cy);
+float d = length(p - center);
+float circle = 1.0 - smoothstep(u_radius - 0.02, u_radius + 0.02, d);</code></pre>
+
+        <figure class="widget" id="w-movable"></figure>
+
+        <p>The shape is identical. The math is identical. We have only changed <em>which point</em> we measure the distance from. This is one of the deep habits of shader code: if a number feels special, pull it out into a uniform and let it be changed from the outside.</p>
+
+        <h2 data-num="07">Color, inside and out</h2>
+
+        <p>Our circle has been white on black this whole chapter. Let's fix that.</p>
+
+        <p>When we apply <code>smoothstep</code> to a distance field, we get a number that is 1 inside the shape, 0 outside, and somewhere in between along the edge &mdash; already a mask. GLSL has a function called <code>mix(a, b, t)</code> that returns <code>a</code> when <code>t</code> is 0, <code>b</code> when <code>t</code> is 1, and a blend of the two in between. If we pass in two colors and our mask, we paint one color inside the shape and another outside:</p>
+
+        <pre data-widget="w-colored"><code>float mask = 1.0 - smoothstep(u_radius - u_softness, u_radius + u_softness, d);
+vec3 inside  = hue(u_hue_in);
+vec3 outside = hue(u_hue_out);
+gl_FragColor = vec4(mix(outside, inside, mask), 1.0);</code></pre>
+
+        <figure class="widget" id="w-colored"></figure>
+
+        <p>The two hue sliders are just picking points on a color wheel. The important thing is the pattern: a distance field becomes a mask, a mask drives a mix, and a mix chooses between two things — here colors, but later it will be textures, images, or the output of entirely different shaders.</p>
+
+        <h2>What we've built</h2>
+
+        <p>At the start of this chapter a shader was a single line that returned a constant color. By the end, it measures distance, applies a threshold, softens the result, moves a shape around, and paints two colors on either side of an edge. You now have the basic grammar of 2D shader drawing: coordinates, distance, threshold, softness, position, and mix. Patterns like stripes, grids, rings, and dashed lines are variations on the same moves; the rest of this course is largely about composing them.</p>
+
+        <p>The next chapter introduces time. Until now every image has been static — the same answer every frame. Once the shader can ask what time it is, the circle you just moved can move on its own.</p>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            Next &mdash;
+            <a href="/learn/">Back to the Classroom</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/learn/pixel.js"></script>
+</body>
+</html>

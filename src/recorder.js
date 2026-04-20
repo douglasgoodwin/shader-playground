@@ -12,7 +12,7 @@ export class CanvasRecorder {
         this.frameInterval = null
         this.startTime = 0
         this.frameCount = 0
-        this.fps = options.fps || 60
+        this.fps = options.fps || 24
         this.bitrate = options.bitrate || 30_000_000 // 30 Mbps — high for fine detail
         this.onStateChange = options.onStateChange || (() => {})
 
@@ -106,25 +106,29 @@ export class CanvasRecorder {
     captureFrame() {
         if (!this.recording || !this.videoEncoder) return
 
-        createImageBitmap(this.canvas).then((bitmap) => {
-            // Encoder may have closed while the bitmap was being created
-            if (!this.recording) { bitmap.close(); return }
+        const timestamp = (this.frameCount * 1_000_000) / this.fps
 
-            const timestamp = (this.frameCount * 1_000_000) / this.fps
-            const frame = new VideoFrame(bitmap, {
+        // Construct the VideoFrame from the canvas directly — skips the
+        // createImageBitmap round-trip and the extra allocation/copy it forces.
+        let frame
+        try {
+            frame = new VideoFrame(this.canvas, {
                 timestamp,
                 duration: 1_000_000 / this.fps,
             })
-            bitmap.close()
+        } catch (e) {
+            return
+        }
 
-            try {
-                const keyFrame = this.frameCount % this.fps === 0
-                this.videoEncoder.encode(frame, { keyFrame })
-                this.frameCount++
-            } finally {
-                frame.close()
-            }
-        }).catch(() => {})
+        try {
+            const keyFrame = this.frameCount % this.fps === 0
+            this.videoEncoder.encode(frame, { keyFrame })
+            this.frameCount++
+        } catch (e) {
+            console.error('Encode error:', e)
+        } finally {
+            frame.close()
+        }
     }
 
     async stop() {
@@ -139,12 +143,27 @@ export class CanvasRecorder {
             this.frameInterval = null
         }
 
-        if (this.videoEncoder) {
+        // Capture local refs and null out instance refs so any concurrent
+        // call (e.g., from VideoEncoder.error) can't flush/finalize twice.
+        const videoEncoder = this.videoEncoder
+        const muxer = this.muxer
+        this.videoEncoder = null
+        this.muxer = null
+
+        if (videoEncoder) {
             try {
-                await this.videoEncoder.flush()
-                this.videoEncoder.close()
+                if (videoEncoder.state !== 'closed') {
+                    await videoEncoder.flush()
+                }
             } catch (e) {
                 console.error('Encoder flush error:', e)
+            }
+            try {
+                if (videoEncoder.state !== 'closed') {
+                    videoEncoder.close()
+                }
+            } catch (e) {
+                console.error('Encoder close error:', e)
             }
         }
 
@@ -156,9 +175,13 @@ export class CanvasRecorder {
         }
         window.dispatchEvent(new Event('resize'))
 
-        if (this.muxer) {
-            this.muxer.finalize()
-            this.saveRecording()
+        if (muxer) {
+            try {
+                muxer.finalize()
+                this.saveRecording()
+            } catch (e) {
+                console.error('Muxer finalize error:', e)
+            }
         }
 
         this._stopping = false

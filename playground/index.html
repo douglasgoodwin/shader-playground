@@ -4,38 +4,109 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Playground</title>
+    <title>Shader Playground</title>
   </head>
   <body>
     <canvas id="canvas"></canvas>
-    <nav id="nav">
-      <a href="/" class="back">Home</a>
-    </nav>
-    <button id="record-btn" title="Record video (R)"></button>
-    <div id="controls">
-      <button data-effect="ripple" class="active"><span class="key">1</span> Ripple</button>
-      <button data-effect="plasma"><span class="key">2</span> Plasma</button>
-      <button data-effect="warp"><span class="key">3</span> Warp</button>
-      <button data-effect="kaleidoscope"><span class="key">4</span> Kaleido</button>
-      <button data-effect="noise"><span class="key">5</span> Noise</button>
-      <button data-effect="drive"><span class="key">6</span> Drive</button>
-      <button data-effect="firefly"><span class="key">7</span> Firefly</button>
-      <button data-effect="phyllotaxis"><span class="key">8</span> Phyllotaxis</button>
+    <header id="topnav">
+      <a href="/" class="crumb">Shader Playground</a>
+      <span class="topnav-right">
+        <a href="/workflow/">Workflow</a>
+        <a href="/learn/">Classroom</a>
+        <a href="/exercises/">Exercises</a>
+        <a href="/playground/" class="current">Playground</a>
+      </span>
+    </header>
+    <div id="links">
+      <a href="/whitney/">
+        Visual Music
+        <span class="subtitle">Computational cinema</span>
+      </a>
+      <a href="/geometries/">
+        Geometries
+        <span class="subtitle">Shader Park explorations</span>
+      </a>
+      <a href="/glyphs/">
+        Glyphs
+        <span class="subtitle">ASCII art and symbol morphing</span>
+      </a>
+      <a href="/stipple/">
+        Stipple
+        <span class="subtitle">Hodgin-style dot patterns</span>
+      </a>
+      <a href="/particles/">
+        Particles
+        <span class="subtitle">GPU particle simulations</span>
+      </a>
+      <a href="/characters/">
+        Characters
+        <span class="subtitle">Animated shader creatures</span>
+      </a>
+      <a href="/warps/">
+        Warps
+        <span class="subtitle">Image warping effects</span>
+      </a>
+      <a href="/tiles/">
+        Tiles
+        <span class="subtitle">Voronoi, hexgrid, tiling, and op art</span>
+      </a>
+      <a href="/landscape/">
+        Landscape
+        <span class="subtitle">Raymarched terrain with lightning</span>
+      </a>
+      <a href="/displace/">
+        Displace
+        <span class="subtitle">Vertex displacement with image textures</span>
+      </a>
+      <a href="/audio/">
+        Audio
+        <span class="subtitle">Audio-reactive raymarched terrain</span>
+      </a>
+      <a href="/reaction-diffusion/">
+        Reaction Diffusion
+        <span class="subtitle">Gray-Scott simulation on a twisted torus</span>
+      </a>
+      <a href="/fluid/">
+        Fluid
+        <span class="subtitle">Navier-Stokes, pool water, ferrofluid</span>
+      </a>
+      <a href="/scribble/">
+        Scribble
+        <span class="subtitle">Scribble circles from images</span>
+      </a>
+      <a href="/lic/">
+        LIC
+        <span class="subtitle">Line integral convolution painterly flow</span>
+      </a>
+      <a href="/threejs/">
+        Three.js
+        <span class="subtitle">3D shader experiments with Three.js</span>
+      </a>
+      <a href="/fur/">
+        Fur
+        <span class="subtitle">Shell-method fur with wind and gravity</span>
+      </a>
+      <a href="/spike/">
+        Spike
+        <span class="subtitle">Deforming shader textures on 3D model</span>
+      </a>
+      <a href="/zoom/">
+        Zoom Crossfade
+        <span class="subtitle">Google Maps-style zoom and crossfade</span>
+      </a>
+      <a href="/palette/">
+        Palette
+        <span class="subtitle">RISO, pastel, thermal, duotone color remapping</span>
+      </a>
+      <a href="/kaleidoscope/">
+        Kaleidoscope
+        <span class="subtitle">Video kaleidoscope with configurable reflections</span>
+      </a>
+      <a href="/midi-visual/">
+        MIDI Visual
+        <span class="subtitle">MIDI-driven video kaleidoscope</span>
+      </a>
     </div>
-    <div id="sliders">
-      <label>
-        <span>Speed</span>
-        <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1">
-      </label>
-      <label>
-        <span>Intensity</span>
-        <input type="range" id="intensity" min="0.1" max="3" step="0.1" value="0.7">
-      </label>
-      <label>
-        <span>Scale</span>
-        <input type="range" id="scale" min="0.2" max="3" step="0.01" value="1">
-      </label>
-    </div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/home.js"></script>
   </body>
 </html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Classroom — Shader Playground</title>
+    <meta name="description" content="Four chapters that take you from the first line of shader code to 3D raymarching. Ciechanowski-style interactive tutorials." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <span>Classroom</span>
+        </header>
+
+        <div class="chapter-number">The Classroom</div>
+        <h1>Five<br>Chapters</h1>
+        <p class="subtitle">A hands-on path from the first line of shader code to the math of raymarching a 3D scene, and then out into real projects. Each chapter is a single page of prose and interactive diagrams. They build on one another &mdash; read them in order for the clearest arc, or jump to the one you already have the pieces for.</p>
+
+        <ol class="index-list">
+
+            <li class="index-entry">
+                <a href="/learn/pixel/" class="index-link">
+                    <span class="index-num">01</span>
+                    <div class="index-body">
+                        <h2 class="index-title">The Pixel</h2>
+                        <p class="index-desc">A shader that answers one question at every pixel &mdash; what color lives here? &mdash; and from those answers, a shape appears. Output color, pixel position, distance fields, the threshold that makes a circle, and the mix that paints it.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry">
+                <a href="/learn/time/" class="index-link">
+                    <span class="index-num">02</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Time and Repetition</h2>
+                        <p class="index-desc">A shader that answers a different question every frame, and the same question a thousand times across a grid. <code>u_time</code>, <code>sin</code>, symmetry via <code>abs</code>, tiling via <code>fract</code>.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry">
+                <a href="/learn/randomness/" class="index-link">
+                    <span class="index-num">03</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Randomness and Noise</h2>
+                        <p class="index-desc">Hash functions and noise. Why a grid stops looking like a grid once every cell can pick its own number. Value noise, gradient noise, FBM, and domain warping.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry">
+                <a href="/learn/dimension/" class="index-link">
+                    <span class="index-num">04</span>
+                    <div class="index-body">
+                        <h2 class="index-title">The Third Dimension</h2>
+                        <p class="index-desc">A shader stops answering "what color?" and starts answering "how far?" &mdash; the shift that turns a flat canvas into a 3D scene. Sphere-tracing, signed distance fields, normals, diffuse light, and smooth blending.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry index-entry--soon">
+                <div class="index-link index-link--disabled">
+                    <span class="index-num">05</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Connections</h2>
+                        <p class="index-desc">A shader becomes part of something larger. Three.js gives it 3D geometry to wear; Tone.js gives it audio to react to; and the same patterns open up for any framework that calls GLSL.</p>
+                    </div>
+                    <span class="index-status index-status--soon">Forthcoming</span>
+                </div>
+            </li>
+
+        </ol>
+
+        <div class="index-reference">
+            <div class="chapter-number">Get Going</div>
+            <a href="/workflow/" class="index-link">
+                <span class="index-num">&sect;</span>
+                <div class="index-body">
+                    <h2 class="index-title">Workflow</h2>
+                    <p class="index-desc">How to actually do the work. Install the project, run the server, edit a shader, prompt an LLM, commit to your fork. A short reference for the loop most students repeat at the start of every class.</p>
+                </div>
+                <span class="index-status">Available</span>
+            </a>
+            <a href="/crit/" class="index-link">
+                <span class="index-num">&sect;</span>
+                <div class="index-body">
+                    <h2 class="index-title">Crit</h2>
+                    <p class="index-desc">For the critique room. A framework for looking at vibecoded work together &mdash; three systems, five strata, three lenses, and the discipline of the opening statement. Meant to be read once and returned to, not studied in sequence.</p>
+                </div>
+                <span class="index-status">Available</span>
+            </a>
+        </div>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            <a href="/playground/">Back to the Playground</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/learn/index.js"></script>
+</body>
+</html>

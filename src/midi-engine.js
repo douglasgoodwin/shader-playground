@@ -103,6 +103,13 @@ export function createMidiEngine() {
         state.velocity = 0
     }
 
+    // Lerp targets — state eases toward these
+    const target = { pitch: 0.5, velocity: 0, density: 0 }
+
+    function lerp(current, goal, rate) {
+        return current + (goal - current) * rate
+    }
+
     // Call each frame to update visual state from current transport position
     function updateVisualState() {
         if (!loaded || notes.length === 0) return state
@@ -110,7 +117,7 @@ export function createMidiEngine() {
         const now = Tone.getTransport().seconds
         const dt = lastScanTime >= 0 ? now - lastScanTime : 0
 
-        // Decay existing hit
+        // Hit decays fast (punchy pulse — no lerp, direct decay)
         state.hit *= 0.92
 
         // Find notes that started since last scan
@@ -118,10 +125,10 @@ export function createMidiEngine() {
             for (let i = 0; i < notes.length; i++) {
                 const n = notes[i]
                 if (n.time > lastScanTime && n.time <= now) {
-                    // New note hit!
+                    // New note — hit snaps, others set targets
                     state.hit = Math.max(state.hit, n.velocity)
-                    state.pitch = n.midi / 127
-                    state.velocity = n.velocity
+                    target.pitch = n.midi / 127
+                    target.velocity = n.velocity
                 }
                 if (n.time > now) break
             }
@@ -134,8 +141,12 @@ export function createMidiEngine() {
             if (notes[i].time > now + window) break
             if (notes[i].time >= now - window) count++
         }
-        // Normalize: 0 notes = 0, 10+ notes = 1
-        state.density = Math.min(count / 10, 1)
+        target.density = Math.min(count / 10, 1)
+
+        // Ease toward targets
+        state.pitch = lerp(state.pitch, target.pitch, 0.08)
+        state.velocity = lerp(state.velocity, target.velocity, 0.1)
+        state.density = lerp(state.density, target.density, 0.06)
 
         lastScanTime = now
         return state

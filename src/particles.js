@@ -11,10 +11,6 @@ import renderVertexShader from './shaders/particles/render-vertex.glsl'
 import renderFragmentShader from './shaders/particles/render-fragment.glsl'
 import backgroundShader from './shaders/particles/background.glsl'
 
-// Shader imports - Ragdoll
-import ragdollSimShader from './shaders/particles/ragdoll-sim.glsl'
-import ragdollRenderShader from './shaders/particles/ragdoll-render.glsl'
-
 // Shader imports - Lenia
 import leniaSimShader from './shaders/particles/lenia-sim.glsl'
 import leniaRenderVertexShader from './shaders/particles/lenia-render-vertex.glsl'
@@ -80,29 +76,6 @@ const renderUniforms = {
 const backgroundUniforms = {
     resolution: gl.getUniformLocation(backgroundProgram, 'u_resolution'),
     time: gl.getUniformLocation(backgroundProgram, 'u_time'),
-}
-
-// ============== RAGDOLL ==============
-const RAGDOLL_SIM_RES = 64  // 64 rows = 64 ragdolls, 16 particles each
-const ragdollSimProgram = createProgram(gl, simVertexShader, ragdollSimShader)
-const ragdollRenderProgram = createProgram(gl, basicVertexShader, ragdollRenderShader)
-
-const ragdollSimUniforms = {
-    positionTex: gl.getUniformLocation(ragdollSimProgram, 'u_positionTex'),
-    resolution: gl.getUniformLocation(ragdollSimProgram, 'u_resolution'),
-    simResolution: gl.getUniformLocation(ragdollSimProgram, 'u_simResolution'),
-    deltaTime: gl.getUniformLocation(ragdollSimProgram, 'u_deltaTime'),
-    mouse: gl.getUniformLocation(ragdollSimProgram, 'u_mouse'),
-    gravity: gl.getUniformLocation(ragdollSimProgram, 'u_gravity'),
-    damping: gl.getUniformLocation(ragdollSimProgram, 'u_damping'),
-    pass: gl.getUniformLocation(ragdollSimProgram, 'u_pass'),
-}
-
-const ragdollRenderUniforms = {
-    positionTex: gl.getUniformLocation(ragdollRenderProgram, 'u_positionTex'),
-    resolution: gl.getUniformLocation(ragdollRenderProgram, 'u_resolution'),
-    simResolution: gl.getUniformLocation(ragdollRenderProgram, 'u_simResolution'),
-    time: gl.getUniformLocation(ragdollRenderProgram, 'u_time'),
 }
 
 // ============== LENIA ==============
@@ -205,60 +178,6 @@ function initMurmurationParticles() {
     return { positions, velocities }
 }
 
-// ============== RAGDOLL INIT ==============
-function initRagdollParticles() {
-    // Each ragdoll has 16 particles, arranged in rows
-    // RGBA = x, y, prevX, prevY (2D Verlet)
-    const data = new Float32Array(RAGDOLL_SIM_RES * RAGDOLL_SIM_RES * 4)
-
-    for (let row = 0; row < RAGDOLL_SIM_RES; row++) {
-        // Random starting position for this ragdoll
-        const baseX = (Math.random() - 0.5) * 1.5
-        const baseY = 0.5 + Math.random() * 0.4
-
-        // Particle offsets for T-pose ragdoll
-        const offsets = [
-            [0, 0.25],      // 0: head
-            [0, 0.17],      // 1: neck
-            [0, 0.07],      // 2: chest
-            [0, -0.05],     // 3: hips
-            [-0.08, 0.07],  // 4: shoulderL
-            [-0.18, 0.07],  // 5: elbowL
-            [-0.27, 0.07],  // 6: handL
-            [0.08, 0.07],   // 7: shoulderR
-            [0.18, 0.07],   // 8: elbowR
-            [0.27, 0.07],   // 9: handR
-            [-0.04, -0.05], // 10: hipL
-            [-0.04, -0.17], // 11: kneeL
-            [-0.04, -0.28], // 12: footL
-            [0.04, -0.05],  // 13: hipR
-            [0.04, -0.17],  // 14: kneeR
-            [0.04, -0.28],  // 15: footR
-        ]
-
-        for (let col = 0; col < RAGDOLL_SIM_RES; col++) {
-            const idx = (row * RAGDOLL_SIM_RES + col) * 4
-            if (col < 16) {
-                const x = baseX + offsets[col][0] * 0.25
-                const y = baseY + offsets[col][1] * 0.25
-                // Store as normalized 0-1 range, will be decoded in shader
-                // pos = (data - 0.5) * 2 for range -1 to 1
-                data[idx + 0] = x * 0.5 + 0.5  // current x
-                data[idx + 1] = y * 0.5 + 0.5  // current y
-                data[idx + 2] = x * 0.5 + 0.5  // prev x (same = no velocity)
-                data[idx + 3] = y * 0.5 + 0.5  // prev y
-            } else {
-                data[idx + 0] = 0.5
-                data[idx + 1] = 0.5
-                data[idx + 2] = 0.5
-                data[idx + 3] = 0.5
-            }
-        }
-    }
-
-    return data
-}
-
 // ============== LENIA INIT ==============
 function initLeniaParticles() {
     const data = new Float32Array(LENIA_SIM_RES * LENIA_SIM_RES * 4)
@@ -291,13 +210,6 @@ let murmPosFB0 = createFramebuffer(murmPosTex0)
 let murmPosFB1 = createFramebuffer(murmPosTex1)
 let murmVelFB0 = createFramebuffer(murmVelTex0)
 let murmVelFB1 = createFramebuffer(murmVelTex1)
-
-// Ragdoll
-const ragdollData = initRagdollParticles()
-let ragdollTex0 = createDataTexture(ragdollData, RAGDOLL_SIM_RES)
-let ragdollTex1 = createDataTexture(ragdollData, RAGDOLL_SIM_RES)
-let ragdollFB0 = createFramebuffer(ragdollTex0)
-let ragdollFB1 = createFramebuffer(ragdollTex1)
 
 // Lenia
 const leniaData = initLeniaParticles()
@@ -376,20 +288,6 @@ function switchMode(mode) {
     document.getElementById('sliders').style.display = mode === 'lenia' ? 'none' : ''
     document.getElementById('lenia-sliders').style.display = mode === 'lenia' ? '' : 'none'
 
-    // Update slider labels for murmuration/ragdoll
-    if (mode !== 'lenia') {
-        const labels = document.querySelectorAll('#sliders label span')
-        if (mode === 'murmuration') {
-            labels[0].textContent = 'Separation'
-            labels[1].textContent = 'Cohesion'
-            labels[2].textContent = 'Alignment'
-        } else {
-            labels[0].textContent = 'Gravity'
-            labels[1].textContent = 'Damping'
-            labels[2].textContent = 'Bounce'
-        }
-    }
-
     // Reset lenia when switching to that mode
     if (mode === 'lenia') {
         const newData = initLeniaParticles()
@@ -397,15 +295,6 @@ function switchMode(mode) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, LENIA_SIM_RES, LENIA_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
         gl.bindTexture(gl.TEXTURE_2D, leniaTex1)
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, LENIA_SIM_RES, LENIA_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
-    }
-
-    // Reset ragdolls when switching to that mode
-    if (mode === 'ragdoll') {
-        const newData = initRagdollParticles()
-        gl.bindTexture(gl.TEXTURE_2D, ragdollTex0)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, RAGDOLL_SIM_RES, RAGDOLL_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
-        gl.bindTexture(gl.TEXTURE_2D, ragdollTex1)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, RAGDOLL_SIM_RES, RAGDOLL_SIM_RES, 0, gl.RGBA, gl.FLOAT, newData)
     }
 }
 
@@ -418,8 +307,7 @@ document.querySelectorAll('#controls button').forEach(btn => {
 
 document.addEventListener('keydown', (e) => {
     if (e.key === '1') switchMode('murmuration')
-    if (e.key === '2') switchMode('ragdoll')
-    if (e.key === '3') switchMode('lenia')
+    if (e.key === '2') switchMode('lenia')
 })
 
 // ============== RESIZE ==============
@@ -442,8 +330,6 @@ function render(time) {
         renderMurmuration(t, deltaTime)
     } else if (currentMode === 'lenia') {
         renderLenia(t, deltaTime)
-    } else {
-        renderRagdoll(t, deltaTime)
     }
 
     currentBuffer = 1 - currentBuffer
@@ -548,82 +434,6 @@ function renderMurmuration(t, deltaTime) {
     gl.drawArrays(gl.POINTS, 0, PARTICLE_COUNT)
 
     gl.disable(gl.BLEND)
-}
-
-function renderRagdoll(t, deltaTime) {
-    const gravity = sliders.get('separation') * 1.5  // Repurpose slider
-    const damping = 0.98 + sliders.get('cohesion') * 0.015  // 0.98 - 0.995
-
-    // Use local ping-pong state for ragdoll simulation
-    // This keeps track of which texture has the current state
-    const textures = [ragdollTex0, ragdollTex1]
-    const framebuffers = [ragdollFB0, ragdollFB1]
-    let readIdx = currentBuffer
-    let writeIdx = 1 - currentBuffer
-
-    const constraintPasses = 8
-
-    gl.viewport(0, 0, RAGDOLL_SIM_RES, RAGDOLL_SIM_RES)
-    gl.useProgram(ragdollSimProgram)
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer)
-    const simPosLoc = gl.getAttribLocation(ragdollSimProgram, 'a_position')
-    gl.enableVertexAttribArray(simPosLoc)
-    gl.vertexAttribPointer(simPosLoc, 2, gl.FLOAT, false, 0, 0)
-
-    // Set uniforms once
-    gl.uniform2f(ragdollSimUniforms.resolution, canvas.width, canvas.height)
-    gl.uniform1f(ragdollSimUniforms.simResolution, RAGDOLL_SIM_RES)
-    gl.uniform1f(ragdollSimUniforms.deltaTime, deltaTime)
-    mouse.applyUniform(gl, ragdollSimUniforms.mouse)
-    gl.uniform1f(ragdollSimUniforms.gravity, gravity)
-    gl.uniform1f(ragdollSimUniforms.damping, damping)
-
-    // Pass 0: Verlet integration
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffers[writeIdx])
-    gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, textures[readIdx])
-    gl.uniform1i(ragdollSimUniforms.positionTex, 0)
-    gl.uniform1i(ragdollSimUniforms.pass, 0)
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
-
-    // Swap for constraint passes
-    let tmp = readIdx
-    readIdx = writeIdx
-    writeIdx = tmp
-
-    // Constraint passes (ping-pong)
-    for (let i = 0; i < constraintPasses; i++) {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffers[writeIdx])
-        gl.activeTexture(gl.TEXTURE0)
-        gl.bindTexture(gl.TEXTURE_2D, textures[readIdx])
-        gl.uniform1i(ragdollSimUniforms.pass, i + 1)
-        gl.drawArrays(gl.TRIANGLES, 0, 6)
-
-        // Swap read/write
-        tmp = readIdx
-        readIdx = writeIdx
-        writeIdx = tmp
-    }
-
-    // After all passes, readIdx points to the final result
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-    gl.viewport(0, 0, canvas.width, canvas.height)
-
-    // Render ragdolls
-    gl.useProgram(ragdollRenderProgram)
-    gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, textures[readIdx])
-    gl.uniform1i(ragdollRenderUniforms.positionTex, 0)
-    gl.uniform2f(ragdollRenderUniforms.resolution, canvas.width, canvas.height)
-    gl.uniform1f(ragdollRenderUniforms.simResolution, RAGDOLL_SIM_RES)
-    gl.uniform1f(ragdollRenderUniforms.time, t)
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer)
-    const renderPosLoc = gl.getAttribLocation(ragdollRenderProgram, 'a_position')
-    gl.enableVertexAttribArray(renderPosLoc)
-    gl.vertexAttribPointer(renderPosLoc, 2, gl.FLOAT, false, 0, 0)
-    gl.drawArrays(gl.TRIANGLES, 0, 6)
 }
 
 function renderLenia(t, deltaTime) {

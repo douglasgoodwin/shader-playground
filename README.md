@@ -93,7 +93,7 @@ standard uniforms available in every shader are:
 
 ## Geometries
 
-15 shaders exploring signed distance functions and procedural effects:
+Shaders exploring signed distance functions and procedural effects:
 
 | Piece | Description |
 |-------|-------------|
@@ -103,15 +103,11 @@ standard uniforms available in every shader are:
 | Cylinder | Infinite cylindrical tunnels |
 | Raymarch | Smooth-blended primitive shapes |
 | Oscillate | Pulsing sphere with displacement |
-| Kelp | Underwater ribbon strands (modified Ropes) |
 | TriVoronoi | Animated triangular Voronoi cells |
 | WaterRipple | Text grid distorted by water droplet ripples |
 | PoolWater | Caustic light patterns through water |
-| FlowHeart | Morphing heart with flow field |
 | Phyllotaxis | Golden angle (137.5°) 3D seed dome |
 | Still Life | Voronoi-faceted pear with mottled color per facet |
-| Still Life 2 | Pear with convex bulge facets and procedural skin texture (speckles, vertical gradient, noise bump, SSS) |
-| Bust | Minimal Venus de Milo (4 ellipsoids) with mottled marble faceting |
 
 ### Raymarching Notes
 

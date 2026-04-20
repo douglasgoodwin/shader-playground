@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workflow — Shader Playground</title>
+    <meta name="description" content="How to actually work in the Shader Playground: install, run the server, edit a shader, prompt an LLM, commit to your fork. The daily loop." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <span class="topbar-right">
+                <a href="/workflow/" class="current">Workflow</a>
+                <a href="/learn/">Classroom</a>
+                <a href="/exercises/">Exercises</a>
+                <a href="/playground/">Playground</a>
+            </span>
+        </header>
+
+        <div class="chapter-number">How to Get Started</div>
+        <h1>Workflow</h1>
+        <p class="subtitle">Install the project on whatever machine you are sitting at, run the server, edit a shader in conversation with a language model, save, see the change, commit to your fork. A short reference, because most students repeat the first step every class &mdash; lab computers tend to clear out between sessions.</p>
+
+        <p>Nothing here is novel. It is a standard web-development workflow with a language model added to the conversation. What follows is the short version: five stages of the loop you will be in all semester, each written so you can find the step you need without reading the page from the top.</p>
+
+        <h2 data-num="01">Setup</h2>
+
+        <p>Five steps: install Node, download the project, install its dependencies, start the local server, open the URL in a browser.</p>
+
+        <p>All of it happens at a command line. On macOS, open the <strong>Terminal</strong> app (<kbd>&#8984;+Space</kbd>, type <em>terminal</em>). On Windows, open <strong>PowerShell</strong> (Start menu, type <em>powershell</em>). On Linux, open whichever console your distribution ships with.</p>
+
+        <h3 class="workflow-step" data-num="01">Install Node</h3>
+
+        <p>On macOS, the simplest route is <a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noopener">nvm</a>:</p>
+
+        <pre><code>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash</code></pre>
+
+        <p>Add the following to <code>~/.zshrc</code> (or <code>~/.bashrc</code>):</p>
+
+        <pre><code>export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"</code></pre>
+
+        <p>Reload your shell and install Node:</p>
+
+        <pre><code>source ~/.zshrc
+nvm install --lts</code></pre>
+
+        <p>On Windows, install Node.js from <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> using the standard installer. In PowerShell, confirm <code>node -v</code> and <code>npm -v</code> both print version numbers.</p>
+
+        <h3 class="workflow-step" data-num="02">Download the project</h3>
+
+        <p>Pick a folder where you keep your code (your home directory is fine), then clone the repository there:</p>
+
+        <pre><code>cd ~
+git clone https://github.com/douglasgoodwin/shader-playground.git
+cd shader-playground</code></pre>
+
+        <p>Or download the ZIP from GitHub and unzip it somewhere under your home directory. Either way, the rest of the steps happen from inside the <code>shader-playground</code> folder.</p>
+
+        <h3 class="workflow-step" data-num="03">Install dependencies</h3>
+
+        <p>From inside <code>shader-playground</code>:</p>
+
+        <pre><code>npm install</code></pre>
+
+        <h3 class="workflow-step" data-num="04">Start the server</h3>
+
+        <pre><code>npm run dev</code></pre>
+
+        <p>A local URL &mdash; usually <code>http://localhost:5173/</code> &mdash; will be printed in the terminal.</p>
+
+        <h3 class="workflow-step" data-num="05">Open the URL</h3>
+
+        <p>Open the URL your terminal printed in a browser. You now have the playground running on your machine. <kbd>Ctrl+C</kbd> in the terminal stops the server when you are done.</p>
+
+        <h2 data-num="02">The source tree</h2>
+
+        <p>With the server running in development mode, a small panel appears in the bottom-left corner of every shader page: a tree of the files that feed that page, with the entry JS at the top and each imported shader below it.</p>
+
+        <p>Every filename in the panel is a link. Click it, and the file opens directly in Visual Studio Code on your machine. This uses the <code>vscode://</code> URL scheme, which macOS and Windows both understand when VS Code is installed.</p>
+
+        <p>The panel is there so you don't have to hunt for the right file. A shader page is usually the result of three to five small files &mdash; an entry JS, a vertex shader, one or two fragment shaders, a CSS. Click the one you want to change. Your editor opens at that file.</p>
+
+        <p>If VS Code isn't your editor, you can either associate the <code>vscode://</code> handler with another tool, or use the panel as a map and open files by hand.</p>
+
+        <h2 data-num="03">The prompt loop</h2>
+
+        <p>This is the daily work.</p>
+
+        <ol class="workflow-list">
+            <li>Open a shader page in the browser. Find the file you want to change in the source tree &mdash; usually a <code>.glsl</code> file.</li>
+            <li>Click to open it in your editor. Copy the whole file into the conversation with your language model.</li>
+            <li>Describe the change in plain English. One change at a time. <em>"Make the circle pulse with time."</em> <em>"Add a second circle that orbits the first."</em> <em>"The gradient should go left to right, not top to bottom."</em></li>
+            <li>Paste the result back into the file. Save.</li>
+            <li>The browser hot-reloads. The change appears immediately.</li>
+            <li>Iterate. Keep the loop tight.</li>
+        </ol>
+
+        <p>If the model produces code that does not compile, paste the exact error text into the conversation. The model parses errors much better than it parses descriptions of errors. If a conversation has drifted into a stuck place, start a fresh session; the same question sometimes gets a better answer from a new transcript.</p>
+
+        <h2 data-num="04">Making a new shader</h2>
+
+        <p>Once you want your own work rather than edits to someone else's, you'll make a new shader. Three small edits, always in the same order.</p>
+
+        <ol class="workflow-list">
+            <li><strong>Copy an existing shader.</strong> In <code>src/shaders/&lt;section&gt;/</code>, duplicate the <code>.glsl</code> file that's closest to what you want. Rename it.</li>
+            <li><strong>Register it in the entry JS.</strong> Open <code>src/&lt;section&gt;.js</code>. Add an <code>import</code> for your new file near the top, and add it to the shaders registry below.</li>
+            <li><strong>Add a button.</strong> Open <code>&lt;section&gt;/index.html</code>. Copy one of the existing <code>&lt;button data-piece="..."&gt;</code> lines and change the name.</li>
+        </ol>
+
+        <p>Save all three. Refresh the page. Your new shader appears in the button bar. Every shader in the project was made this way.</p>
+
+        <h2 data-num="05">Your own fork</h2>
+
+        <p>When the work is yours, it should live in your repository, not in the one you cloned.</p>
+
+        <ol class="workflow-list">
+            <li><strong>Fork</strong> the <a href="https://github.com/douglasgoodwin/shader-playground" target="_blank" rel="noopener">shader-playground repo</a> on GitHub. GitHub will give you a URL for your copy.</li>
+            <li><strong>Point your local clone at your fork.</strong> In the terminal, inside your <code>shader-playground</code> directory:
+                <pre><code>git remote set-url origin https://github.com/YOUR_USER/shader-playground.git</code></pre>
+            </li>
+            <li><strong>Commit</strong> your changes with a short message:
+                <pre><code>git add .
+git commit -m "added a radial pulse shader"</code></pre>
+            </li>
+            <li><strong>Push</strong> to your fork:
+                <pre><code>git push</code></pre>
+            </li>
+        </ol>
+
+        <p>Your work now lives on GitHub. The next time you sit down at a lab machine, you clone your fork instead of mine. Everything you made comes back.</p>
+
+        <h2>Between classes</h2>
+
+        <p>If the setup stages feel repetitive, that is the trade you make for working on a different machine every day. Most students settle into the rhythm within two or three class meetings. When a step fails, paste the exact terminal output into your language model and say which step you were on &mdash; you'll usually be unstuck in a few minutes.</p>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            <a href="/learn/">Visit the Classroom</a>
+            &nbsp;&middot;&nbsp;
+            <a href="/playground/">Back to the Playground</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/learn/workflow.js"></script>
+</body>
+</html>

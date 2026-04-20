@@ -6,13 +6,10 @@ import penroseShader from './shaders/geometries/penrose.glsl'
 import mandelbulbShader from './shaders/geometries/mandelbulb.glsl'
 import raymarchShader from './shaders/geometries/raymarch.glsl'
 import oscillateShader from './shaders/geometries/oscillate.glsl'
-import ropesShader from './shaders/geometries/ropes.glsl'
 import trivoronoiShader from './shaders/geometries/trivoronoi.glsl'
 import waterrippleShader from './shaders/geometries/waterripple.glsl'
 import phyllotaxisShader from './shaders/geometries/phyllotaxis.glsl'
 import stilllifeShader from './shaders/geometries/stilllife.glsl'
-import stilllife2Shader from './shaders/geometries/stilllife2.glsl'
-import bustShader from './shaders/geometries/bust.glsl'
 
 createShaderPage({
     shaders: {
@@ -21,13 +18,10 @@ createShaderPage({
         mandelbulb: mandelbulbShader,
         raymarch: raymarchShader,
         oscillate: oscillateShader,
-        ropes: ropesShader,
         trivoronoi: trivoronoiShader,
         waterripple: waterrippleShader,
         phyllotaxis: phyllotaxisShader,
         stilllife: stilllifeShader,
-        stilllife2: stilllife2Shader,
-        bust: bustShader,
     },
     uniforms: ['resolution', 'time', 'mouse', 'speed', 'density', 'harmonics', 'intensity', 'scale'],
     defaultEffect: 'gyroid',

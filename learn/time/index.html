@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Time and Repetition — Shader Playground Classroom</title>
+    <meta name="description" content="Chapter 2 of the Shader Playground classroom. u_time, sin(), pulsing and orbiting shapes, symmetry with abs(), and tiling with fract()." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <a href="/learn/">Classroom</a>
+        </header>
+
+        <div class="chapter-number">Chapter 02 — The Classroom</div>
+        <h1>Time and<br>Repetition</h1>
+        <p class="subtitle">A shader that answers a different question every frame, and the same question a thousand times in a grid.</p>
+
+        <p>Every shader in <a href="/learn/pixel/">Chapter 1</a> gave the same answer from frame to frame. The canvas painted once and held still. Shaders are capable of a great deal more than that &mdash; they can change their answer thousands of times a second, and if they change it smoothly we call the result <em>animation</em>. They can also answer the same question many times across a single frame, tiled across a grid, producing patterns from one rule. This chapter is about both of those moves.</p>
+
+        <h2 data-num="01">The clock</h2>
+
+        <p>WebGL passes a new value for <code>u_time</code> into the shader every frame. It starts at zero when the page loads and counts up, in seconds. On its own it isn't very useful — a number that grows forever would quickly exceed the range of a color — but if we pass it through <code>sin()</code>, we get an <em>oscillator</em>: a value that rides smoothly between &minus;1 and 1, over and over.</p>
+
+        <p>Shift and scale that wave so it rides between 0 and 1 instead and it becomes something we can use as a color:</p>
+
+        <pre><code>float v = 0.5 + 0.5 * sin(u_time);
+gl_FragColor = vec4(vec3(v), 1.0);</code></pre>
+
+        <figure class="widget" id="w-oscillation"></figure>
+
+        <p>There are no controls on this one. Just watch. The whole canvas fades from black to white and back, about once every six seconds. That little pulse is the heartbeat that drives almost every animated shader you will ever write.</p>
+
+        <h2 data-num="02">A pulsing shape</h2>
+
+        <p>A number that moves is only interesting once we point it at something. Take the oscillator from the last section and feed it into the radius of our circle:</p>
+
+        <pre data-widget="w-pulse"><code>float r = u_base_radius + u_amplitude * sin(u_time * u_speed);
+float d = length(p);
+float circle = 1.0 - smoothstep(r - 0.01, r + 0.01, d);</code></pre>
+
+        <figure class="widget" id="w-pulse"></figure>
+
+        <p>Three parameters now &mdash; a base radius, an amplitude, and a speed. The base radius sets the size the circle oscillates around; the amplitude is how much it swells and shrinks; the speed multiplies time before we take its sine. Drag <code>u_speed</code> to zero and the circle stops breathing entirely. Drag it up and the circle starts to flicker. This pattern &mdash; a uniform multiplied by time, passed through <code>sin</code>, added to a base &mdash; will come up again in every animated shader you read.</p>
+
+        <h2 data-num="03">Orbiting</h2>
+
+        <p>Sine moves a value up and down; cosine moves it the same way, but a quarter turn offset. Feed <code>sin</code> into a point's x-coordinate and <code>cos</code> into its y-coordinate and the point traces a circle around the origin:</p>
+
+        <pre data-widget="w-orbit"><code>vec2 center = u_orbit * vec2(sin(u_time * u_speed), cos(u_time * u_speed));
+float d = length(p - center);</code></pre>
+
+        <figure class="widget" id="w-orbit"></figure>
+
+        <p>The <code>u_orbit</code> slider scales how far the circle travels from the middle; <code>u_speed</code> controls how fast. We haven't changed the shape at all — it's still the same movable circle from Chapter 1. All we did was drive its center with time instead of with a slider.</p>
+
+        <h2 data-num="04">Color in motion</h2>
+
+        <p>Time doesn't only move positions. It can drive anything — scale, rotation, brightness, hue. Passing <code>u_time</code> into the hue of a color produces a cycle through every color of the spectrum, back to the beginning:</p>
+
+        <pre data-widget="w-color"><code>vec3 color = hue(u_time * u_speed);
+float gray = dot(color, vec3(0.3333));
+gl_FragColor = vec4(mix(vec3(gray), color, u_saturation), 1.0);</code></pre>
+
+        <figure class="widget" id="w-color"></figure>
+
+        <p>The <code>hue()</code> function is the same one from the end of Chapter 1: it takes a number in 0..1 and returns a fully-saturated color wheel. Time goes in; color comes out. The <code>u_saturation</code> slider fades the cycling color toward neutral gray so you can see how the brightness changes underneath.</p>
+
+        <h2 data-num="05">Mirrors</h2>
+
+        <p>Time moves things. Space can also be moved. If we take the absolute value of the x-coordinate before drawing, every pixel on the left of the canvas sees the same shader as the pixel opposite it on the right. The image becomes symmetrical across the Y axis:</p>
+
+        <pre data-widget="w-mirror"><code>vec2 q = vec2(abs(p.x), p.y);
+float d = length(q - vec2(u_cx, 0.0));</code></pre>
+
+        <figure class="widget" id="w-mirror"></figure>
+
+        <p>Drag <code>u_cx</code>. You are moving a single circle, but two appear, locked together in mirror. The trick is that <code>abs()</code> folds the x-axis in half — negative coordinates become positive — so the shader can only <em>see</em> one half of the canvas. Whatever we draw on the right is necessarily mirrored on the left.</p>
+
+        <p>Take the absolute value of both coordinates and the canvas folds into quadrants. Every pattern that comes out of <code>abs()</code> is symmetrical. Kaleidoscopes, mandalas, snowflakes — at the heart of each of them is a move like this one.</p>
+
+        <h2 data-num="06">Repetition</h2>
+
+        <p>One more spatial trick, and this one is the engine of pattern. <code>fract(x)</code> returns the fractional part of a number — it throws away the whole. If our coordinate is <code>1.4</code>, <code>fract</code> gives back <code>0.4</code>; at <code>2.4</code>, it gives back <code>0.4</code> again; at <code>3.4</code>, again <code>0.4</code>. The number cycles from 0 to 1 over and over.</p>
+
+        <p>If we scale our coordinates up by some count and then take their fractional part, each unit of the canvas becomes a tiny cell running from 0 to 1. Draw a shape inside those cell coordinates, and we've drawn that shape everywhere:</p>
+
+        <pre data-widget="w-grid"><code>vec2 cell = fract(p * u_count) - 0.5;
+float d = length(cell);
+float circle = 1.0 - smoothstep(u_radius - 0.02, u_radius + 0.02, d);</code></pre>
+
+        <figure class="widget" id="w-grid"></figure>
+
+        <p>The <code>&minus; 0.5</code> at the end shifts each cell's origin to the middle, so our circles land at the center of each tile. Turn <code>u_count</code> up and the shape tiles more finely. We wrote one <code>length</code> and one <code>smoothstep</code>, and the GPU is running them a few hundred thousand times, once per pixel, to build the whole field. This is what shaders are for.</p>
+
+        <h2 data-num="07">Time and space together</h2>
+
+        <p>The moves compose. Each cell in the grid already knows its own position; we can use that position to give every cell its own timing offset, and then drive the radius with time the way we did in section 02:</p>
+
+        <pre data-widget="w-breathing"><code>vec2 id = floor(p * u_count);
+float phase = id.x * 0.9 + id.y * 1.3;
+float r = u_radius + 0.18 * sin(u_time * u_speed + phase);</code></pre>
+
+        <figure class="widget" id="w-breathing"></figure>
+
+        <p>Each cell breathes, but the cells breathe at slightly offset times, so a wave runs diagonally across the grid. Two tricks from this chapter — time as a driver, space as a grid — combined in six lines. This is where shader authorship starts to feel less like math and more like making.</p>
+
+        <h2>What we've built</h2>
+
+        <p>Chapter 1 gave us a single shape. Chapter 2 gave us a shape that moves, a shape that mirrors, a shape that tiles, and a shape that does all three at once. Those are the four directions a shader can grow: change over time, change across position, fold space with <code>abs</code>, repeat space with <code>fract</code>. Almost every shader you will read from here on is a composition of these moves.</p>
+
+        <p>The next chapter introduces <em>randomness</em> — a hash function lets every cell in a grid pick a different number, from nothing but its own coordinate. Once you have that, the grids stop looking like grids.</p>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            Next &mdash;
+            <a href="/learn/">Back to the Classroom</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/learn/time.js"></script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Third Dimension — Shader Playground Classroom</title>
+    <meta name="description" content="Chapter 4 of the Shader Playground classroom. Raymarching, signed distance fields, normals, diffuse lighting, smooth blending, and a small 3D scene." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <a href="/learn/">Classroom</a>
+        </header>
+
+        <div class="chapter-number">Chapter 04 — The Classroom</div>
+        <h1>The Third<br>Dimension</h1>
+        <p class="subtitle">A shader stops answering "what color?" and starts answering "how far?" &mdash; and with that shift, a flat canvas turns into a 3D scene.</p>
+
+        <p>For three chapters we have worked on a flat canvas. The shader answered one question &mdash; for this pixel, what color? &mdash; and the answer formed the image. Even the shapes we drew were really color fields: a disc of bright pixels, a blurred edge, a tiled pattern. The canvas had no depth because there was no depth to have.</p>
+
+        <p>This chapter is about the conceptual move that opens a third axis. The shader still runs once per pixel, but each pixel now stands for a <em>ray</em> fired from a camera out into space. The question becomes: along this ray, how far do I go before I hit something?</p>
+
+        <p>The technique is called <strong>raymarching</strong>. Once a shader can answer that question, a flat canvas holds a 3D scene.</p>
+
+        <h2 data-num="01">The ray</h2>
+
+        <p>A pixel and a ray go together. The ray starts at the camera and passes through the pixel on its way out into the world, as if the pixel grid were a window and we were looking through it.</p>
+
+        <p>The direction of each ray can be computed from the pixel's coordinates alone. A pixel at the center of the canvas looks straight ahead; a pixel to the right looks slightly right. If we treat the ray's direction &mdash; three numbers, <em>x</em>, <em>y</em>, and <em>z</em> &mdash; as a color, we can see the whole field at once:</p>
+
+        <pre data-widget="w-ray"><code>vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution) / min(u_resolution.x, u_resolution.y);
+vec3 rd = normalize(vec3(uv, u_fov));
+gl_FragColor = vec4(rd * 0.5 + 0.5, 1.0);</code></pre>
+
+        <figure class="widget" id="w-ray"></figure>
+
+        <p>Red for <em>x</em>, green for <em>y</em>, blue for <em>z</em>. The center of the canvas tilts heavily blue &mdash; rays pointing mostly along the z-axis. Corners gain red and green as the rays fan outward. The <code>u_fov</code> slider changes how sharply they fan: a small value keeps the rays close to parallel (a narrow lens); a larger value spreads them over a wider field.</p>
+
+        <p>We have not drawn any surface yet. We have only named the new input to each pixel's shader.</p>
+
+        <h2 data-num="02">The sphere</h2>
+
+        <p>With a ray per pixel, we can look for surfaces along it. The simplest surface to look for is a sphere.</p>
+
+        <p>A <em>signed distance function</em> &mdash; SDF &mdash; is a function from a point in space to the distance to the nearest surface. For a sphere of radius <code>r</code> centered at the origin, the distance from a point <code>p</code> is <code>length(p) - r</code>. At the surface it returns zero. Outside, positive. Inside, negative. Hence signed.</p>
+
+        <p>The raymarching loop is simple. Start at the camera. Sample the SDF to learn the distance to the nearest surface &mdash; that's the farthest we can step without passing through anything. Step that far along the ray. Sample again. Step again. Either we come close enough to a surface (the distance drops below a threshold) or we give up (the ray has gone too far):</p>
+
+        <pre data-widget="w-sphere"><code>float sdSphere(vec3 p, float r) {
+    return length(p) - r;
+}
+
+float t = 0.0;
+for (int i = 0; i &lt; 64; i++) {
+    vec3 p = ro + rd * t;
+    float d = sdSphere(p, u_radius);
+    if (d &lt; 0.001) break;
+    t += d;
+}</code></pre>
+
+        <figure class="widget" id="w-sphere"></figure>
+
+        <p>Move <code>u_radius</code> and the sphere grows; move <code>u_distance</code> and the camera moves closer or farther. The image is binary &mdash; each pixel either found a surface or didn't. The silhouette itself could have been drawn with a 2D circle; what matters is how we arrived at it. We did not draw the sphere at all. We walked along a ray until something was in the way, and that same walk will carry us through the rest of the chapter.</p>
+
+        <h2 data-num="03">Light on the surface</h2>
+
+        <p>A silhouette tells us where a surface is. To shade it, we need two more things: which way the surface faces, and where the light is coming from.</p>
+
+        <p>The direction a surface faces &mdash; its <em>normal</em> &mdash; we compute from the SDF itself. Sample the SDF at points just off the hit location in each axis. The differences between those samples tell us how the distance function is changing across space, which is a vector pointing away from the surface. Normalize and we have the normal.</p>
+
+        <p>With the normal, we can borrow a trick from 1960s graphics: the dot product with the light direction. One means the surface faces directly into the light. Zero means edge-on. Below zero means the surface faces away. That number becomes the brightness.</p>
+
+        <pre data-widget="w-lit"><code>vec3 n = calcNormal(p);
+vec3 lightDir = normalize(vec3(cos(u_light_angle), 0.5, sin(u_light_angle) - 0.5));
+float diff = max(dot(n, lightDir), 0.0);
+vec3 color = vec3(0.9) * (diff + 0.15);</code></pre>
+
+        <figure class="widget" id="w-lit"></figure>
+
+        <p>Now the sphere has volume. Rotate <code>u_light_angle</code> and the highlight travels across the surface. Nothing about the sphere changed; we only changed where the light is.</p>
+
+        <h2 data-num="04">More than one shape</h2>
+
+        <p>A single SDF gives us a single surface. For two, write two SDFs and combine them. The key move: since an SDF returns the distance to the <em>nearest</em> surface, the distance to the nearest of two surfaces is the smaller of their two distances &mdash; the minimum:</p>
+
+        <pre data-widget="w-union"><code>float s1 = sdSphere(p, vec3(-u_separation, 0.0, 0.0), u_radius);
+float s2 = sdSphere(p, vec3(u_separation, 0.0, 0.0), u_radius);
+return min(s1, s2);</code></pre>
+
+        <figure class="widget" id="w-union"></figure>
+
+        <p>Move <code>u_separation</code> to slide the spheres apart or squeeze them together. Where they overlap, a hard crease appears. That crease is the seam where <code>min</code> switches from preferring one sphere's distance to the other's. Mathematically exact; visually, a sharp edge.</p>
+
+        <h2 data-num="05">The smooth minimum</h2>
+
+        <p>Hard creases are sometimes what you want. Often they're not &mdash; you want two shapes to merge into one continuous form, the way wax fuses into wax.</p>
+
+        <p>Inigo Quilez's <strong>smooth minimum</strong> is a small piece of math that does exactly that:</p>
+
+        <pre data-widget="w-blend"><code>float smin(float a, float b, float k) {
+    float h = max(k - abs(a - b), 0.0) / k;
+    return min(a, b) - h * h * k * 0.25;
+}
+
+return smin(s1, s2, u_k);</code></pre>
+
+        <figure class="widget" id="w-blend"></figure>
+
+        <p>The <code>u_k</code> slider controls the blending radius. At zero it behaves like a regular <code>min</code> and the hard crease returns. Turn it up and the spheres bulge toward each other, merge into a dumbbell, then swell into a single continuous shape. Much of the organic quality of raymarched work comes from this one function.</p>
+
+        <h2 data-num="06">A scene</h2>
+
+        <p>With primitives, union, and smooth blending, we have enough to build a scene. Add a floor. Fix a light. Let the camera move. The raymarching loop doesn't change; we just have it step through more interesting space:</p>
+
+        <pre data-widget="w-scene"><code>float s = sdSphere(p, vec3(0.55, 0.0, 0.0), 0.5);
+float b = sdBox(p, vec3(-0.55, 0.0, 0.0), vec3(0.35));
+float shape = smin(s, b, u_blend);
+float floor = sdFloor(p, -0.55);
+return min(shape, floor);</code></pre>
+
+        <figure class="widget" id="w-scene"></figure>
+
+        <p>A sphere and a box, smoothly blended, resting on a floor. The camera orbits. Every pixel still answers the same question &mdash; along my ray, how far to the nearest surface? The scene emerges from the answers.</p>
+
+        <h2 data-num="07">Terrain</h2>
+
+        <p>One last move. Put the noise from <a href="/learn/randomness/">Chapter 3</a> to work.</p>
+
+        <p>A terrain is a <em>height field</em>: for each horizontal point <code>(x, z)</code> in the plane, a height <code>y</code> given by some function. The function is usually FBM &mdash; the same fractal Brownian motion from the last chapter.</p>
+
+        <p>The raymarching loop needs a small variation here. A height field is not a true signed distance function &mdash; it does not tell us the safe distance to step. So we step more cautiously, a fraction of how far the ray sits above the terrain, checking each time whether the ray has dropped below:</p>
+
+        <pre data-widget="w-terrain"><code>float terrainHeight(vec2 xz) {
+    return fbm(xz * u_scale) * u_amplitude - 0.5;
+}
+
+// along the ray, check whether we're below the heightfield:
+float delta = p.y - terrainHeight(p.xz);
+if (delta &lt; 0.01) return t;
+t += max(delta * 0.4, 0.02);</code></pre>
+
+        <figure class="widget" id="w-terrain"></figure>
+
+        <p>A flying camera over procedural terrain, shaded and fogged. Everything below the sky is one function &mdash; a few lines of noise, evaluated at every point along every ray. Chapter 3 gave us textures. Chapter 4 gives us the machinery to evaluate them in space. Together they draw worlds.</p>
+
+        <h2>What we've built</h2>
+
+        <p>We started on a flat canvas and ended over procedural terrain. The shift was conceptual &mdash; <em>what color should this pixel be?</em> became <em>along this pixel's ray, how far to the nearest surface?</em> &mdash; but that single rephrasing reopens the whole toolkit. Distance fields, union, smooth blending, normals, diffuse light, fog: all of them sit on top of the same raymarching loop.</p>
+
+        <p>You now have the basic grammar of 3D shader drawing: rays, SDFs, the raymarching loop, normals, diffuse light, union, and smooth blending. The next chapter takes everything we have and plugs it into larger systems &mdash; Three.js materials on 3D geometry, Tone.js audio driving the uniforms, and the patterns for bringing GLSL into any web project that wants a shader.</p>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            Next &mdash;
+            <a href="/learn/">Back to the Classroom</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/learn/dimension.js"></script>
+</body>
+</html>

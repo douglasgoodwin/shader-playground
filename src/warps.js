@@ -3,7 +3,6 @@ import './source-link.js'
 import { createShaderPage } from './shader-page.js'
 import { createMediaLoader } from './media-loader.js'
 import drapeShader from './shaders/warps/drape.glsl'
-import flowheartShader from './shaders/warps/flowheart.glsl'
 import mercuryShader from './shaders/warps/mercury.glsl'
 import vcrShader from './shaders/warps/vcr.glsl'
 import refractShader from './shaders/warps/refract.glsl'
@@ -19,7 +18,6 @@ const imageControls = document.getElementById('image-controls')
 const page = createShaderPage({
     shaders: {
         drape: drapeShader,
-        flowheart: flowheartShader,
         mercury: mercuryShader,
         vcr: vcrShader,
         refract: refractShader,

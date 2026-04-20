@@ -1,108 +1,216 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shader Playground</title>
-  </head>
-  <body>
-    <canvas id="canvas"></canvas>
-    <button id="record-btn" title="Record video (R)"></button>
-    <div id="links">
-      <a href="/whitney/">
-        Visual Music
-        <span class="subtitle">Computational cinema</span>
-      </a>
-      <a href="/geometries/">
-        Geometries
-        <span class="subtitle">Shader Park explorations</span>
-      </a>
-      <a href="/glyphs/">
-        Glyphs
-        <span class="subtitle">ASCII art and symbol morphing</span>
-      </a>
-      <a href="/stipple/">
-        Stipple
-        <span class="subtitle">Hodgin-style dot patterns</span>
-      </a>
-      <a href="/exercises/">
-        Exercises
-        <span class="subtitle">Scaffolded shader exercises</span>
-      </a>
-      <a href="/particles/">
-        Particles
-        <span class="subtitle">GPU particle simulations</span>
-      </a>
-      <a href="/characters/">
-        Characters
-        <span class="subtitle">Animated shader creatures</span>
-      </a>
-      <a href="/warps/">
-        Warps
-        <span class="subtitle">Image warping effects</span>
-      </a>
-      <a href="/tiles/">
-        Tiles
-        <span class="subtitle">Voronoi, hexgrid, tiling, and op art</span>
-      </a>
-      <a href="/landscape/">
-        Landscape
-        <span class="subtitle">Raymarched terrain with lightning</span>
-      </a>
-      <a href="/displace/">
-        Displace
-        <span class="subtitle">Vertex displacement with image textures</span>
-      </a>
-      <a href="/audio/">
-        Audio
-        <span class="subtitle">Audio-reactive raymarched terrain</span>
-      </a>
-      <a href="/reaction-diffusion/">
-        Reaction Diffusion
-        <span class="subtitle">Gray-Scott simulation on a twisted torus</span>
-      </a>
-      <a href="/fluid/">
-        Fluid
-        <span class="subtitle">Navier-Stokes, pool water, ferrofluid</span>
-      </a>
-      <a href="/scribble/">
-        Scribble
-        <span class="subtitle">Scribble circles from images</span>
-      </a>
-      <a href="/lic/">
-        LIC
-        <span class="subtitle">Line integral convolution painterly flow</span>
-      </a>
-      <a href="/threejs/">
-        Three.js
-        <span class="subtitle">3D shader experiments with Three.js</span>
-      </a>
-      <a href="/fur/">
-        Fur
-        <span class="subtitle">Shell-method fur with wind and gravity</span>
-      </a>
-      <a href="/spike/">
-        Spike
-        <span class="subtitle">Deforming shader textures on 3D model</span>
-      </a>
-      <a href="/zoom/">
-        Zoom Crossfade
-        <span class="subtitle">Google Maps-style zoom and crossfade</span>
-      </a>
-      <a href="/palette/">
-        Palette
-        <span class="subtitle">RISO, pastel, thermal, duotone color remapping</span>
-      </a>
-      <a href="/kaleidoscope/">
-        Kaleidoscope
-        <span class="subtitle">Video kaleidoscope with configurable reflections</span>
-      </a>
-      <a href="/midi-visual/">
-        MIDI Visual
-        <span class="subtitle">MIDI-driven video kaleidoscope</span>
-      </a>
-    </div>
-    <script type="module" src="/src/home.js"></script>
-  </body>
+    <title>About — Shader Playground</title>
+    <meta name="description" content="A classroom and playground for writing GLSL shaders with an AI collaborator. Built at CalArts by Douglas Goodwin." />
+</head>
+<body class="queue">
+
+    <header class="queue-topbar">
+        <a href="/" class="crumb">Shader Playground</a>
+        <span class="queue-topbar-right">
+            <a href="/workflow/">Workflow</a>
+            <a href="/learn/">Classroom</a>
+            <a href="/exercises/">Exercises</a>
+            <a href="/playground/">Playground</a>
+        </span>
+    </header>
+
+    <main>
+
+        <!-- 01 — ARRIVAL -->
+        <section class="queue-stop queue-hero">
+            <div class="queue-label">Stop 01 &mdash; Arrival</div>
+            <h1 class="queue-hero-title">You steer,<br>AI motors.</h1>
+            <p class="queue-hero-sub">A classroom and a playground for GLSL shaders. Built for artists working with large language models as collaborators &mdash; not as content engines, but as programmers you work with.</p>
+        </section>
+
+        <!-- 02 — LINEAGE -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 02 &mdash; Lineage</div>
+            <h2 class="queue-heading">Machines and art<br>at CalArts</h2>
+            <div class="queue-body">
+                <p>Computer-assisted image-making has a long history at the California Institute of the Arts, much of it predating the phrase in its current sense. Figures whose work at or near the school connects to this tradition include:</p>
+            </div>
+            <ul class="queue-names">
+                <li><span class="queue-names-cat">Film &amp; Video</span> Ed Emshwiller &middot; Adam Beckett &middot; Pat O'Neill &middot; John Lasseter &middot; Joanna Priestley (Cubicomp)</li>
+                <li><span class="queue-names-cat">Electronic Music</span> Morton Subotnick &middot; James Tenney &middot; Alison Knowles &middot; David Rosenboom &middot; Mark Trayle</li>
+                <li><span class="queue-names-cat">Video &amp; Image</span> Nam June Paik &middot; Stephen Beck's video weavings</li>
+                <li><span class="queue-names-cat">Visual Music</span> John &amp; James Whitney &middot; Mary Ellen Bute &middot; Oskar Fischinger &middot; Len Lye &middot; Jordan Belson &middot; Norman McLaren &middot; Lillian Schwartz</li>
+            </ul>
+            <div class="queue-body">
+                <p>This project is an attempt to continue a line &mdash; not to import a new technology into an art school, but to recognize that the school has been working with machines, procedurally and generatively, for a long time.</p>
+            </div>
+        </section>
+
+        <!-- 03 — THE TURN -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 03 &mdash; The Turn</div>
+            <h2 class="queue-heading">From picture machines<br>to code collaborators</h2>
+            <div class="queue-body">
+                <p>Most AI tools built for artists share one design. You type a prompt; the system hands you a finished thing: an image, a video, a piece of music. This is efficient. It also removes much of the space where artistic judgment usually accumulates.</p>
+                <p>For many artists, the satisfaction of creative work comes from decisions made over time: this color not that one, this curve adjusted, this element removed. When a tool skips that process and delivers a result, the artist risks becoming a curator of outputs rather than the author of the work.</p>
+                <p>Writing code with a language model has a different shape. You still see every line. You can change anything. When something breaks, you debug it together; when something works, you can understand why. The model supplies syntax, algorithms, and standard solutions. You supply what you want to make, and why. The conversation stays yours.</p>
+                <p>The training-data story runs differently here as well. Image generators were trained on artists' work without consent &mdash; a claim still being argued. Large language models learned to code from a culture of publicly shared examples, explanations, and problem-solving, much of it posted to help other people. That is a different bargain. It isn't a clean one, but it is different.</p>
+            </div>
+
+            <div class="queue-voices">
+                <div class="queue-voices-label">First day of class</div>
+                <blockquote class="queue-quote">
+                    <p>"It feels more like artisan work. I used an LLM to help me with a Blender model, but I did all the sculpting myself with my mouse."</p>
+                </blockquote>
+                <blockquote class="queue-quote">
+                    <p>"This kind of code is so unintuitive. In my lifetime I would never have figured it out anyway. So for this, it doesn't feel like a moral quandary."</p>
+                </blockquote>
+                <blockquote class="queue-quote">
+                    <p>"I definitely think this feels more conscientious than other existing interactions with image generators."</p>
+                </blockquote>
+                <div class="queue-voices-attr">CalArts students, Spring 2026</div>
+            </div>
+        </section>
+
+        <!-- 04 — MENTAL MODEL -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 04 &mdash; Mental Model</div>
+            <h2 class="queue-heading">The four-line stack</h2>
+            <pre class="queue-stack">LLM         = code collaborator
+JS library  = orchestration layer
+WebGL       = GPU interface
+GLSL        = rendering logic</pre>
+            <div class="queue-body">
+                <p>A shader is small &mdash; tens to a few hundred lines &mdash; and it runs on the GPU. A fragment shader answers one question: <em>what color should this pixel be?</em> It runs that rule, in parallel, once for every pixel on the screen.</p>
+                <p>Because shaders are small and well-documented, a language model can often reason about the whole program at once. The artist prompts; the LLM writes and edits GLSL; WebGL runs it; the browser paints it. Preview is instant.</p>
+            </div>
+        </section>
+
+        <!-- 05 — DATA FLOW -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 05 &mdash; Data Flow</div>
+            <h2 class="queue-heading">What moves through<br>the pipeline</h2>
+            <div class="queue-body">
+                <p>Four common channels move data through the pipeline. Attributes, uniforms, and textures come in from JavaScript; varyings pass data from the vertex shader to the fragment shader. The names appear throughout the classroom and the playground:</p>
+            </div>
+            <dl class="queue-flow">
+                <div class="queue-flow-row">
+                    <dt>attributes</dt>
+                    <dd>Per-vertex arrays &mdash; positions, normals, UVs &mdash; stored in WebGL buffers.</dd>
+                </div>
+                <div class="queue-flow-row">
+                    <dt>uniforms</dt>
+                    <dd>Per-draw-call constants &mdash; time, matrices, colors, slider values.</dd>
+                </div>
+                <div class="queue-flow-row">
+                    <dt>textures</dt>
+                    <dd>Images or data samplers passed into the fragment shader.</dd>
+                </div>
+                <div class="queue-flow-row">
+                    <dt>varyings</dt>
+                    <dd>Written by the vertex shader, interpolated by the rasterizer, read by the fragment shader.</dd>
+                </div>
+            </dl>
+        </section>
+
+        <!-- 06 — BUILDING BLOCKS -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 06 &mdash; Building Blocks</div>
+            <h2 class="queue-heading">Three small moves</h2>
+            <div class="queue-body">
+                <p>Three small widgets, each one teaching a single idea. The classroom opens each one into a chapter. Drag the sliders on the first two; the third does its own thing.</p>
+            </div>
+
+            <div class="queue-triptych">
+
+                <figure class="queue-tile">
+                    <figure class="widget" id="q-solid"></figure>
+                    <figcaption>A shader outputs a color for every pixel.</figcaption>
+                </figure>
+
+                <figure class="queue-tile">
+                    <figure class="widget" id="q-circle"></figure>
+                    <figcaption>Every pixel knows where it is. Measure distance, apply a threshold, get a shape.</figcaption>
+                </figure>
+
+                <figure class="queue-tile">
+                    <figure class="widget" id="q-pulse"></figure>
+                    <figcaption>A shader can change its answer every frame. <code>u_time</code> drives the rest.</figcaption>
+                </figure>
+
+            </div>
+        </section>
+
+        <!-- 07 — THE INSTRUMENT -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 07 &mdash; The Instrument</div>
+            <h2 class="queue-heading">Around the shader</h2>
+            <div class="queue-body">
+                <p>A shader is a small program. On its own it draws an image. The playground wraps each shader with a modular set of tools that turn it into an instrument &mdash; something you can feed, play, and record.</p>
+            </div>
+
+            <dl class="queue-flow">
+                <div class="queue-flow-row">
+                    <dt>upload</dt>
+                    <dd>Drop an image, a video, or a 3D model (OBJ) onto any page and it becomes input to the shader. The kaleidoscope wants a video; the displace page wants a photograph to push pixels against; the Three.js pages want a model to wear a material. You drop the asset; the shader responds.</dd>
+                </div>
+                <div class="queue-flow-row">
+                    <dt>record</dt>
+                    <dd>Every page has a red record button in the corner (or press <strong>R</strong>). It captures the shader's output at 1080p through the WebCodecs API &mdash; hardware-accelerated H.264, no UI chrome in the frame. You hit record, let the animation run, adjust sliders, stop, and download an MP4. The result goes straight into a video editor.</dd>
+                </div>
+                <div class="queue-flow-row">
+                    <dt>react</dt>
+                    <dd>The audio pages route microphone or file input into the shader as uniforms &mdash; bass, treble, overall level, frequency bins. The same line that drives a pulsing circle from <code>u_time</code> drives it from <code>u_bass</code>. Any shader with a uniform can become audio-reactive in a handful of edits.</dd>
+                </div>
+            </dl>
+
+            <div class="queue-body">
+                <p>Advanced students compose these. A student who understands all three &mdash; an uploader, the recorder, an audio-reactive hook &mdash; can take a piece of footage, drive its distortion with music, and record the result as MP4. The audio-reactive behavior from one shader can be isolated and redeployed to drive another transformation entirely: making a character appear to speak, or a starfield explode on a snare hit. The pieces are separable; what the advanced student contributes is the composition.</p>
+            </div>
+            <p class="queue-aside">For the practical loop &mdash; installing, running, editing, committing &mdash; see <a href="/workflow/">the Workflow reference</a>.</p>
+        </section>
+
+        <!-- 08 — WORKING WITH THE MODEL -->
+        <section class="queue-stop">
+            <div class="queue-label">Stop 08 &mdash; The Collaboration</div>
+            <h2 class="queue-heading">Working with<br>the model</h2>
+            <div class="queue-body">
+                <p>A few habits make the difference between a productive hour and an exhausting one. They do not come from the model. They come from working with it.</p>
+                <p><strong>Watch for false summits.</strong> The model draws from training data, and where many people have been stuck before, the model gets stuck in the same place. The signs are familiar &mdash; the same wrong answer in three different shapes, the same broken code with a different comment. When you recognize it, stop. Reset the conversation. A fresh session unblocks what a long conversation cannot.</p>
+                <p><strong>Read errors literally.</strong> When something breaks, copy the exact error text and paste it into the conversation. The model parses errors far better than it parses descriptions of errors. "It isn't working" gets you guesses; the literal message gets you answers.</p>
+                <p><strong>Change one thing at a time.</strong> When the model proposes five edits at once and the result is worse, you won't know which one caused it. Apply edits in single bites. Test. Then the next one.</p>
+                <p><strong>Stay in conversation.</strong> A language model is not a better search engine. It is a collaborator with a short memory, a tendency to flatter, and a habit of confidently supplying what it thinks you want. The work is not to type better prompts. The work is to stay alert to what it is actually giving you &mdash; and to keep redirecting when it drifts.</p>
+            </div>
+            <p class="queue-aside">For a framework for looking at finished vibecoded work together, see <a href="/crit/">the Crit reference</a>.</p>
+        </section>
+
+        <!-- 09 — BOARD -->
+        <section class="queue-stop queue-board">
+            <div class="queue-label">Stop 09 &mdash; Board</div>
+            <h2 class="queue-heading">Two doors</h2>
+
+            <div class="queue-fork">
+
+                <a href="/learn/" class="queue-door">
+                    <div class="queue-door-num">A</div>
+                    <div class="queue-door-title">The Classroom</div>
+                    <p class="queue-door-desc">Five chapters of interactive tutorials. Start here if you want to understand what your LLM is writing &mdash; and write your own without one.</p>
+                    <span class="queue-door-cta">Enter Classroom &rarr;</span>
+                </a>
+
+                <a href="/playground/" class="queue-door">
+                    <div class="queue-door-num">B</div>
+                    <div class="queue-door-title">The Playground</div>
+                    <p class="queue-door-desc">Two dozen sections of working shaders &mdash; raymarched landscapes, kaleidoscopes, fluid sims, ASCII renderers. Read the source, prompt an edit, record the output.</p>
+                    <span class="queue-door-cta">Enter Playground &rarr;</span>
+                </a>
+
+            </div>
+
+            <p class="queue-colophon">Built at the California Institute of the Arts by Douglas Goodwin.</p>
+        </section>
+
+    </main>
+
+    <script type="module" src="/src/learn/about.js"></script>
+</body>
 </html>

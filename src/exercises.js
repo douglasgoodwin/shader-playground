@@ -1,7 +1,7 @@
 import './exercises.css'
 import './source-link.js'
 import { createProgram, createFullscreenQuad } from './webgl.js'
-import { setupRecording, MouseTracker } from './controls.js'
+import { MouseTracker } from './controls.js'
 import vertexShader from './shaders/vertex.glsl'
 
 // Basics
@@ -158,7 +158,6 @@ gl.useProgram(currentProgram)
 createFullscreenQuad(gl, currentProgram)
 
 const mouse = new MouseTracker(canvas)
-const recorder = setupRecording(canvas, { keyboardShortcut: null })
 const exerciseNameEl = document.querySelector('#exercise-name')
 
 function switchExercise(name) {
@@ -222,7 +221,6 @@ document.querySelector('#next-btn').addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') navigateExercise(-1)
     if (e.key === 'ArrowRight') navigateExercise(1)
-    if (e.key === 'r' || e.key === 'R') recorder.toggle()
 })
 
 window.addEventListener('resize', resize)

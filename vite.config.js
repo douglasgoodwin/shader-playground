@@ -81,6 +81,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        playground: resolve(__dirname, 'playground/index.html'),
         whitney: resolve(__dirname, 'whitney/index.html'),
         geometries: resolve(__dirname, 'geometries/index.html'),
         glyphs: resolve(__dirname, 'glyphs/index.html'),
@@ -102,6 +103,13 @@ export default defineConfig({
         palette: resolve(__dirname, 'palette/index.html'),
         kaleidoscope: resolve(__dirname, 'kaleidoscope/index.html'),
         'midi-visual': resolve(__dirname, 'midi-visual/index.html'),
+        'learn-index': resolve(__dirname, 'learn/index.html'),
+        'learn-pixel': resolve(__dirname, 'learn/pixel/index.html'),
+        'learn-time': resolve(__dirname, 'learn/time/index.html'),
+        'learn-randomness': resolve(__dirname, 'learn/randomness/index.html'),
+        'learn-dimension': resolve(__dirname, 'learn/dimension/index.html'),
+        crit: resolve(__dirname, 'crit/index.html'),
+        workflow: resolve(__dirname, 'workflow/index.html'),
       },
     },
   },
