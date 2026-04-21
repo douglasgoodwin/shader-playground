@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PingPong — Shader Playground</title>
+    <meta name="description" content="Frame-feedback smear demos. The previous frame is read, decayed, and blended with a fresh render — the classic analog feedback loop in GLSL." />
+</head>
+<body>
+    <article class="page">
+
+        <header class="topbar">
+            <a href="/" class="crumb">Shader Playground</a>
+            <span class="topbar-right">
+                <a href="/playground/">Playground</a>
+                <a href="/learn/">Classroom</a>
+            </span>
+        </header>
+
+        <div class="chapter-number">PingPong</div>
+        <h1>Feedback<br>Smear</h1>
+        <p class="subtitle">A page of demos built on the same trick &mdash; render into a texture, read that texture next frame, blend the two. The ping-pong between two framebuffers turns every frame into a letter to the next one, and the decay parameter decides how long those letters are remembered.</p>
+
+        <p>The same two-pass pipeline sits under every demo here: a fresh render goes into one framebuffer, a blend pass mixes it with the previous frame's buffer, and the result is the next frame's "previous." Different source material &mdash; a moving stamp, a video kaleidoscope, a Whitney piece &mdash; reveals different aesthetics of the same machinery.</p>
+
+        <ol class="index-list">
+
+            <li class="index-entry">
+                <a href="/pingpong/lissajous/" class="index-link">
+                    <span class="index-num">01</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Lissajous</h2>
+                        <p class="index-desc">A single soft pen traces a Lissajous curve through aspect-corrected space, leaving an additive trail that cycles hue over time. The cleanest read of the technique &mdash; one stamp, one decay, one buffer pair.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry">
+                <a href="/pingpong/kaleidoscope/" class="index-link">
+                    <span class="index-num">02</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Kaleidoscope</h2>
+                        <p class="index-desc">The Classic kaleidoscope effect with frame-feedback smear layered on top. Drop an image or video, then watch the folded reflections drag their history behind them as the rotation continues. Blend mode: <code>mix(fresh, prev, decay)</code>.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+            <li class="index-entry">
+                <a href="/pingpong/whitney/" class="index-link">
+                    <span class="index-num">03</span>
+                    <div class="index-body">
+                        <h2 class="index-title">Whitney</h2>
+                        <p class="index-desc">All ten Whitney pieces routed through the feedback loop &mdash; the analog optical-printer aesthetic that Whitney himself built physically, reconstructed digitally. Blend mode: <code>max(fresh, prev * decay)</code> so bright lines stay bright.</p>
+                    </div>
+                    <span class="index-status">Available</span>
+                </a>
+            </li>
+
+        </ol>
+
+        <hr class="end-rule" />
+
+        <p class="next-chapter">
+            <a href="/playground/">Back to the Playground</a>
+        </p>
+
+    </article>
+
+    <script type="module" src="/src/pingpong/index.js"></script>
+</body>
+</html>

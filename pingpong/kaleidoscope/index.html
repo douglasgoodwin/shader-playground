@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaleidoscope Smear</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/pingpong/" class="back">PingPong</a>
+      <span class="title">Kaleidoscope Smear</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="image-controls">
+      <div id="drop-zone">
+        <p>Drop image/video here<br><span class="small">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Or paste image/video URL..." />
+        <button id="load-url">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Segments</span>
+        <input type="range" id="segments" min="2" max="24" step="1" value="6">
+      </label>
+      <label>
+        <span>Zoom</span>
+        <input type="range" id="zoom" min="0.2" max="3" step="0.05" value="1">
+      </label>
+      <label>
+        <span>Speed</span>
+        <input type="range" id="speed" min="0" max="3" step="0.1" value="0.5">
+      </label>
+      <label>
+        <span>Decay</span>
+        <input type="range" id="decay" min="0.0" max="0.99" step="0.01" value="0.85">
+      </label>
+    </div>
+    <script type="module" src="/src/pingpong/kaleidoscope.js"></script>
+  </body>
+</html>
