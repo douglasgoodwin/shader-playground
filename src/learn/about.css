@@ -144,6 +144,18 @@ body.queue {
     color: var(--accent);
 }
 
+.queue-names a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-hair);
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.queue-names a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
 /* Stop 03 — Student voices */
 
 .queue-voices {

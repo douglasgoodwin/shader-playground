@@ -580,6 +580,83 @@ pre.has-values {
     border-bottom: 0;
 }
 
+.artist-figure {
+    margin: 36px 0 40px;
+    padding: 0;
+    max-width: 100%;
+}
+
+.artist-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--ink);
+    background: var(--paper-alt);
+}
+
+.artist-figure--portrait img {
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.artist-figure figcaption {
+    margin-top: 10px;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 60ch;
+}
+
+.artist-figure figcaption a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-hair);
+}
+
+.artist-figure figcaption a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+.artist-links {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 28px;
+    border-top: 1px solid var(--rule-hair);
+    max-width: 64ch;
+}
+
+.artist-links li {
+    padding: 12px 0 12px 20px;
+    position: relative;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule-hair);
+}
+
+.artist-links li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+}
+
+.artist-links a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-soft, #c48a5a);
+}
+
+.artist-links a:hover {
+    color: var(--accent);
+}
+
 h3.workflow-step {
     font-family: var(--sans);
     font-size: 17px;
