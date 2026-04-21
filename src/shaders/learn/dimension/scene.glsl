@@ -25,8 +25,8 @@ float smin(float a, float b, float k) {
 }
 
 float sdf(vec3 p) {
-    float s = sdSphere(p, vec3(0.55, 0.0, 0.0), 0.5);
-    float b = sdBox(p, vec3(-0.55, 0.0, 0.0), vec3(0.35));
+    float s = sdSphere(p, vec3(0.45, 0.0, 0.0), 0.5);
+    float b = sdBox(p, vec3(-0.45, 0.0, 0.0), vec3(0.35));
     float shape = smin(s, b, u_blend);
     float floor = sdFloor(p, -0.55);
     return min(shape, floor);

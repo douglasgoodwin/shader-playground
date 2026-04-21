@@ -53,7 +53,7 @@ mount('#w-scene', {
     shader: scene,
     controls: [
         { uniform: 'u_speed', label: 'u_speed', min: 0.0, max: 1.5, step: 0.05, default: 0.3 },
-        { uniform: 'u_blend', label: 'u_blend', min: 0.0, max: 0.4, step: 0.01, default: 0.2 },
+        { uniform: 'u_blend', label: 'u_blend', min: 0.0, max: 0.6, step: 0.01, default: 0.3 },
     ],
 })
 
