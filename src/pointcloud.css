@@ -1,0 +1,117 @@
+@import './common.css';
+
+#image-controls {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+}
+
+#drop-zone {
+  padding: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  backdrop-filter: blur(10px);
+}
+
+#drop-zone:hover,
+#drop-zone.dragover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#drop-zone p {
+  font-size: 13px;
+  margin: 0;
+}
+
+#drop-zone .small {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+#drop-zone input[type="file"] {
+  display: none;
+}
+
+#image-controls .row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+#image-controls input[type="text"] {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+}
+
+#image-controls button {
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: system-ui, sans-serif;
+}
+
+#image-controls button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+#webcam-btn,
+#audio-btn,
+#audio-file-btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+#audio-btn.on,
+#audio-file-btn.on {
+  background: rgba(120, 180, 140, 0.25);
+  border-color: rgba(160, 220, 180, 0.6);
+}
+
+#audio-meter {
+  height: 4px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#audio-meter.visible { opacity: 1; }
+
+#audio-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: rgba(160, 220, 180, 0.9);
+  transition: width 0.05s linear;
+}
+
+#loading {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+#loading.hidden { display: none; }
+

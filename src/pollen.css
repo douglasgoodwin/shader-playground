@@ -2,7 +2,7 @@
 
 #model-controls {
     position: fixed;
-    bottom: 100px;
+    top: 80px;
     right: 20px;
     z-index: 1000;
     font-family: system-ui, sans-serif;

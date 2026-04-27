@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Droste Feedback</title>
+    <meta name="description" content="Escher's Print Gallery as a complex-power fragment shader. Feedback manufactures the mise-en-abyme — each frame samples the last at z^α, so video content spirals inward through the scale period." />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/pingpong/" class="back">PingPong</a>
+      <span class="title">Droste Feedback</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="image-controls">
+      <div id="drop-zone">
+        <p>Drop image/video here<br><span class="small">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Or paste image/video URL..." />
+        <button id="load-url">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Zoom r</span>
+        <input type="range" id="zoomR" min="2" max="256" step="1" value="16">
+      </label>
+      <label>
+        <span>Rotation</span>
+        <input type="range" id="rotation" min="-3.14159" max="3.14159" step="0.01" value="0">
+      </label>
+      <label>
+        <span>Twist</span>
+        <input type="range" id="twist" min="0" max="1" step="0.01" value="1">
+      </label>
+      <label>
+        <span>Inner hole</span>
+        <input type="range" id="innerHole" min="0" max="0.8" step="0.01" value="0.18">
+      </label>
+      <label>
+        <span>Video gain</span>
+        <input type="range" id="videoGain" min="0" max="1" step="0.01" value="0.5">
+      </label>
+      <label>
+        <span>Decay</span>
+        <input type="range" id="decay" min="0.0" max="0.99" step="0.01" value="0.90">
+      </label>
+    </div>
+    <script type="module" src="/src/pingpong/droste.js"></script>
+  </body>
+</html>

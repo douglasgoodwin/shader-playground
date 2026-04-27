@@ -1,0 +1,80 @@
+@import './common.css';
+
+#matte-controls {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 220px;
+}
+
+.drop-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drop-row .drop-label {
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    padding-left: 4px;
+}
+
+.drop-row .drop-zone {
+    padding: 16px 12px;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    cursor: pointer;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.drop-row .drop-zone:hover {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.drop-row .drop-zone.dragover {
+    border-color: rgba(180, 220, 255, 1);
+    background: rgba(40, 60, 90, 0.7);
+}
+
+.drop-row .drop-zone.loaded {
+    border-style: solid;
+    border-color: rgba(180, 220, 255, 0.6);
+    background: rgba(20, 30, 50, 0.7);
+}
+
+.drop-row .drop-hint {
+    display: block;
+    font-size: 10px;
+    opacity: 0.55;
+    margin-top: 2px;
+}
+
+#matte-source-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+}
+
+#matte-source-toggle input {
+    margin: 0;
+}
