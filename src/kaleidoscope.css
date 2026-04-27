@@ -2,7 +2,7 @@
 
 #image-controls {
   position: fixed;
-  bottom: 100px;
+  top: 80px;
   right: 20px;
   display: flex;
   flex-direction: column;
@@ -88,4 +88,17 @@
 
 .hidden {
   display: none !important;
+}
+
+#sliders label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+#sliders input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: rgba(200, 210, 255, 0.9);
+  cursor: pointer;
 }

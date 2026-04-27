@@ -17,13 +17,14 @@ const page = createShaderPage({
     uniforms: [
         'resolution', 'time', 'mouse',
         'texture', 'textureSize', 'hasTexture',
-        'segments', 'zoom', 'speed',
+        'segments', 'zoom', 'speed', 'invert',
     ],
     defaultEffect: 'kaleidoscope',
     sliders: {
         segments: { selector: '#segments', default: 6 },
         zoom:     { selector: '#zoom',     default: 1 },
         speed:    { selector: '#speed',    default: 0.5 },
+        invert:   { selector: '#invert',   default: false, type: 'checkbox' },
     },
     onRender({ gl, u }) {
         gl.uniform1i(u.hasTexture, media.hasMedia ? 1 : 0)

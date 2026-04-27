@@ -10,6 +10,7 @@ uniform int u_hasTexture;
 uniform float u_segments;
 uniform float u_zoom;
 uniform float u_speed;
+uniform float u_invert;
 
 #define PI 3.14159265359
 #define TAU 6.28318530718
@@ -61,6 +62,8 @@ void main() {
     texUV = fract(texUV);
 
     vec3 color = sampleTexture(texUV);
+
+    color = mix(color, 1.0 - color, u_invert);
 
     // Darken the center slightly for depth
     color *= smoothstep(0.0, 0.15, r);

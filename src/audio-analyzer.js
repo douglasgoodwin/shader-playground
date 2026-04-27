@@ -7,9 +7,19 @@ export function createAudioAnalyzer({ onUpdate, onReady, fftSize = 1024, smoothi
     let analyser = null
     let micStream = null
     let micSource = null
+    let elementSource = null
     let freqData = null
     let running = false
     let animId = null
+
+    function ensureContext() {
+        if (ctx) return
+        ctx = new AudioContext()
+        analyser = ctx.createAnalyser()
+        analyser.fftSize = fftSize
+        analyser.smoothingTimeConstant = 0.8
+        freqData = new Uint8Array(analyser.frequencyBinCount)
+    }
 
     // Band boundaries (bin indices for 1024 FFT at 44.1kHz ≈ 43Hz per bin)
     // bass: 0-170 Hz (bins 0-3)
@@ -73,17 +83,30 @@ export function createAudioAnalyzer({ onUpdate, onReady, fftSize = 1024, smoothi
 
     async function start() {
         if (running) return
-
-        ctx = new AudioContext()
-        analyser = ctx.createAnalyser()
-        analyser.fftSize = fftSize
-        analyser.smoothingTimeConstant = 0.8
-        freqData = new Uint8Array(analyser.frequencyBinCount)
+        ensureContext()
 
         micStream = await navigator.mediaDevices.getUserMedia({ audio: true })
         micSource = ctx.createMediaStreamSource(micStream)
         micSource.connect(analyser)
         // Don't connect to destination — we only analyze, don't play back mic
+
+        running = true
+        if (onReady) onReady()
+        analyze()
+    }
+
+    // Analyze audio coming from an HTMLAudioElement (WAV/MP3/etc).
+    // Unlike mic mode, this routes analyser → destination so the user hears it.
+    // createMediaElementSource can only be called once per element — callers
+    // should create a fresh <audio> element per load.
+    async function startFromElement(audioEl) {
+        if (running) stop()
+        ensureContext()
+        if (ctx.state === 'suspended') await ctx.resume()
+
+        elementSource = ctx.createMediaElementSource(audioEl)
+        elementSource.connect(analyser)
+        analyser.connect(ctx.destination)
 
         running = true
         if (onReady) onReady()
@@ -96,13 +119,14 @@ export function createAudioAnalyzer({ onUpdate, onReady, fftSize = 1024, smoothi
             cancelAnimationFrame(animId)
             animId = null
         }
-        if (micSource) {
-            micSource.disconnect()
-            micSource = null
-        }
+        if (micSource)      { micSource.disconnect(); micSource = null }
+        if (elementSource)  { elementSource.disconnect(); elementSource = null }
         if (micStream) {
             micStream.getTracks().forEach(t => t.stop())
             micStream = null
+        }
+        if (analyser) {
+            try { analyser.disconnect() } catch (_) { /* noop */ }
         }
         if (ctx) {
             ctx.close()
@@ -115,6 +139,7 @@ export function createAudioAnalyzer({ onUpdate, onReady, fftSize = 1024, smoothi
 
     return {
         start,
+        startFromElement,
         stop,
         get running() { return running },
         get values() { return values },
