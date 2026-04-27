@@ -48,7 +48,7 @@
 
 #model-controls {
   position: fixed;
-  bottom: 100px;
+  top: 80px;
   right: 20px;
   z-index: 100;
   font-family: system-ui, sans-serif;
