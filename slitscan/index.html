@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slit-Scan</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/playground/" class="back">Playground</a>
+      <span class="title">Slit-Scan</span>
+    </nav>
+    <button id="record-btn" title="Record video (R)"></button>
+    <div id="image-controls">
+      <div id="drop-zone">
+        <p>Drop image/video here<br><span class="small">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Or paste image/video URL..." />
+        <button id="load-url">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+    </div>
+    <div id="sliders">
+      <label>
+        <span>Slit position</span>
+        <input type="range" id="slitPos" min="0" max="1" step="0.001" value="0.5">
+      </label>
+      <label>
+        <span>Speed (px/frame)</span>
+        <input type="range" id="speed" min="1" max="16" step="1" value="2">
+      </label>
+      <label>
+        <span>Decay</span>
+        <input type="range" id="decay" min="0" max="0.05" step="0.001" value="0">
+      </label>
+      <label>
+        <span>Sweep period (s)</span>
+        <input type="range" id="period" min="1" max="120" step="0.5" value="30">
+      </label>
+      <label class="check">
+        <input type="checkbox" id="vertical">
+        <span>Vertical</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="reverse">
+        <span>Reverse scroll</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="sweep">
+        <span>Auto-sweep slit</span>
+      </label>
+    </div>
+    <script type="module" src="/src/slitscan.js"></script>
+  </body>
+</html>

@@ -109,6 +109,7 @@ export default defineConfig({
         zoom: resolve(__dirname, 'zoom/index.html'),
         palette: resolve(__dirname, 'palette/index.html'),
         kaleidoscope: resolve(__dirname, 'kaleidoscope/index.html'),
+        slitscan: resolve(__dirname, 'slitscan/index.html'),
         'midi-visual': resolve(__dirname, 'midi-visual/index.html'),
         pointcloud: resolve(__dirname, 'pointcloud/index.html'),
         matte: resolve(__dirname, 'matte/index.html'),
