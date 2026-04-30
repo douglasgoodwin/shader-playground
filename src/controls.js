@@ -94,6 +94,10 @@ export function setupRecording(canvas, options = {}) {
     const recordBtn = document.querySelector(buttonSelector)
     const userCallback = options.onStateChange
     const recorder = new CanvasRecorder(canvas, {
+        width: options.width,
+        height: options.height,
+        fps: options.fps,
+        bitrate: options.bitrate,
         onStateChange: (recording) => {
             if (recordBtn) {
                 recordBtn.classList.toggle('recording', recording)

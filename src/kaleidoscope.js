@@ -20,6 +20,7 @@ const page = createShaderPage({
         'segments', 'zoom', 'speed', 'invert',
     ],
     defaultEffect: 'kaleidoscope',
+    recording: { width: 3888, height: 1080 },
     sliders: {
         segments: { selector: '#segments', default: 6 },
         zoom:     { selector: '#zoom',     default: 1 },

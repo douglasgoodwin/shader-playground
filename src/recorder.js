@@ -14,6 +14,8 @@ export class CanvasRecorder {
         this.frameCount = 0
         this.fps = options.fps || 24
         this.bitrate = options.bitrate || 30_000_000 // 30 Mbps — high for fine detail
+        this.recordingWidth = options.width || 1920
+        this.recordingHeight = options.height || 1080
         this.onStateChange = options.onStateChange || (() => {})
 
         // Check WebCodecs support
@@ -30,9 +32,8 @@ export class CanvasRecorder {
         this.originalWidth = this.canvas.width
         this.originalHeight = this.canvas.height
 
-        // Always record at 1920x1080
-        const encodedWidth = 1920
-        const encodedHeight = 1080
+        const encodedWidth = this.recordingWidth
+        const encodedHeight = this.recordingHeight
 
         // Resize the canvas drawing buffer so shaders render at recording resolution
         this.canvas.width = encodedWidth

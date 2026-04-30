@@ -15,6 +15,7 @@ export function createShaderPage({
     sliders: sliderConfig,
     keys,
     extensions,
+    recording,
     onRender,
     onSwitch,
 }) {
@@ -50,7 +51,7 @@ export function createShaderPage({
 
     const mouse = new MouseTracker(canvas)
     const sliderMgr = sliderConfig ? new SliderManager(sliderConfig) : null
-    const recorder = setupRecording(canvas, { keyboardShortcut: null })
+    const recorder = setupRecording(canvas, { keyboardShortcut: null, ...recording })
 
     function switchEffect(name) {
         if (!programs[name]) return
