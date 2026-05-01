@@ -3,11 +3,13 @@ import './source-link.js'
 import { createProgram } from './webgl.js'
 import { setupRecording, SliderManager } from './controls.js'
 import { createMediaLoader } from './media-loader.js'
+import { FrameRecorder } from './frame-recorder.js'
 
 import feedbackFrag from './shaders/slitscan/feedback.glsl'
 import presentFrag from './shaders/pingpong/present.glsl'
 
-const RECORDING = { width: 3888, height: 1080 }
+const RECORDING = { width: 1920, height: 1080 }
+const FRAME_FPS = 24
 
 const canvas = document.querySelector('#canvas')
 const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true, alpha: false })
@@ -121,7 +123,57 @@ const sliders = new SliderManager({
 let sweepStart = 0
 let sweepWasOn = false
 
-setupRecording(canvas, { keyboardShortcut: 'r', ...RECORDING })
+const canvasRecorder = setupRecording(canvas, { keyboardShortcut: 'r', ...RECORDING })
+
+const frameBtn = document.querySelector('#frame-btn')
+const frameCounter = document.querySelector('#frame-counter')
+const frameRecorder = new FrameRecorder(canvas, {
+    ...RECORDING,
+    fps: FRAME_FPS,
+    renderFrame: () => renderFrame(),
+    // Slit-scan needs the feedback FBO to fill before saved frames are
+    // useful. Speed gets rescaled at capture time (recording-W / preview-W)
+    // so a full fill takes the same *number of frames* it would at the
+    // current preview size: previewDim / sliderSpeed. Add a small tail
+    // so the leading edge has settled.
+    getPrimeFrames: () => {
+        const speed = Math.max(1, sliders.get('speed'))
+        const vertical = sliders.get('vertical')
+        const previewDim = vertical ? canvas.height : canvas.width
+        return Math.ceil(previewDim / speed) + 24
+    },
+    onStateChange: (capturing) => {
+        if (frameBtn) frameBtn.classList.toggle('recording', capturing)
+        if (frameCounter) {
+            frameCounter.classList.toggle('hidden', !capturing)
+            frameCounter.textContent = capturing ? 'priming…' : ''
+        }
+    },
+    onPrimeProgress: (n, total) => {
+        if (frameCounter) {
+            const pct = Math.floor((n / total) * 100)
+            frameCounter.textContent = `priming ${n}/${total} (${pct}%)`
+        }
+    },
+    onProgress: (n) => {
+        if (frameCounter) {
+            const seconds = (n / FRAME_FPS).toFixed(2)
+            frameCounter.textContent = `frame ${n} · ${seconds}s`
+        }
+    },
+})
+if (frameBtn) frameBtn.addEventListener('click', () => frameRecorder.toggle())
+
+const formatSelect = document.querySelector('#format')
+if (formatSelect) {
+    formatSelect.addEventListener('change', () => {
+        const [w, h] = formatSelect.value.split('x').map(Number)
+        canvasRecorder.recordingWidth = w
+        canvasRecorder.recordingHeight = h
+        frameRecorder.recordingWidth = w
+        frameRecorder.recordingHeight = h
+    })
+}
 
 document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT') return
@@ -129,6 +181,7 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault()
         clear()
     }
+    if (e.key === 'p' || e.key === 'P') frameRecorder.toggle()
 })
 
 function resize() {
@@ -141,22 +194,39 @@ resize()
 
 const startTime = performance.now()
 
-function render() {
+function getTime() {
+    if (frameRecorder.isCapturing()) return frameRecorder.getTime()
+    return (performance.now() - startTime) / 1000
+}
+
+function renderFrame() {
     // The recorder kicks the canvas to RECORDING dims without firing a
     // window resize, so reconcile FBO size to canvas size each frame.
     if (!read || read.width !== canvas.width || read.height !== canvas.height) {
         rebuildFBOs()
     }
 
-    const t = (performance.now() - startTime) / 1000
+    const t = getTime()
 
-    const speed     = sliders.get('speed')
+    const sliderSpeed = sliders.get('speed')
     const decay     = sliders.get('decay')
     const period    = sliders.get('period')
     const vertical  = sliders.get('vertical')
     const reverse   = sliders.get('reverse')
     const sweep     = sliders.get('sweep')
     const direction = reverse ? -1 : 1
+
+    // Speed is in absolute pixels/frame, but the canvas is much wider
+    // during capture (3888 px) than in preview. Without rescaling, each
+    // slit stamp would occupy a smaller fraction of the canvas during
+    // capture and the recording would look denser/narrower than preview.
+    // Scale by recording-width / preview-width so the visual character
+    // of stamps matches what the user sees in preview.
+    const speed = frameRecorder.isCapturing()
+        ? sliderSpeed * (vertical
+            ? canvas.height / frameRecorder.originalHeight
+            : canvas.width  / frameRecorder.originalWidth)
+        : sliderSpeed
 
     if (sweep && !sweepWasOn) sweepStart = t
     sweepWasOn = sweep
@@ -210,8 +280,14 @@ function render() {
     const tmp = read
     read = write
     write = tmp
-
-    requestAnimationFrame(render)
 }
 
-requestAnimationFrame(render)
+function loop() {
+    // During PNG capture, the FrameRecorder owns the render schedule
+    // and drives renderFrame() with virtual time. Skip the live render
+    // so the canvas isn't trampled between capture/save.
+    if (!frameRecorder.isCapturing()) renderFrame()
+    requestAnimationFrame(loop)
+}
+
+requestAnimationFrame(loop)

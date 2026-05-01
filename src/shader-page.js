@@ -4,6 +4,7 @@
 
 import { createProgram, createFullscreenQuad } from './webgl.js'
 import { SliderManager, setupRecording, MouseTracker } from './controls.js'
+import { FrameRecorder } from './frame-recorder.js'
 import vertexShader from './shaders/vertex.glsl'
 
 const AUTO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'q', 'w']
@@ -52,6 +53,41 @@ export function createShaderPage({
     const mouse = new MouseTracker(canvas)
     const sliderMgr = sliderConfig ? new SliderManager(sliderConfig) : null
     const recorder = setupRecording(canvas, { keyboardShortcut: null, ...recording })
+
+    // PNG-sequence recorder for festival/ProRes-bound captures. Activated
+    // by 'P' keyboard or #frame-btn click. Pages that want the visual
+    // button + progress badge include #frame-btn and #frame-counter in
+    // their HTML; pages that don't, still get the keyboard shortcut.
+    const FRAME_FPS = (recording && recording.frameFps) || 24
+    const frameBtn = document.querySelector('#frame-btn')
+    const frameCounter = document.querySelector('#frame-counter')
+    const frameRecorder = new FrameRecorder(canvas, {
+        width: recording && recording.width,
+        height: recording && recording.height,
+        fps: FRAME_FPS,
+        primeFrames: (recording && recording.primeFrames) || 0,
+        renderFrame: () => renderFrame(frameRecorder.getTime()),
+        onStateChange: (capturing) => {
+            if (frameBtn) frameBtn.classList.toggle('recording', capturing)
+            if (frameCounter) {
+                frameCounter.classList.toggle('hidden', !capturing)
+                frameCounter.textContent = capturing ? 'priming…' : ''
+            }
+        },
+        onPrimeProgress: (n, total) => {
+            if (frameCounter && total > 0) {
+                const pct = Math.floor((n / total) * 100)
+                frameCounter.textContent = `priming ${n}/${total} (${pct}%)`
+            }
+        },
+        onProgress: (n) => {
+            if (frameCounter) {
+                const seconds = (n / FRAME_FPS).toFixed(2)
+                frameCounter.textContent = `frame ${n} · ${seconds}s`
+            }
+        },
+    })
+    if (frameBtn) frameBtn.addEventListener('click', () => frameRecorder.toggle())
 
     function switchEffect(name) {
         if (!programs[name]) return
@@ -103,14 +139,13 @@ export function createShaderPage({
         if (e.target.tagName === 'INPUT') return
         if (keyMap[e.key]) switchEffect(keyMap[e.key])
         if (e.key === 'r' || e.key === 'R') recorder.toggle()
+        if (e.key === 'p' || e.key === 'P') frameRecorder.toggle()
     })
 
     window.addEventListener('resize', resize)
     resize()
 
-    // Render loop
-    function render(time) {
-        const t = time * 0.001
+    function renderFrame(t) {
         const u = uniforms[current]
 
         // Keep viewport synced to canvas — the recorder resizes the canvas
@@ -124,10 +159,17 @@ export function createShaderPage({
         if (onRender) onRender({ gl, u, t, current, sliders: sliderMgr, mouse, canvas })
 
         gl.drawArrays(gl.TRIANGLES, 0, 6)
-        requestAnimationFrame(render)
     }
 
-    requestAnimationFrame(render)
+    // rAF loop drives the live preview; the FrameRecorder owns rendering
+    // during PNG capture, so skip the live render to avoid clobbering the
+    // canvas between capture/save.
+    function loop(time) {
+        if (!frameRecorder.isCapturing()) renderFrame(time * 0.001)
+        requestAnimationFrame(loop)
+    }
+
+    requestAnimationFrame(loop)
 
     return {
         gl,
@@ -137,6 +179,7 @@ export function createShaderPage({
         mouse,
         sliders: sliderMgr,
         recorder,
+        frameRecorder,
         switchEffect,
         get current() { return current },
     }
