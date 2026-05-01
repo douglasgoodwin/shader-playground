@@ -89,3 +89,5 @@ const bgMedia = createMediaLoader(page.gl, {
         loadUrl: '#bg-load-url',
     },
 })
+page.attachMedia(media)
+page.attachMedia(bgMedia)

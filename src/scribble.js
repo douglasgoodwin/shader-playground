@@ -222,6 +222,7 @@ const media = createMediaLoader(page.gl, {
         if (active2dMode) start2dLoop()
     },
 })
+page.attachMedia(media)
 
 // Re-run on slider changes
 document.querySelectorAll('#sliders input').forEach(input => {

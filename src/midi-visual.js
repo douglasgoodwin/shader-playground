@@ -102,6 +102,7 @@ const media = createMediaLoader(page.gl, {
         loadUrl: '#video-load-url',
     },
 })
+page.attachMedia(media)
 
 // --- MIDI file loading ---
 function loadMidiFile(file) {

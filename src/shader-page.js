@@ -58,20 +58,51 @@ export function createShaderPage({
     // by 'P' keyboard or #frame-btn click. Pages that want the visual
     // button + progress badge include #frame-btn and #frame-counter in
     // their HTML; pages that don't, still get the keyboard shortcut.
+    //
+    // Video sync: pages with a video source must call `page.attachMedia(m)`
+    // after constructing their media loader, or PNG capture will sample
+    // the video at wall-clock playback rate while the recorder runs on
+    // virtual time, smearing many seconds of source content into the
+    // buffer width. With a media attached, the recorder pauses the video
+    // at capture start and seeks it to videoStartTime + virtualTime each
+    // frame.
     const FRAME_FPS = (recording && recording.frameFps) || 24
     const frameBtn = document.querySelector('#frame-btn')
     const frameCounter = document.querySelector('#frame-counter')
+    // Each entry: { media, startTime }. Pages with multiple media loaders
+    // (e.g. warps' foreground + background) call attachMedia for each;
+    // capture syncs every video source independently from where it was
+    // paused so multi-source comps stay in step.
+    const attachedMedias = []
     const frameRecorder = new FrameRecorder(canvas, {
         width: recording && recording.width,
         height: recording && recording.height,
         fps: FRAME_FPS,
         primeFrames: (recording && recording.primeFrames) || 0,
         renderFrame: () => renderFrame(frameRecorder.getTime()),
+        onBeforeFrame: async (virtualTime) => {
+            for (const entry of attachedMedias) {
+                if (entry.media.videoSource) {
+                    await entry.media.seekVideoTo(entry.startTime + virtualTime)
+                }
+            }
+        },
         onStateChange: (capturing) => {
             if (frameBtn) frameBtn.classList.toggle('recording', capturing)
             if (frameCounter) {
                 frameCounter.classList.toggle('hidden', !capturing)
                 frameCounter.textContent = capturing ? 'priming…' : ''
+            }
+            if (capturing) {
+                for (const entry of attachedMedias) {
+                    if (entry.media.videoSource) {
+                        entry.startTime = entry.media.videoSource.currentTime
+                    }
+                }
+            } else {
+                for (const entry of attachedMedias) {
+                    entry.media.resumeVideo()
+                }
             }
         },
         onPrimeProgress: (n, total) => {
@@ -88,6 +119,10 @@ export function createShaderPage({
         },
     })
     if (frameBtn) frameBtn.addEventListener('click', () => frameRecorder.toggle())
+
+    function attachMedia(media) {
+        attachedMedias.push({ media, startTime: 0 })
+    }
 
     function switchEffect(name) {
         if (!programs[name]) return
@@ -161,11 +196,30 @@ export function createShaderPage({
         gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
+    // Track preview frame rate via EMA so consumers (and frame-rate-
+    // dependent uniforms) can rescale during capture. Most monitors
+    // settle at 60; 120Hz panels and throttled tabs will read different
+    // values. Sampled only during preview to avoid contamination from
+    // the recorder's wall-clock cadence.
+    let previewFps = 60
+    let lastPreviewTimestamp = 0
+
     // rAF loop drives the live preview; the FrameRecorder owns rendering
     // during PNG capture, so skip the live render to avoid clobbering the
     // canvas between capture/save.
     function loop(time) {
-        if (!frameRecorder.isCapturing()) renderFrame(time * 0.001)
+        if (frameRecorder.isCapturing()) {
+            lastPreviewTimestamp = 0
+        } else {
+            if (lastPreviewTimestamp > 0) {
+                const dt = (time - lastPreviewTimestamp) / 1000
+                if (dt > 0 && dt < 0.1) {
+                    previewFps = previewFps * 0.95 + (1 / dt) * 0.05
+                }
+            }
+            lastPreviewTimestamp = time
+            renderFrame(time * 0.001)
+        }
         requestAnimationFrame(loop)
     }
 
@@ -180,6 +234,9 @@ export function createShaderPage({
         sliders: sliderMgr,
         recorder,
         frameRecorder,
+        attachMedia,
+        frameFps: FRAME_FPS,
+        get previewFps() { return previewFps },
         switchEffect,
         get current() { return current },
     }

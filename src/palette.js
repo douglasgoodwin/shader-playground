@@ -65,3 +65,4 @@ const page = createShaderPage({
 const media = createMediaLoader(page.gl, {
     onLoad: (source, size) => { textureSize = size },
 })
+page.attachMedia(media)
