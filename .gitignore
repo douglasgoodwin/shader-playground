@@ -28,3 +28,7 @@ dist-ssr
 /orbit_frames
 /.claude
 /.obsidian
+
+# Personal correspondence — keep on disk, never push
+crits/letter-*
+crits/SPECTRA*
