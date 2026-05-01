@@ -14,6 +14,11 @@ export class FrameRecorder {
         this.onStateChange = options.onStateChange || (() => {})
         this.onProgress = options.onProgress || (() => {})
         this.onPrimeProgress = options.onPrimeProgress || (() => {})
+        // Async hook fired before each frame (prime + capture). Lets the
+        // page sync external clocks — most importantly, seek a paused
+        // <video> element to virtualTime so the source texture matches
+        // the recorder's frame schedule rather than wall-clock playback.
+        this.onBeforeFrame = options.onBeforeFrame || (async () => {})
         // Prime: number of warm-up frames to render *without saving* so
         // feedback / accumulator buffers can fill before the first saved
         // frame. Pass a function to compute lazily from current state.
@@ -86,6 +91,7 @@ export class FrameRecorder {
                 !this.cancelRequested &&
                 this.frameIndex < primeTotal
             ) {
+                await this.onBeforeFrame(this.virtualTime)
                 this.renderFrame()
                 this.frameIndex++
                 this.virtualTime = this.frameIndex / this.fps
@@ -103,6 +109,7 @@ export class FrameRecorder {
 
             // Capture phase: render → finish → toBlob → write file.
             while (this.capturing && !this.cancelRequested) {
+                await this.onBeforeFrame(this.virtualTime)
                 this.renderFrame()
                 if (gl) gl.finish()
 

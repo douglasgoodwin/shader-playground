@@ -149,10 +149,31 @@ export function createMediaLoader(gl, { onLoad, selectors } = {}) {
         get hasMedia() { return hasMedia },
         // Update video texture each frame (call in render loop)
         updateVideoFrame() {
-            if (videoSource && !videoSource.paused && texture) {
+            if (videoSource && texture) {
                 gl.bindTexture(gl.TEXTURE_2D, texture)
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, videoSource)
             }
+        },
+        // Pause the video and seek it to a specific time (in seconds).
+        // Resolves once the seek completes so the frame at that time is
+        // available for texture upload. No-op if there is no video source.
+        async seekVideoTo(time) {
+            if (!videoSource) return
+            if (!videoSource.paused) videoSource.pause()
+            const duration = videoSource.duration || 0
+            const target = duration > 0 ? time % duration : time
+            if (Math.abs(videoSource.currentTime - target) < 1e-3) return
+            await new Promise((resolve) => {
+                const onSeeked = () => {
+                    videoSource.removeEventListener('seeked', onSeeked)
+                    resolve()
+                }
+                videoSource.addEventListener('seeked', onSeeked)
+                videoSource.currentTime = target
+            })
+        },
+        resumeVideo() {
+            if (videoSource && videoSource.paused) videoSource.play()
         },
         loadFile,
         loadUrl,

@@ -127,26 +127,51 @@ const canvasRecorder = setupRecording(canvas, { keyboardShortcut: 'r', ...RECORD
 
 const frameBtn = document.querySelector('#frame-btn')
 const frameCounter = document.querySelector('#frame-counter')
+let videoStartTime = 0
+// Measured in the rAF loop below so capture can match preview's time-
+// density. Initialized to 60 in case the user starts a capture before
+// the EMA has had time to converge.
+let previewFps = 60
+let lastPreviewTimestamp = 0
 const frameRecorder = new FrameRecorder(canvas, {
     ...RECORDING,
     fps: FRAME_FPS,
     renderFrame: () => renderFrame(),
-    // Slit-scan needs the feedback FBO to fill before saved frames are
-    // useful. Speed gets rescaled at capture time (recording-W / preview-W)
-    // so a full fill takes the same *number of frames* it would at the
-    // current preview size: previewDim / sliderSpeed. Add a small tail
-    // so the leading edge has settled.
+    // Prime the feedback buffer to a full state before saving any frames.
+    // Capture speed is sliderSpeed × (previewFps / FRAME_FPS) × dimRatio,
+    // so primeTotal = recordDim / captureSpeed + tail. At slider=2 with
+    // 60Hz preview and 24fps capture: ~5 px/frame, so ~408 prime frames
+    // for 1920px. Each frame waits for a video seek, so this dominates
+    // wall time when the source is video.
     getPrimeFrames: () => {
-        const speed = Math.max(1, sliders.get('speed'))
+        const sliderSpeed = Math.max(1, sliders.get('speed'))
         const vertical = sliders.get('vertical')
-        const previewDim = vertical ? canvas.height : canvas.width
-        return Math.ceil(previewDim / speed) + 24
+        const recDim = vertical
+            ? frameRecorder.recordingHeight
+            : frameRecorder.recordingWidth
+        const captureSpeed = sliderSpeed * (previewFps / FRAME_FPS)
+        return Math.ceil(recDim / captureSpeed) + 24
+    },
+    // Sync the video element to virtual time before each frame.
+    // Without this the video plays at wall-clock rate while the recorder
+    // sprints through priming, compressing many seconds of source
+    // content into the buffer width and producing artifacts the preview
+    // never showed.
+    onBeforeFrame: async (virtualTime) => {
+        if (media.videoSource) {
+            await media.seekVideoTo(videoStartTime + virtualTime)
+        }
     },
     onStateChange: (capturing) => {
         if (frameBtn) frameBtn.classList.toggle('recording', capturing)
         if (frameCounter) {
             frameCounter.classList.toggle('hidden', !capturing)
             frameCounter.textContent = capturing ? 'priming…' : ''
+        }
+        if (capturing && media.videoSource) {
+            videoStartTime = media.videoSource.currentTime
+        } else if (!capturing) {
+            media.resumeVideo()
         }
     },
     onPrimeProgress: (n, total) => {
@@ -216,16 +241,21 @@ function renderFrame() {
     const sweep     = sliders.get('sweep')
     const direction = reverse ? -1 : 1
 
-    // Speed is in absolute pixels/frame, but the canvas is much wider
-    // during capture (3888 px) than in preview. Without rescaling, each
-    // slit stamp would occupy a smaller fraction of the canvas during
-    // capture and the recording would look denser/narrower than preview.
-    // Scale by recording-width / preview-width so the visual character
-    // of stamps matches what the user sees in preview.
+    // Capture runs at FRAME_FPS virtual time (24fps), but preview runs at
+    // monitor refresh (~60fps), and the canvas dimensions may differ
+    // between preview and recording. Two rescales compose:
+    //   • previewFps / FRAME_FPS — match preview's time-density. Without
+    //     this, capture stamps fewer columns per second of source video,
+    //     so 40s of video gets compressed into a buffer that preview was
+    //     showing 16s of, producing higher-frequency artifacts.
+    //   • recordDim / previewDim — match preview's spatial fraction so
+    //     each stamp occupies the same proportion of the buffer width.
     const speed = frameRecorder.isCapturing()
-        ? sliderSpeed * (vertical
-            ? canvas.height / frameRecorder.originalHeight
-            : canvas.width  / frameRecorder.originalWidth)
+        ? sliderSpeed
+            * (previewFps / FRAME_FPS)
+            * (vertical
+                ? canvas.height / frameRecorder.originalHeight
+                : canvas.width  / frameRecorder.originalWidth)
         : sliderSpeed
 
     if (sweep && !sweepWasOn) sweepStart = t
@@ -282,11 +312,22 @@ function renderFrame() {
     write = tmp
 }
 
-function loop() {
-    // During PNG capture, the FrameRecorder owns the render schedule
-    // and drives renderFrame() with virtual time. Skip the live render
-    // so the canvas isn't trampled between capture/save.
-    if (!frameRecorder.isCapturing()) renderFrame()
+function loop(time) {
+    const isCapturing = frameRecorder.isCapturing()
+    if (!isCapturing) {
+        if (lastPreviewTimestamp > 0) {
+            const dt = (time - lastPreviewTimestamp) / 1000
+            if (dt > 0 && dt < 0.1) {
+                const instFps = 1 / dt
+                previewFps = previewFps * 0.95 + instFps * 0.05
+            }
+        }
+        lastPreviewTimestamp = time
+        renderFrame()
+    } else {
+        // Reset so the first post-capture frame doesn't see a huge dt.
+        lastPreviewTimestamp = 0
+    }
     requestAnimationFrame(loop)
 }
 
