@@ -189,7 +189,7 @@ body {
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.5);
   cursor: pointer;
-  z-index: 100;
+  z-index: 300;
   backdrop-filter: blur(10px);
   transition: all 0.2s;
   display: flex;
@@ -238,7 +238,7 @@ body {
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.5);
   cursor: pointer;
-  z-index: 100;
+  z-index: 300;
   backdrop-filter: blur(10px);
   transition: all 0.2s;
   display: flex;
