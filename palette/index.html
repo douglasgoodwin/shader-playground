@@ -12,7 +12,9 @@
       <a href="/playground/" class="back">Playground</a>
       <span class="title">Palette</span>
     </nav>
-    <button id="record-btn" title="Record video (R)"></button>
+    <button id="record-btn" aria-label="Record H.264 video (R)" data-tip="Record H.264 video — press R"></button>
+    <button id="frame-btn" aria-label="Record PNG frame sequence for ProRes (P)" data-tip="Record PNG frame sequence for ProRes — press P"></button>
+    <div id="frame-counter" class="hidden"></div>
     <div id="controls">
       <button data-effect="riso" class="active"><span class="key">1</span> Riso</button>
       <button data-effect="pastel"><span class="key">2</span> Pastel</button>

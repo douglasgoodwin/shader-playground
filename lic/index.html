@@ -11,7 +11,9 @@
     <nav id="nav">
       <a href="/playground/" class="back">Playground</a>
     </nav>
-    <button id="record-btn" title="Record video (R)"></button>
+    <button id="record-btn" aria-label="Record H.264 video (R)" data-tip="Record H.264 video — press R"></button>
+    <button id="frame-btn" aria-label="Record PNG frame sequence for ProRes (P)" data-tip="Record PNG frame sequence for ProRes — press P"></button>
+    <div id="frame-counter" class="hidden"></div>
 
     <div id="controls" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); display:flex; gap:10px; z-index:100;">
       <button data-effect="paint" class="active" style="padding:8px 16px; border:1px solid rgba(255,255,255,0.3); border-radius:20px; background:rgba(0,0,0,0.5); color:rgba(255,255,255,0.7); font-family:system-ui,sans-serif; cursor:pointer;"><span class="key">1</span> Paint</button>
