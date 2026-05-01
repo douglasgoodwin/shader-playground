@@ -10,12 +10,22 @@ This project explores real-time GLSL shader programming through interactive visu
 
 ### Pages
 
+#### Hub & companion pages
+
 - **/** - Landing page with animated color field
+- **/playground/** - Hub linking to every shader page in the site
+- **/learn/** - The Classroom: four chapters of Ciechanowski-style interactive tutorials, from first line of shader code through 3D raymarching
+- **/workflow/** - The daily loop: install, run the dev server, edit a shader, prompt an LLM, commit to a fork
+- **/crit/** - Critique framework for vibecoded work: three kinds of system, five strata of synthesis, three lenses, and the opening statement
+- **/artists/** - Lineage portraits of the figures whose work stands behind the course (experimental film, video art, visual music, early computer animation)
+- **/exercises/** - Scaffolded shader exercises for learning GLSL
+
+#### Shader pages
+
 - **/whitney/** - Collection inspired by Whitney brothers' computational films
 - **/geometries/** - Raymarched 3D geometry explorations
 - **/glyphs/** - ASCII art rendering and symbol morphing
 - **/stipple/** - Hodgin-style stippling for webcam/images
-- **/exercises/** - Scaffolded shader exercises for learning GLSL
 - **/particles/** - GPU particle simulations (boids, physics)
 - **/characters/** - Animated shader creatures
 - **/warps/** - Image warping effects
@@ -33,6 +43,12 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/zoom/** - Google Maps-style zoom and crossfade
 - **/palette/** - Color remapping with RISO, pastel, thermal, duotone, posterize
 - **/kaleidoscope/** - Video kaleidoscope with configurable reflections
+- **/slitscan/** - Ping-pong feedback slit-scan on image/video, with vertical mode and auto-sweep
+- **/matte/** - Janie Geiser-style three-layer compositor with shader-animated matte edges
+- **/pollen/** - Deforming shader effects on uploaded OBJ models (breathe, melt, glitch, ripple, erode, face, amoeba)
+- **/pointcloud/** - Depth-displaced point cloud from any image, video, or webcam — each pixel becomes a point pushed forward or back by its luminance
+- **/midi-visual/** - MIDI-driven kaleidoscope: drop a `.mid` file and a video, drive the kaleidoscope's segments and motion from note events
+- **/pingpong/** - Frame-feedback smear gallery: Lissajous, Kaleidoscope, Whitney, and Droste demos sharing the same two-pass feedback pipeline
 
 ### Shader Sources (`src/shaders/`)
 
@@ -509,6 +525,96 @@ Video kaleidoscope with configurable reflections — drop an image or video and 
 - **Zoom** — How much of the source image is visible
 - **Speed** — Rotation/scroll animation speed
 
+## Slit-Scan
+
+Ping-pong feedback slit-scan on an image or video source. A 1-pixel-wide column (or row, in vertical mode) is sampled from the source and pushed across the canvas each frame, accumulating into a time-smeared image. Drop an image or video, or paste a URL.
+
+### Controls
+
+- **Slit position** — Where to sample the column/row from the source (0–1)
+- **Speed (px/frame)** — How many pixels to advance per frame
+- **Decay** — Optional fade applied to older pixels each frame
+- **Sweep period (s)** — Auto-sweep cycle length when sweep is enabled
+- **Vertical** — Sample a horizontal row instead of a vertical column
+- **Output size** — Pick a recording resolution: 1920×1080 (HD / Bijou, default), 1080×1920 (HD vertical), 3840×2160 (4K UHD), or 3888×1080 (Spectra wall)
+- **R** — Record H.264 video
+- **P** — Record PNG frame sequence for ProRes assembly (see `docs/PRORES_EXPORT.md`)
+
+The Bijou Festival deliverable is **1920×1080 at 24fps in ProRes HQ**, produced from the PNG sequence via `ffmpeg prores_ks`. The 3888×1080 preset exists for Spectra, whose 33×10 ft wall takes that exact size — a format consumer postproduction tools (DaVinci Resolve included) struggle to produce.
+
+## Matte
+
+Three-layer compositor inspired by Janie Geiser's collage animation. Drop a background, a foreground, and a matte; the shader animates the matte's edges (drift, breath, jitter) so the hole through which the background shows feels handmade rather than mechanically keyed.
+
+### Controls
+
+- **Background / Foreground / Matte** — Drop image or video into each slot
+- **Drift** — Slow positional wander of the matte
+- **Breath** — Periodic scale pulse
+- **Jitter** — High-frequency edge noise
+
+## Pollen
+
+Deforming shader effects applied to uploaded OBJ models. Drop an OBJ (or load by URL) and switch between deformation modes that animate the geometry in different ways.
+
+| Effect | Description |
+|--------|-------------|
+| Breathe | Slow inhale/exhale scaling from the model's center |
+| Melt | Vertices droop and pool toward the floor |
+| Glitch | Discontinuous chunk displacement on a stutter timer |
+| Ripple | Concentric waves emanating from a moving origin |
+| Erode | Surface noise that pits and roughens the silhouette |
+| Face | Localized deformation that suggests a hidden face emerging |
+| Amoeba | Whole-model blob morphing driven by 3D simplex noise |
+
+### Controls
+
+- **Intensity** — Effect strength
+- Drop OBJ to load custom geometry; press **R** to record
+
+## Point Cloud
+
+Every pixel of an image, video, or webcam frame becomes a point in 3D space, pushed forward or back along Z by its luminance. The result is a parallax-rich depth landscape that you can orbit. Useful as a quick depth-from-image effect, and as a study in how a single shader can turn raster input into volumetric output. Optional audio input (mic or audio file) drives reactivity.
+
+### Controls
+
+- Drop an image/video, grant webcam access, or load a mic / audio file
+- **Depth** — How far bright/dark pixels are pushed along Z (0–2.5)
+- **Point size** — Per-point radius (0.5–8)
+- **Blur radius** — Pre-pass blur applied to the source (0–12)
+- **Color boost** — Saturation/contrast lift on the points (0–1.5)
+- Mouse drag orbits; scroll zooms
+
+## MIDI Visual
+
+A MIDI-driven kaleidoscope. Drop a `.mid` file and a video source; note-on events drive kaleidoscope parameters (segment count, rotation rate, zoom) so the image responds rhythmically to the music. Built on the same kaleidoscope shaders as `/kaleidoscope/`, but with MIDI as the input device instead of sliders.
+
+| Mode | Description |
+|------|-------------|
+| Classic | Standard angular kaleidoscope |
+| Tunnel | Radial tunnel scrolling inward |
+| Fractal | Iterative fold-based kaleidoscope |
+
+### Controls
+
+- Drop a `.mid` file (or paste a URL)
+- Drop a video or image as the source
+- **Segments** — Base number of reflections (note events modulate this)
+- **Play** — Start MIDI playback and visual response
+
+## PingPong
+
+`/pingpong/` is a hub for four feedback-smear demos, each at its own sub-route. The same two-pass pipeline sits under every demo: a fresh render goes into one framebuffer, a blend pass mixes it with the previous frame's buffer, and the result becomes the next frame's "previous." The variations show how the same machinery reads differently depending on what you feed it.
+
+| Sub-page | Source material |
+|----------|-----------------|
+| `/pingpong/lissajous/` | Moving Lissajous stamp on the feedback buffer |
+| `/pingpong/kaleidoscope/` | Video kaleidoscope smearing into itself |
+| `/pingpong/whitney/` | A Whitney-style harmonic piece smeared by the feedback pass |
+| `/pingpong/droste/` | Recursive self-similar zoom |
+
+Each sub-page exposes its own controls (decay, blend weight, source-specific parameters).
+
 ## Three.js
 
 3D shader experiments with custom materials on geometry and OBJ models.
@@ -530,6 +636,12 @@ All shader pages support MP4 video recording:
 - Click the red record button (top-right)
 - Or press **R** to toggle recording
 - Uses WebCodecs API for hardware-accelerated H.264 encoding
+
+Recording resolution is per-page: most pages record at preview size, Kaleidoscope is hard-wired to **3888 × 1080** (Spectra wall), and Slit-Scan exposes a dropdown for HD (Bijou), vertical HD, 4K, or the 3888×1080 Spectra format.
+
+### PNG frame sequence (ProRes path)
+
+Slit-Scan also supports a PNG frame sequence capture (press **P**) for venues that require ProRes. The browser writes per-frame PNGs that are then assembled with `ffmpeg prores_ks` at the exact pixel dimensions and color pipeline the screen requires. See `docs/PRORES_EXPORT.md` for the full pipeline. This path was added because consumer postproduction tools (DaVinci Resolve included) struggle with the unusual aspect ratio and pixel count of large video walls.
 
 ## Running Locally
 
