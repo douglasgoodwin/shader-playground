@@ -17,6 +17,7 @@ export class CanvasRecorder {
         this.recordingWidth = options.width || 1920
         this.recordingHeight = options.height || 1080
         this.onStateChange = options.onStateChange || (() => {})
+        this.watermark = options.watermark || null
 
         // Check WebCodecs support
         this.supported = typeof VideoEncoder !== 'undefined'
@@ -97,6 +98,15 @@ export class CanvasRecorder {
         this.frameCount = 0
         this.encodedWidth = encodedWidth
         this.encodedHeight = encodedHeight
+
+        // Composite canvas for watermarked output (live preview stays clean)
+        if (this.watermark) {
+            this.composite = document.createElement('canvas')
+            this.composite.width = encodedWidth
+            this.composite.height = encodedHeight
+            this.compositeCtx = this.composite.getContext('2d')
+        }
+
         this.onStateChange(true)
 
         // Capture frames at specified FPS
@@ -109,11 +119,28 @@ export class CanvasRecorder {
 
         const timestamp = (this.frameCount * 1_000_000) / this.fps
 
-        // Construct the VideoFrame from the canvas directly — skips the
-        // createImageBitmap round-trip and the extra allocation/copy it forces.
+        // If watermarking, composite WebGL canvas + text into a 2D canvas
+        // first, then encode from that. Otherwise encode the WebGL canvas
+        // directly to skip the readback.
+        let source = this.canvas
+        if (this.watermark && this.compositeCtx) {
+            const ctx = this.compositeCtx
+            ctx.drawImage(this.canvas, 0, 0)
+            const fontPx = Math.max(10, Math.round(this.encodedHeight * 0.014))
+            ctx.font = `${fontPx}px system-ui, -apple-system, sans-serif`
+            ctx.textBaseline = 'bottom'
+            const pad = Math.round(fontPx * 0.6)
+            // subtle shadow for legibility on bright frames
+            ctx.fillStyle = 'rgba(0,0,0,0.5)'
+            ctx.fillText(this.watermark, pad + 1, this.encodedHeight - pad + 1)
+            ctx.fillStyle = 'rgba(255,255,255,0.65)'
+            ctx.fillText(this.watermark, pad, this.encodedHeight - pad)
+            source = this.composite
+        }
+
         let frame
         try {
-            frame = new VideoFrame(this.canvas, {
+            frame = new VideoFrame(source, {
                 timestamp,
                 duration: 1_000_000 / this.fps,
             })

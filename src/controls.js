@@ -93,11 +93,18 @@ export function setupRecording(canvas, options = {}) {
 
     const recordBtn = document.querySelector(buttonSelector)
     const userCallback = options.onStateChange
+    // Bake an attribution watermark into MP4s when the page is served from
+    // vibes.cairn.com. Live preview and local builds stay clean.
+    const watermark = options.watermark
+        ?? (typeof location !== 'undefined' && location.hostname === 'vibes.cairn.com'
+            ? 'doug goodwin | vibes.cairn.com'
+            : null)
     const recorder = new CanvasRecorder(canvas, {
         width: options.width,
         height: options.height,
         fps: options.fps,
         bitrate: options.bitrate,
+        watermark,
         onStateChange: (recording) => {
             if (recordBtn) {
                 recordBtn.classList.toggle('recording', recording)
