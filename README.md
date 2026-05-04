@@ -637,7 +637,7 @@ All shader pages support MP4 video recording:
 - Or press **R** to toggle recording
 - Uses WebCodecs API for hardware-accelerated H.264 encoding
 
-Recording resolution is per-page: most pages record at preview size, Kaleidoscope is hard-wired to **3888 × 1080** (Spectra wall), and Slit-Scan exposes a dropdown for HD (Bijou), vertical HD, 4K, or the 3888×1080 Spectra format.
+Recording resolution defaults to **1920 × 1080** for every page. Slit-Scan exposes a dropdown if you need a different format — HD (Bijou), vertical HD, 4K, or the 3888 × 1080 Spectra wall.
 
 ### PNG frame sequence (ProRes path)
 
