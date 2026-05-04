@@ -5,12 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "playwright test",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "deploy": "npm run build && rsync -avz --delete dist/ ucla:/var/www/vibes.cairn.com/"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@playwright/test": "^1.59.1",
     "eslint": "^9.39.2",
     "globals": "^17.2.0",
     "typescript": "^5.9.3",

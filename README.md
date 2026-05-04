@@ -660,6 +660,25 @@ npm run build
 
 The Lygia duplicate-include warnings are expected and harmless (`#ifndef` guards prevent issues at runtime).
 
+### Recorder Tests
+
+A Playwright suite (`tests/recorder.smoke.spec.js`) loads each major shader page, triggers recording, and asserts the canvas resizes to the page's declared dimensions and renders non-black pixels. This catches the recurring class of viewport-sync and per-page resolution bugs that have shown up across the recorder's history.
+
+```bash
+npm test          # run the suite (~40s)
+npm run test:ui   # Playwright's interactive runner
+```
+
+The suite is wired into `prebuild`, so `npm run build` will refuse to produce `dist/` if any test fails. Adding a new `createShaderPage` page? Drop a row into the `PAGES` table in the spec — for video-source pages, set `needsMedia: true` and the helper uploads `tests/fixtures/test.mp4` before recording.
+
+### Deploy
+
+```bash
+npm run deploy
+```
+
+Runs the recorder tests, builds `dist/`, and rsyncs to `vibes.cairn.com`. Any test failure aborts before the rsync, so a recorder regression can't ship.
+
 ## Resources
 
 - [The Book of Shaders](https://thebookofshaders.com)
