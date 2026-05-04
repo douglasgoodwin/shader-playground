@@ -44,7 +44,7 @@ This project explores real-time GLSL shader programming through interactive visu
 - **/palette/** - Color remapping with RISO, pastel, thermal, duotone, posterize
 - **/kaleidoscope/** - Video kaleidoscope with configurable reflections
 - **/slitscan/** - Ping-pong feedback slit-scan on image/video, with vertical mode and auto-sweep
-- **/matte/** - Janie Geiser-style three-layer compositor with shader-animated matte edges
+- **/matte/** - Three-layer compositor with shader-animated matte edges
 - **/pollen/** - Deforming shader effects on uploaded OBJ models (breathe, melt, glitch, ripple, erode, face, amoeba)
 - **/pointcloud/** - Depth-displaced point cloud from any image, video, or webcam — each pixel becomes a point pushed forward or back by its luminance
 - **/midi-visual/** - MIDI-driven kaleidoscope: drop a `.mid` file and a video, drive the kaleidoscope's segments and motion from note events
@@ -544,7 +544,7 @@ The Bijou Festival deliverable is **1920×1080 at 24fps in ProRes HQ**, produced
 
 ## Matte
 
-Three-layer compositor inspired by Janie Geiser's collage animation. Drop a background, a foreground, and a matte; the shader animates the matte's edges (drift, breath, jitter) so the hole through which the background shows feels handmade rather than mechanically keyed.
+Three-layer compositor inspired by mid-century cut-paper collage animation. Drop a background, a foreground, and a matte; the shader animates the matte's edges (drift, breath, jitter) so the hole through which the background shows feels handmade rather than mechanically keyed.
 
 ### Controls
 

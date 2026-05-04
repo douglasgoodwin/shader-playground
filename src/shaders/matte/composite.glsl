@@ -1,4 +1,4 @@
-// Three-layer matte compositor — Janie Geiser inspired
+// Three-layer matte compositor.
 // back layer + front layer + matte. The shader perturbs the matte over
 // time so the hole breathes, drifts, and shimmers along its edge.
 precision highp float;
