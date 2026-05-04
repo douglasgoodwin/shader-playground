@@ -36,12 +36,16 @@ camera.position.z = 5
 const recorder = setupRecording(canvas, {
     onStateChange(recording) {
         if (recording) {
-            // Sync Three.js renderer to the recorder's 1920x1080 canvas
+            // Sync Three.js renderer to the recorder's 1920x1080 canvas.
+            // Capture dims BEFORE setPixelRatio — setPixelRatio internally
+            // re-runs setSize with Three's stored prior dims, which would
+            // overwrite the recorder's resize.
+            const w = canvas.width, h = canvas.height
             renderer.setPixelRatio(1)
-            renderer.setSize(canvas.width, canvas.height, false)
-            camera.aspect = canvas.width / canvas.height
+            renderer.setSize(w, h, false)
+            camera.aspect = w / h
             camera.updateProjectionMatrix()
-            uniforms.u_resolution.value.set(canvas.width, canvas.height)
+            uniforms.u_resolution.value.set(w, h)
         }
         // stop() already fires resize which restores everything
     },
