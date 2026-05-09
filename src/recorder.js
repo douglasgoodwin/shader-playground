@@ -3,6 +3,24 @@
 
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer'
 
+function deriveSection() {
+    if (typeof location === 'undefined') return 'shader'
+    const path = location.pathname.replace(/^\/+|\/+$/g, '')
+    if (!path) return 'home'
+    return path.replace(/\.html?$/i, '').replace(/\//g, '-')
+}
+
+function isoStamp() {
+    const d = new Date()
+    const pad = n => String(n).padStart(2, '0')
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+        `T${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`
+}
+
+function sanitize(part) {
+    return String(part).trim().replace(/[^a-z0-9._-]+/gi, '-').replace(/^-+|-+$/g, '')
+}
+
 export class CanvasRecorder {
     constructor(canvas, options = {}) {
         this.canvas = canvas
@@ -18,6 +36,9 @@ export class CanvasRecorder {
         this.recordingHeight = options.height || 1080
         this.onStateChange = options.onStateChange || (() => {})
         this.watermark = options.watermark || null
+        this.section = options.section || deriveSection()
+        // Resolved at saveRecording() so the active shader at stop time wins
+        this.getLabel = typeof options.getLabel === 'function' ? options.getLabel : null
 
         // Check WebCodecs support
         this.supported = typeof VideoEncoder !== 'undefined'
@@ -229,8 +250,11 @@ export class CanvasRecorder {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '')
-        a.download = `shader-${timestamp}.mp4`
+        const label = this.getLabel ? this.getLabel() : null
+        const parts = [this.section, label, isoStamp()]
+            .map(p => p == null ? '' : sanitize(p))
+            .filter(Boolean)
+        a.download = `${parts.join('-')}.mp4`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)

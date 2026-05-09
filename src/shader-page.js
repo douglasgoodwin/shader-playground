@@ -52,7 +52,11 @@ export function createShaderPage({
 
     const mouse = new MouseTracker(canvas)
     const sliderMgr = sliderConfig ? new SliderManager(sliderConfig) : null
-    const recorder = setupRecording(canvas, { keyboardShortcut: null, ...recording })
+    const recorder = setupRecording(canvas, {
+        keyboardShortcut: null,
+        getLabel: () => current,
+        ...recording,
+    })
 
     // PNG-sequence recorder for festival/ProRes-bound captures. Activated
     // by 'P' keyboard or #frame-btn click. Pages that want the visual

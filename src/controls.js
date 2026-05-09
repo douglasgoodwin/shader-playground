@@ -105,6 +105,8 @@ export function setupRecording(canvas, options = {}) {
         fps: options.fps,
         bitrate: options.bitrate,
         watermark,
+        section: options.section,
+        getLabel: options.getLabel,
         onStateChange: (recording) => {
             if (recordBtn) {
                 recordBtn.classList.toggle('recording', recording)
