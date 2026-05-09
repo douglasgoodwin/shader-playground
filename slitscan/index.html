@@ -28,6 +28,13 @@
     </div>
     <div id="sliders">
       <label>
+        <span>Mode</span>
+        <select id="mode">
+          <option value="slit">Slit-scan</option>
+          <option value="mosh">Datamosh (optical flow)</option>
+        </select>
+      </label>
+      <label>
         <span>Output size</span>
         <select id="format">
           <option value="1920x1080">1920 × 1080 (HD / Bijou)</option>
@@ -36,11 +43,11 @@
           <option value="3888x1080">3888 × 1080 (Spectra)</option>
         </select>
       </label>
-      <label>
+      <label data-modes="slit">
         <span>Slit position</span>
         <input type="range" id="slitPos" min="0" max="1" step="0.001" value="0.5">
       </label>
-      <label>
+      <label data-modes="slit">
         <span>Speed (px/frame)</span>
         <input type="range" id="speed" min="1" max="16" step="1" value="2">
       </label>
@@ -48,21 +55,33 @@
         <span>Decay</span>
         <input type="range" id="decay" min="0" max="0.05" step="0.001" value="0">
       </label>
-      <label>
+      <label data-modes="slit">
         <span>Sweep period (s)</span>
         <input type="range" id="period" min="1" max="120" step="0.5" value="30">
       </label>
-      <label class="check">
+      <label class="check" data-modes="slit">
         <input type="checkbox" id="vertical">
         <span>Vertical</span>
       </label>
-      <label class="check">
+      <label class="check" data-modes="slit">
         <input type="checkbox" id="reverse">
         <span>Reverse scroll</span>
       </label>
-      <label class="check">
+      <label class="check" data-modes="slit">
         <input type="checkbox" id="sweep">
         <span>Auto-sweep slit</span>
+      </label>
+      <label data-modes="mosh">
+        <span>Flow scale</span>
+        <input type="range" id="flowScale" min="0" max="8" step="0.05" value="1.5">
+      </label>
+      <label data-modes="mosh">
+        <span>Keyframe rate</span>
+        <input type="range" id="keyframeRate" min="0" max="1" step="0.005" value="0.04">
+      </label>
+      <label data-modes="mosh">
+        <span>Block grid</span>
+        <input type="range" id="blockGrid" min="4" max="240" step="1" value="60">
       </label>
     </div>
     <script type="module" src="/src/slitscan.js"></script>

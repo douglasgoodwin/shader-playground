@@ -6,6 +6,7 @@ import { createMediaLoader } from './media-loader.js'
 import { FrameRecorder } from './frame-recorder.js'
 
 import feedbackFrag from './shaders/slitscan/feedback.glsl'
+import datamoshFrag from './shaders/slitscan/datamosh.glsl'
 import presentFrag from './shaders/pingpong/present.glsl'
 
 const RECORDING = { width: 1920, height: 1080 }
@@ -29,6 +30,7 @@ void main() {
 `
 
 const feedbackProgram = createProgram(gl, vertSource, feedbackFrag)
+const datamoshProgram = createProgram(gl, vertSource, datamoshFrag)
 const presentProgram  = createProgram(gl, vertSource, presentFrag)
 
 const feedbackU = {
@@ -43,6 +45,20 @@ const feedbackU = {
     decay:       gl.getUniformLocation(feedbackProgram, 'u_decay'),
     direction:   gl.getUniformLocation(feedbackProgram, 'u_direction'),
     vertical:    gl.getUniformLocation(feedbackProgram, 'u_vertical'),
+}
+
+const datamoshU = {
+    prev:         gl.getUniformLocation(datamoshProgram, 'u_prev'),
+    source:       gl.getUniformLocation(datamoshProgram, 'u_source'),
+    prevSource:   gl.getUniformLocation(datamoshProgram, 'u_prevSource'),
+    textureSize:  gl.getUniformLocation(datamoshProgram, 'u_textureSize'),
+    hasTexture:   gl.getUniformLocation(datamoshProgram, 'u_hasTexture'),
+    resolution:   gl.getUniformLocation(datamoshProgram, 'u_resolution'),
+    time:         gl.getUniformLocation(datamoshProgram, 'u_time'),
+    decay:        gl.getUniformLocation(datamoshProgram, 'u_decay'),
+    flowScale:    gl.getUniformLocation(datamoshProgram, 'u_flowScale'),
+    keyframeRate: gl.getUniformLocation(datamoshProgram, 'u_keyframeRate'),
+    blockGrid:    gl.getUniformLocation(datamoshProgram, 'u_blockGrid'),
 }
 
 const presentU = {
@@ -82,6 +98,9 @@ function createFBO(w, h) {
 
 let pingPong = null
 let read, write
+// Single-buffer FBO holding the previous source frame, used by datamosh
+// for optical-flow estimation. Allocated lazily / rebuilt on resize.
+let prevSourceFBO = null
 
 function rebuildFBOs() {
     if (pingPong) {
@@ -90,15 +109,25 @@ function rebuildFBOs() {
             gl.deleteFramebuffer(p.fb)
         }
     }
+    if (prevSourceFBO) {
+        gl.deleteTexture(prevSourceFBO.tex)
+        gl.deleteFramebuffer(prevSourceFBO.fb)
+    }
     pingPong = [createFBO(canvas.width, canvas.height), createFBO(canvas.width, canvas.height)]
     read = pingPong[0]
     write = pingPong[1]
+    prevSourceFBO = createFBO(canvas.width, canvas.height)
     clear()
 }
 
 function clear() {
     for (const p of pingPong) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, p.fb)
+        gl.clearColor(0, 0, 0, 1)
+        gl.clear(gl.COLOR_BUFFER_BIT)
+    }
+    if (prevSourceFBO) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, prevSourceFBO.fb)
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
     }
@@ -111,14 +140,36 @@ const media = createMediaLoader(gl, {
 })
 
 const sliders = new SliderManager({
-    slitPos:  { selector: '#slitPos',  default: 0.5 },
-    speed:    { selector: '#speed',    default: 2 },
-    decay:    { selector: '#decay',    default: 0 },
-    period:   { selector: '#period',   default: 30 },
-    vertical: { selector: '#vertical', default: false, type: 'checkbox' },
-    reverse:  { selector: '#reverse',  default: false, type: 'checkbox' },
-    sweep:    { selector: '#sweep',    default: false, type: 'checkbox' },
+    slitPos:      { selector: '#slitPos',      default: 0.5 },
+    speed:        { selector: '#speed',        default: 2 },
+    decay:        { selector: '#decay',        default: 0 },
+    period:       { selector: '#period',       default: 30 },
+    vertical:     { selector: '#vertical',     default: false, type: 'checkbox' },
+    reverse:      { selector: '#reverse',      default: false, type: 'checkbox' },
+    sweep:        { selector: '#sweep',        default: false, type: 'checkbox' },
+    flowScale:    { selector: '#flowScale',    default: 1.5 },
+    keyframeRate: { selector: '#keyframeRate', default: 0.04 },
+    blockGrid:    { selector: '#blockGrid',    default: 60 },
 })
+
+// Mode toggle: 'slit' (default) or 'mosh'. The dropdown also hides/shows
+// labels tagged with data-modes so only the relevant controls are visible.
+const modeSelect = document.querySelector('#mode')
+let mode = modeSelect ? modeSelect.value : 'slit'
+function applyModeVisibility() {
+    document.querySelectorAll('#sliders [data-modes]').forEach((el) => {
+        const allowed = el.getAttribute('data-modes').split(/\s+/)
+        el.style.display = allowed.includes(mode) ? '' : 'none'
+    })
+}
+if (modeSelect) {
+    modeSelect.addEventListener('change', () => {
+        mode = modeSelect.value
+        applyModeVisibility()
+        clear()
+    })
+}
+applyModeVisibility()
 
 let sweepStart = 0
 let sweepWasOn = false
@@ -144,6 +195,9 @@ const frameRecorder = new FrameRecorder(canvas, {
     // for 1920px. Each frame waits for a video seek, so this dominates
     // wall time when the source is video.
     getPrimeFrames: () => {
+        // Datamosh has no scrolling buffer to prime — content emerges from
+        // the source on the very first frame, so just record straight away.
+        if (mode === 'mosh') return 0
         const sliderSpeed = Math.max(1, sliders.get('speed'))
         const vertical = sliders.get('vertical')
         const recDim = vertical
@@ -232,9 +286,38 @@ function renderFrame() {
     }
 
     const t = getTime()
+    const decay = sliders.get('decay')
 
+    if (media.hasMedia && media.texture) {
+        media.updateVideoFrame()
+    }
+
+    if (mode === 'mosh') {
+        renderDatamoshFrame(t, decay)
+    } else {
+        renderSlitscanFrame(t, decay)
+    }
+
+    // --- Present → screen ---
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl.viewport(0, 0, canvas.width, canvas.height)
+
+    gl.useProgram(presentProgram)
+    bindQuad(presentProgram)
+
+    gl.activeTexture(gl.TEXTURE0)
+    gl.bindTexture(gl.TEXTURE_2D, write.tex)
+    gl.uniform1i(presentU.tex, 0)
+
+    gl.drawArrays(gl.TRIANGLES, 0, 6)
+
+    const tmp = read
+    read = write
+    write = tmp
+}
+
+function renderSlitscanFrame(t, decay) {
     const sliderSpeed = sliders.get('speed')
-    const decay     = sliders.get('decay')
     const period    = sliders.get('period')
     const vertical  = sliders.get('vertical')
     const reverse   = sliders.get('reverse')
@@ -264,7 +347,6 @@ function renderFrame() {
     const sweepPhase = period > 0 ? ((t - sweepStart) / period) % 2 : 0
     const slitPos = sweep ? Math.abs(sweepPhase - 1) : sliders.get('slitPos')
 
-    // --- Pass 1: feedback → write FBO ---
     gl.bindFramebuffer(gl.FRAMEBUFFER, write.fb)
     gl.viewport(0, 0, write.width, write.height)
 
@@ -277,7 +359,6 @@ function renderFrame() {
 
     gl.activeTexture(gl.TEXTURE1)
     if (media.hasMedia && media.texture) {
-        media.updateVideoFrame()
         gl.bindTexture(gl.TEXTURE_2D, media.texture)
     }
     gl.uniform1i(feedbackU.texture, 1)
@@ -293,23 +374,60 @@ function renderFrame() {
     gl.uniform1f(feedbackU.vertical, vertical ? 1 : 0)
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
+}
 
-    // --- Pass 2: present → screen ---
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-    gl.viewport(0, 0, canvas.width, canvas.height)
+function renderDatamoshFrame(t, decay) {
+    // --- Pass 1: datamosh → write FBO. Reads prev buffer (read), live
+    // source (media.texture), and last frame's source snapshot
+    // (prevSourceFBO).
+    gl.bindFramebuffer(gl.FRAMEBUFFER, write.fb)
+    gl.viewport(0, 0, write.width, write.height)
 
-    gl.useProgram(presentProgram)
-    bindQuad(presentProgram)
+    gl.useProgram(datamoshProgram)
+    bindQuad(datamoshProgram)
 
     gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, write.tex)
-    gl.uniform1i(presentU.tex, 0)
+    gl.bindTexture(gl.TEXTURE_2D, read.tex)
+    gl.uniform1i(datamoshU.prev, 0)
+
+    gl.activeTexture(gl.TEXTURE1)
+    if (media.hasMedia && media.texture) {
+        gl.bindTexture(gl.TEXTURE_2D, media.texture)
+    }
+    gl.uniform1i(datamoshU.source, 1)
+
+    gl.activeTexture(gl.TEXTURE2)
+    gl.bindTexture(gl.TEXTURE_2D, prevSourceFBO.tex)
+    gl.uniform1i(datamoshU.prevSource, 2)
+
+    gl.uniform1i(datamoshU.hasTexture, media.hasMedia ? 1 : 0)
+    gl.uniform2f(datamoshU.textureSize, textureSize.width, textureSize.height)
+    gl.uniform2f(datamoshU.resolution, write.width, write.height)
+    gl.uniform1f(datamoshU.time, t)
+    gl.uniform1f(datamoshU.decay, decay)
+    gl.uniform1f(datamoshU.flowScale, sliders.get('flowScale'))
+    gl.uniform1f(datamoshU.keyframeRate, sliders.get('keyframeRate'))
+    gl.uniform1f(datamoshU.blockGrid, sliders.get('blockGrid'))
 
     gl.drawArrays(gl.TRIANGLES, 0, 6)
 
-    const tmp = read
-    read = write
-    write = tmp
+    // --- Pass 2: copy current source into prevSourceFBO so next frame's
+    // flow estimation has a reference point. Reuses the present shader
+    // since it's a passthrough sampler. Skip when there's no media — the
+    // procedural fallback computes its own previous frame inline.
+    if (media.hasMedia && media.texture) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, prevSourceFBO.fb)
+        gl.viewport(0, 0, prevSourceFBO.width, prevSourceFBO.height)
+
+        gl.useProgram(presentProgram)
+        bindQuad(presentProgram)
+
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, media.texture)
+        gl.uniform1i(presentU.tex, 0)
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
+    }
 }
 
 function loop(time) {
