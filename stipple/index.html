@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stipple - Hodgin Style</title>
+    <title>Stipple — Voronoi (Lloyd's relaxation)</title>
   </head>
   <body>
     <canvas id="canvas"></canvas>
@@ -35,25 +35,30 @@
 
     <div id="sliders">
       <label>
-        <span>Density</span>
-        <input type="range" id="density" min="0.3" max="3" step="0.1" value="1">
+        <span>Points</span>
+        <input type="range" id="points" min="500" max="15000" step="100" value="4000">
       </label>
       <label>
-        <span>Dot Size</span>
-        <input type="range" id="dotScale" min="0.3" max="2" step="0.1" value="1">
+        <span>Dot size</span>
+        <input type="range" id="dotSize" min="0.4" max="4" step="0.1" value="1.4">
       </label>
       <label>
         <span>Contrast</span>
-        <input type="range" id="contrast" min="0.5" max="3" step="0.1" value="1.5">
+        <input type="range" id="contrast" min="0.3" max="3" step="0.05" value="1.4">
       </label>
       <label>
-        <span>Lines</span>
-        <input type="checkbox" id="showLines">
+        <span>Iterations / frame</span>
+        <input type="range" id="iters" min="0" max="4" step="1" value="2">
       </label>
       <label>
-        <span>Invert</span>
+        <span>Respawn</span>
+        <input type="range" id="respawn" min="0" max="0.3" step="0.005" value="0.05">
+      </label>
+      <label class="check">
         <input type="checkbox" id="invert">
+        <span>Invert</span>
       </label>
+      <button id="restart-btn" type="button">Restart (space)</button>
     </div>
 
     <div id="loading" class="hidden">Loading...</div>
