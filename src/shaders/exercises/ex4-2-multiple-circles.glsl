@@ -1,23 +1,22 @@
 precision mediump float;
+
 uniform vec2 u_resolution;
 
 void main() {
     vec2 uv = gl_FragCoord.xy / u_resolution;
 
-    // TODO: Create three circles at different positions
-    //       Hint: copy the circle code three times with different centers
+    float radius = 0.04;
+    float result = 0.0;
 
-    vec2 center1 = vec2(0.3, 0.5);
-    vec2 center2 = vec2(0.5, 0.5);  // TODO: Change position
-    vec2 center3 = vec2(0.7, 0.5);  // TODO: Change position
-    float radius = 0.15;
+    for (float x = 0.05; x < 1.0; x += 0.1) {
+        for (float y = 0.05; y < 1.0; y += 0.1) {
+            vec2 center = vec2(x, y);
 
-    float circle1 = 1.0 - step(radius, length(uv - center1));
-    float circle2 = 0.0;  // TODO: Calculate like circle1
-    float circle3 = 0.0;  // TODO: Calculate like circle1
+            float circle = 1.0 - step(radius, length(uv - center));
 
-    // Combine: if any circle contains this pixel, show white
-    float result = max(circle1, max(circle2, circle3));
+            result = max(result, circle);
+        }
+    }
 
     gl_FragColor = vec4(vec3(result), 1.0);
 }
