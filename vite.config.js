@@ -113,6 +113,8 @@ export default defineConfig({
         'midi-visual': resolve(__dirname, 'midi-visual/index.html'),
         pointcloud: resolve(__dirname, 'pointcloud/index.html'),
         matte: resolve(__dirname, 'matte/index.html'),
+        rings: resolve(__dirname, 'rings/index.html'),
+        assembly: resolve(__dirname, 'assembly/index.html'),
         'learn-index': resolve(__dirname, 'learn/index.html'),
         'learn-pixel': resolve(__dirname, 'learn/pixel/index.html'),
         'learn-time': resolve(__dirname, 'learn/time/index.html'),

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rings — Shader Playground</title>
+    <meta name="description" content="Cut a video into concentric rings and turn each one a whole number of times per loop, so the result loops as cleanly as the source." />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <nav id="nav">
+      <a href="/playground/" class="back">Playground</a>
+      <span class="title">Rings</span>
+    </nav>
+    <button id="record-btn" aria-label="Record H.264 video (R)" data-tip="Record H.264 video — press R"></button>
+    <button id="frame-btn" aria-label="Record PNG frame sequence for ProRes (P)" data-tip="Record one exact loop as a PNG sequence — press P"></button>
+    <div id="frame-counter" class="hidden"></div>
+
+    <div id="image-controls">
+      <div id="drop-zone">
+        <p>Drop video here<br><span class="small">or click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*,video/*" />
+      </div>
+      <div class="url-row">
+        <input type="text" id="url-input" placeholder="Or paste video URL..." />
+        <button id="load-url">Load</button>
+      </div>
+      <div id="loading" class="hidden">Loading...</div>
+      <div id="loop-readout">no source loaded</div>
+    </div>
+
+    <div id="sliders">
+      <label>
+        <span>Output size</span>
+        <select id="format">
+          <option value="1920x1080">1920 × 1080 (HD / Bijou)</option>
+          <option value="1080x1920">1080 × 1920 (HD vertical)</option>
+          <option value="3840x2160">3840 × 2160 (4K UHD)</option>
+          <option value="3888x1080">3888 × 1080 (Spectra)</option>
+        </select>
+      </label>
+
+      <div id="turns-panel">
+        <span class="panel-label">Turns per loop</span>
+        <div id="turns-rows"></div>
+        <div class="turns-actions">
+          <button id="shuffle-turns" type="button">Shuffle</button>
+          <button id="zero-turns" type="button">Zero</button>
+        </div>
+        <p class="panel-note">Whole turns only — that is what keeps the output looping.</p>
+      </div>
+
+      <label>
+        <span>Rings</span>
+        <input type="range" id="ringCount" min="1" max="8" step="1" value="5" />
+      </label>
+      <label>
+        <span>Inner radius</span>
+        <input type="range" id="inner" min="0" max="0.6" step="0.005" value="0" />
+      </label>
+      <label>
+        <span>Outer radius</span>
+        <input type="range" id="outer" min="0.05" max="1.2" step="0.005" value="0.5" />
+      </label>
+      <label>
+        <span>Ring spacing</span>
+        <input type="range" id="spacing" min="0.5" max="2.5" step="0.05" value="1" />
+      </label>
+      <label>
+        <span>Seam feather</span>
+        <input type="range" id="feather" min="0" max="0.5" step="0.005" value="0" />
+      </label>
+      <label>
+        <span>Static spread</span>
+        <input type="range" id="spread" min="0" max="3.15" step="0.01" value="0" />
+      </label>
+      <label>
+        <span>Loop length (s)</span>
+        <input type="range" id="loopLength" min="1" max="30" step="0.5" value="4" />
+      </label>
+      <label>
+        <span>Outside the rings</span>
+        <select id="outsideMode">
+          <option value="0">Untouched video</option>
+          <option value="1">Black</option>
+        </select>
+      </label>
+      <label>
+        <span>Past the frame edge</span>
+        <select id="edgeMode">
+          <option value="1">Mirror</option>
+          <option value="0">Clamp</option>
+        </select>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="lockLoop" checked />
+        <span>Stop MP4 after one loop</span>
+      </label>
+      <p class="panel-note">Drag on the canvas to move the ring center. Press C to recenter.</p>
+    </div>
+
+    <script type="module" src="/src/rings.js"></script>
+  </body>
+</html>

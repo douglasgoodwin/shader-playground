@@ -1,0 +1,129 @@
+@import './common.css';
+
+#slot-panel {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 230px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.drop-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.drop-row .drop-label {
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    padding-left: 2px;
+}
+
+.drop-zone {
+    padding: 14px 12px;
+    border: 2px dashed rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    cursor: pointer;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.drop-zone:hover {
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+.drop-zone.dragover {
+    border-color: rgba(180, 220, 255, 1);
+    background: rgba(40, 60, 90, 0.7);
+}
+
+.drop-zone.loaded {
+    border-style: solid;
+    border-color: rgba(180, 220, 255, 0.6);
+    background: rgba(20, 30, 50, 0.7);
+}
+
+.drop-hint {
+    display: block;
+    font-size: 10px;
+    opacity: 0.55;
+    margin-top: 2px;
+}
+
+#slot-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.slot-row {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.slot-row .slot-zone {
+    flex: 1;
+    padding: 9px 8px;
+    font-size: 11px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.slot-row input[type="color"] {
+    width: 28px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.slot-row .eyedropper {
+    width: 26px;
+    flex: none;
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.slot-row .eyedropper:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.slot-row .eyedropper.picking {
+    background: rgba(180, 220, 255, 0.85);
+    color: #06121f;
+    border-color: rgba(180, 220, 255, 1);
+}
+
+#pick-hint {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 10px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+#pick-hint.armed {
+    color: rgba(180, 220, 255, 0.95);
+}
