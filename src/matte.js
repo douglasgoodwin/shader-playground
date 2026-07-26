@@ -2,6 +2,7 @@ import './matte.css'
 import './source-link.js'
 import { createProgram } from './webgl.js'
 import { setupRecording, SliderManager } from './controls.js'
+import { MediaLayer, wireDropZone } from './layer-loader.js'
 
 import vertSource from './shaders/matte/vert.glsl'
 import fragSource from './shaders/matte/composite.glsl'
@@ -55,101 +56,19 @@ gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0)
 
 // ============== LAYERS (back / front / matte) ==============
 
-function createLayer(name) {
-    const layer = {
-        name,
-        texture: gl.createTexture(),
-        size: { width: 1, height: 1 },
-        loaded: false,
-        videoSource: null,
-    }
-
-    gl.bindTexture(gl.TEXTURE_2D, layer.texture)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-
-    return layer
-}
-
 const layers = {
-    back:  createLayer('back'),
-    front: createLayer('front'),
-    matte: createLayer('matte'),
+    back:  new MediaLayer(gl, 'back'),
+    front: new MediaLayer(gl, 'front'),
+    matte: new MediaLayer(gl, 'matte'),
 }
 
-function uploadImage(layer, image) {
-    layer.videoSource = null
-    gl.bindTexture(gl.TEXTURE_2D, layer.texture)
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-    layer.size = { width: image.width || image.videoWidth, height: image.height || image.videoHeight }
-    layer.loaded = true
-    document.querySelector(`#${layer.name}-zone`).classList.add('loaded')
+for (const layer of Object.values(layers)) {
+    wireDropZone(
+        layer,
+        document.querySelector(`#${layer.name}-zone`),
+        document.querySelector(`#${layer.name}-input`),
+    )
 }
-
-function uploadVideo(layer, video) {
-    layer.videoSource = video
-    gl.bindTexture(gl.TEXTURE_2D, layer.texture)
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video)
-    layer.size = { width: video.videoWidth, height: video.videoHeight }
-    layer.loaded = true
-    document.querySelector(`#${layer.name}-zone`).classList.add('loaded')
-}
-
-function loadFile(layer, file) {
-    if (file.type.startsWith('video/')) {
-        const video = document.createElement('video')
-        video.muted = true
-        video.loop = true
-        video.playsInline = true
-        video.src = URL.createObjectURL(file)
-        video.addEventListener('loadeddata', () => {
-            video.play()
-            uploadVideo(layer, video)
-        })
-        return
-    }
-    if (!file.type.startsWith('image/')) {
-        alert('Please drop an image or video')
-        return
-    }
-    const reader = new FileReader()
-    reader.onload = (e) => {
-        const img = new Image()
-        img.onload = () => uploadImage(layer, img)
-        img.src = e.target.result
-    }
-    reader.readAsDataURL(file)
-}
-
-function wireZone(layer) {
-    const zone = document.querySelector(`#${layer.name}-zone`)
-    const input = document.querySelector(`#${layer.name}-input`)
-
-    zone.addEventListener('click', () => input.click())
-    zone.addEventListener('dragover', (e) => {
-        e.preventDefault()
-        zone.classList.add('dragover')
-    })
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'))
-    zone.addEventListener('drop', (e) => {
-        e.preventDefault()
-        zone.classList.remove('dragover')
-        const file = e.dataTransfer.files[0]
-        if (file) loadFile(layer, file)
-    })
-    input.addEventListener('change', (e) => {
-        const file = e.target.files[0]
-        if (file) loadFile(layer, file)
-    })
-}
-
-wireZone(layers.back)
-wireZone(layers.front)
-wireZone(layers.matte)
 
 // ============== CONTROLS ==============
 
@@ -178,16 +97,8 @@ resize()
 // ============== RENDER LOOP ==============
 
 function bindLayer(layer, unit, sampler, sizeU, hasU) {
-    gl.activeTexture(gl.TEXTURE0 + unit)
-    if (layer.videoSource && !layer.videoSource.paused) {
-        gl.bindTexture(gl.TEXTURE_2D, layer.texture)
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true)
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, layer.videoSource)
-    } else {
-        gl.bindTexture(gl.TEXTURE_2D, layer.texture)
-    }
-    gl.uniform1i(sampler, unit)
-    gl.uniform2f(sizeU, layer.size.width, layer.size.height)
+    layer.bindTo(unit, sampler)
+    gl.uniform2f(sizeU, layer.width, layer.height)
     gl.uniform1i(hasU, layer.loaded ? 1 : 0)
 }
 
