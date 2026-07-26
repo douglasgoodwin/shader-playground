@@ -553,6 +553,49 @@ Three-layer compositor inspired by mid-century cut-paper collage animation. Drop
 - **Breath** — Periodic scale pulse
 - **Jitter** — High-frequency edge noise
 
+## Rings
+
+Cuts a video into concentric annuli around a movable center and turns each one at its own rate, some clockwise and some counter — so a single clip appears at several rotations at once and the footage reads as spinning in discrete bands.
+
+Rotation is expressed as **whole turns per loop**, not as a speed. Each ring turns an integer number of times over one pass of the source, so at the moment the video wraps every ring is back at its starting angle. That is what makes the output loop, and it is why the steppers only accept integers. A free-running speed control would look the same and would not loop.
+
+### Controls
+
+- **Turns per loop** — Signed integer per ring; sign is direction, 0 holds the ring still. **Shuffle** draws a fresh set, **Zero** stops everything
+- **Rings** — How many annuli the stack is cut into (1–8)
+- **Inner / Outer radius** — Where the stack starts and ends; inside the inner radius and outside the outer one the footage is left untouched
+- **Ring spacing** — 1.0 gives equal-width rings, 2.0 gives equal-area rings
+- **Seam feather** — Crossfades neighbouring rings at their boundary; 0 keeps the cuts hard
+- **Static spread** — A constant angular offset that accumulates per ring, independent of the loop
+- **Loop length (s)** — Only used for stills; a video defines its own loop from its duration
+- **Outside the rings** — Untouched video, or black
+- **Past the frame edge** — Mirror or clamp, for rings that reach beyond the source
+- **Drag on the canvas** — Move the ring center. **C** recenters
+- **R** — Record H.264 video. With *Stop MP4 after one loop* checked, recording ends after exactly one pass
+- **P** — Record one exact loop as a PNG sequence. This path seeks the video frame by frame off a virtual clock, so it is reproducible and frame-exact where the MP4 path is realtime
+
+## Assembly
+
+Takes five video layers and one piece of **organizing media** — a still or a video built from flat color areas — and lets the map decide which layer plays where. A red area plays source 1, a blue area source 2, and so on. Because the map slot accepts video as readily as a still, the same page covers both a fixed composition and one whose organization is itself moving.
+
+The layers are stenciled in screen space: each video fills the frame and the map cuts it. The map functions as a score, not as a set of picture frames.
+
+### Controls
+
+- **Organizing media** — The map. Drop a still for a fixed composition, a video for a moving one
+- **Sources 1–5** — Drop a video into each slot. An unfilled slot draws its key color, so the layout reads before everything is in place
+- **Key colors** — The swatch beside each slot sets the color that selects it. The **⌖** button arms an eyedropper: click it, then click that color in the frame to sample it straight out of the map
+- **Active slots** — How many slots participate in the match (1–5)
+- **Tolerance** — How far a map color may sit from a key and still match
+- **Edge softness** — Falloff width at the match boundary
+- **Source scale** — Zoom applied to every video layer
+- **Unmatched areas** — Black, or show the map through
+- **Match hue, ignore brightness** — Compares chroma only. Flat graphic color survives compression better in hue than in value, so leave this on unless two of your keys share a hue
+- **Preview the map (V)** — Show the raw map, which is what you want while picking keys
+- **R / P** — Same recording pair as Rings; the PNG path seeks all six sources together so the exported loop is frame-exact
+
+Rings and Assembly are meant to be used in sequence: run five clips through Rings, record each as its own loop, then drop those five loops into Assembly under a map.
+
 ## Pollen
 
 Deforming shader effects applied to uploaded OBJ models. Drop an OBJ (or load by URL) and switch between deformation modes that animate the geometry in different ways.

@@ -11,6 +11,14 @@ const PAGES = [
     { path: '/slitscan/',     recW: 1920, recH: 1080, needsMedia: true, settleMs: 1500 },
     { path: '/warps/',        recW: 1920, recH: 1080, needsMedia: true,
       extraInputs: ['#bg-file-input'] },
+    { path: '/rings/',        recW: 1920, recH: 1080, needsMedia: true },
+    { path: '/matte/',        recW: 1920, recH: 1080, needsMedia: true,
+      mediaSelector: '#back-input' },
+    // Assembly builds its slot inputs at runtime, so it has no #file-input.
+    // The map alone is enough to get a lit frame: unfilled slots draw their
+    // key color.
+    { path: '/assembly/',     recW: 1920, recH: 1080, needsMedia: true,
+      mediaSelector: '#map-zone input[type=file]' },
 ]
 
 async function loadFixture(page, selector = '#file-input') {
@@ -27,14 +35,14 @@ async function loadFixture(page, selector = '#file-input') {
     }, { timeout: 8000 })
 }
 
-for (const { path, recW, recH, needsMedia, extraInputs, settleMs = 300 } of PAGES) {
+for (const { path, recW, recH, needsMedia, extraInputs, mediaSelector, settleMs = 300 } of PAGES) {
     test(`${path} records at ${recW}x${recH} with viewport coverage`, async ({ page }) => {
         await page.goto(path)
         await page.waitForSelector('#canvas')
         await page.waitForTimeout(400)
 
         if (needsMedia) {
-            await loadFixture(page)
+            await loadFixture(page, mediaSelector)
             for (const sel of extraInputs ?? []) {
                 await page.setInputFiles(sel, FIXTURE)
             }
